@@ -21,7 +21,7 @@ If, Then, Else, ElseIf, For, To, Next, Step, Do, While, Loop, ByVal, Function, S
 TypeBoolean, TypeInteger, TypeString, Dim, As, Id, ContString, Error;
 
 non terminal INICIO, CONTENIDO, PROCEDIMIENTO, PROCEDIMIENTO_ST, PARAMS, VAR_TIPOS, BODY, STRUCT_BODY, M_PARAMS, CONDICION, IF_BODY, CONCAT, ASIG_VAR, 
-OP_AR, T, F, SENT_CONCAT, IDS,FUNCTION,SUB,STRUCTURE,DIM,FOR,FOR_STEP,IF,DO_WHILE,WRITE,DIM_READ,CONCATENAR,ASIGN;
+OP_AR, T, F, SENT_CONCAT, IDS,FUNCTION,SUB,STRUCTURE,DIM,FOR,FOR_STEP,IF,DO_WHILE,WRITE,DIM_READ,CONCATENAR,ASIGN,ELSE;
 
 precedence left SumaResta;
 precedence left MultDiv;
@@ -34,92 +34,351 @@ INICIO ::=
 ;
 CONTENIDO ::=
     Module Id:i Newline PROCEDIMIENTO_ST:p End Module
+    {: Node Contenido = new Node("Contenido");
+                            Contenido.addNode(new Node("Id", ((String) i)));
+                            Contenido.addNode(p);
+                            RESULT=Contenido;
+     :} 
     |
 ;
 
 PROCEDIMIENTO_ST ::=
-    PROCEDIMIENTO_ST:p1 PROCEDIMIENTO:p2 Newline  
+    PROCEDIMIENTO:p1 Newline PROCEDIMIENTO_ST:p2 
+    {:
+    Node Procedimientos = new Node("Procedimientos");
+                            Procedimientos.addNode(p1);
+                            Procedimientos.addNode(p2);
+                            RESULT=Procedimientos;
+    :}
     |
     PROCEDIMIENTO:p1 Newline
+    {:
+    Node Procedimientos = new Node("Procedimientos");
+                            Procedimientos.addNode(p1);
+                            RESULT=Procedimientos;
+    :}
 ;
 
 PROCEDIMIENTO ::=
-    FUNCTION
-    |SUB
-    |STRUCTURE
+    FUNCTION:f
+    {:
+    Node Procedimiento = new Node("Procedimiento");
+                            Procedimiento.addNode(f);
+                            RESULT=Procedimiento;
+    :}
+    |SUB:s
+    {:
+    Node Procedimiento = new Node("Procedimiento");
+                            Procedimiento.addNode(s);
+                            RESULT=Procedimiento;
+    :}
+    |STRUCTURE:st
+    {:
+    Node Procedimiento = new Node("Procedimiento");
+                            Procedimiento.addNode(st);
+                            RESULT=Procedimiento;
+    :}
 ;
 FUNCTION::=
     Function Id:i Parizq PARAMS:p1 Parder As VAR_TIPOS:v Newline BODY:b End Function
+    {:
+    Node Function = new Node("Function");
+                            Function.addNode(new Node("Id", ((String) i)));
+                            Function.addNode(p1);
+                            Function.addNode(v);
+                            Function.addNode(b);
+                            RESULT=Function;
+    :}
     |
     Function Id:i Parizq Parder As VAR_TIPOS:v Newline BODY:b End Function
+    {:
+    Node Function = new Node("Function");
+                            Function.addNode(new Node("Id", ((String) i)));
+                            Function.addNode(v);
+                            Function.addNode(b);
+                            RESULT=Function;
+    :}
 ;
 SUB::=
-    Sub Id:i Parizq PARAMS:p1 Parder Newline BODY:b End Sub 
+    Sub Id:i Parizq PARAMS:p1 Parder Newline BODY:b End Sub
+    {:
+    Node Sub = new Node("Sub");
+                            Sub.addNode(new Node("Id", ((String) i)));
+                            Sub.addNode(p1);
+                            Sub.addNode(b);
+                            RESULT=Sub;
+    :}
     |
     Sub Id:i Parizq Parder Newline BODY:b End Sub 
+        {:
+    Node Sub = new Node("Sub");
+                            Sub.addNode(new Node("Id", ((String) i)));
+                            Sub.addNode(b);
+                            RESULT=Sub;
+    :}
 ;
 
 STRUCTURE::=
     Structure Id:i Newline STRUCT_BODY:sb End Structure
+    {:
+    Node Procedimiento = new Node("Structure");
+                            Procedimiento.addNode(new Node("Id", ((String) i)));
+                            Procedimiento.addNode(sb);
+                            RESULT=Procedimiento;
+    :}
 ;
 
 VAR_TIPOS ::=
     TypeBoolean:t 
+    {:
+    Node Tipo=new Node("Boolean", ((String) t) );
+                             RESULT=Tipo;
+    :}
     |
     TypeInteger:t 
+    {:
+    Node Tipo = new Node("Integer", ((String) t) );
+                            RESULT=Tipo;
+    :}
     |
     TypeString:t
+    {:
+    Node Tipo = new Node("String", ((String) t) );
+                            RESULT=Tipo;
+    :}
 ;
 
 PARAMS ::=
     ByVal Id:i As VAR_TIPOS:v 
+    {:
+    Node Parametros = new Node("Param");
+                            Parametros.addNode(new Node("Id", ((String) i)));
+                            Parametros.addNode(v);
+                            RESULT=Parametros;
+    :}    
     |
     ByVal Id:i As VAR_TIPOS:v M_PARAMS:m
+    {:
+    Node Parametro = new Node("Param");
+                            Parametro.addNode(new Node("Id", ((String) i)));
+                            Parametro.addNode(v);
+                            Parametro.addNode(m);
+                            RESULT=Parametro;
+    :}
 ;
 
 M_PARAMS ::=
     Coma ByVal Id:i As VAR_TIPOS:v Coma PARAMS:p 
+    {:
+    Node Parametros = new Node("Param");
+                            Parametros.addNode(new Node("Id", ((String) i)));
+                            Parametros.addNode(v);
+                            Parametros.addNode(p);
+                            RESULT=Parametros;
+    :}
     |      
     Coma ByVal Id:i As VAR_TIPOS:v
+    {:
+    Node Parametros = new Node("Param");
+                            Parametros.addNode(new Node("Id", ((String) i)));
+                            Parametros.addNode(v);
+                            RESULT=Parametros;
+    :}
 ;
 
 BODY ::= 
-    BODY DIM
-    |DIM
-    |BODY FOR
-    |FOR
-    |BODY FOR_STEP
-    |FOR_STEP
-    |BODY IF
-    |IF
-    |BODY DO_WHILE
-    |DO_WHILE
-    |BODY WRITE
-    |WRITE
-    |BODY DIM_READ
-    |DIM_READ
-    |BODY CONCATENAR
-    |CONCATENAR
-    |BODY ASIGN
-    |ASIGN
+    BODY:b DIM:c
+    {:
+    Node Body = new Node("Code");
+                            Body.addNode(b);
+                            Body.addNode(c);
+                            RESULT=Body;
+    :}
+    |DIM:c
+    {:
+    Node Body = new Node("Code");
+                            Body.addNode(c);
+                            RESULT=Body;
+    :}
+    |BODY:b FOR:c
+    {:
+    Node Body = new Node("Code");
+                            Body.addNode(b);
+                            Body.addNode(c);
+                            RESULT=Body;
+    :}
+    |FOR:c
+    {:
+    Node Body = new Node("Code");
+                            Body.addNode(c);
+                            RESULT=Body;
+    :}
+    |BODY:b FOR_STEP:c
+    {:
+    Node Body = new Node("Code");
+                            Body.addNode(b);
+                            Body.addNode(c);
+                            RESULT=Body;
+    :}
+    |FOR_STEP:c
+    {:
+    Node Body = new Node("Code");
+                            Body.addNode(c);
+                            RESULT=Body;
+    :}
+    |BODY:b IF:c
+    {:
+    Node Body = new Node("Code");
+                            Body.addNode(b);
+                            Body.addNode(c);
+                            RESULT=Body;
+    :}
+    |IF:c
+    {:
+    Node Body = new Node("Code");
+                            Body.addNode(c);
+                            RESULT=Body;
+    :}
+    |BODY:b DO_WHILE:c
+    {:
+    Node Body = new Node("Code");
+                            Body.addNode(b);
+                            Body.addNode(c);
+                            RESULT=Body;
+    :}
+    |DO_WHILE:c
+    {:
+    Node Body = new Node("Code");
+                            Body.addNode(c);
+                            RESULT=Body;
+    :}
+    |BODY:b WRITE:c
+    {:
+    Node Body = new Node("Code");
+                            Body.addNode(b);
+                            Body.addNode(c);
+                            RESULT=Body;
+    :}
+    |WRITE:c
+    {:
+    Node Body = new Node("Code");
+                            Body.addNode(c);
+                            RESULT=Body;
+    :}
+    |BODY:b DIM_READ:c
+    {:
+    Node Body = new Node("Code");
+                            Body.addNode(b);
+                            Body.addNode(c);
+                            RESULT=Body;
+    :}
+    |DIM_READ:c
+    {:
+    Node Body = new Node("Code");
+                            Body.addNode(c);
+                            RESULT=Body;
+    :}
+    |BODY:b CONCATENAR:c
+    {:
+    Node Body = new Node("Code");
+                            Body.addNode(b);
+                            Body.addNode(c);
+                            RESULT=Body;
+    :}
+    |CONCATENAR:c
+    {:
+    Node Body = new Node("Code");
+                            Body.addNode(c);
+                            RESULT=Body;
+    :}
+    |BODY:b ASIGN:c
+    {:
+    Node Body = new Node("Code");
+                            Body.addNode(b);
+                            Body.addNode(c);
+                            RESULT=Body;
+    :}
+    |ASIGN:c
+    {:
+    Node Body = new Node("Code");
+                            Body.addNode(c);
+                            RESULT=Body;
+    :}
 ;
 
 DIM::=
     Dim Id:i As VAR_TIPOS:v Newline
+    {:
+    Node Body1 = new Node("Dim");
+                            Body1.addNode(new Node("Id", ((String) i)));
+                            Body1.addNode(v);
+                            RESULT=Body1;
+    :}
 ;
 
 FOR::=
     For Id:i Igual:s Num:n1 To Num:n2 Newline BODY:b1 Next Newline
+    {:
+    Node Body2 = new Node("For");
+                            Body2.addNode(new Node("Id", ((String) i)));
+                            Body2.addNode(new Node("Igual", ((String) s)));
+                            Body2.addNode(new Node("Integer", ((String) n1)));
+                            Body2.addNode(new Node("Integer", ((String) n2)));
+                            Body2.addNode(b1);
+                            RESULT=Body2;
+    :}
 ;
 
 FOR_STEP::=
     For Id:i Igual:s Num:n1 To Num:n2 Step Num:n3 Newline BODY:b1 Next Newline
+    {:
+    Node Body3 = new Node("For-step");
+                            Body3.addNode(new Node("Id", ((String) i)));
+                            Body3.addNode(new Node("Igual", ((String) s)));
+                            Body3.addNode(new Node("Integer", ((String) n1)));
+                            Body3.addNode(new Node("Integer", ((String) n2)));
+                            Body3.addNode(new Node("Integer", ((String) n3)));
+                            Body3.addNode(b1);
+                            RESULT=Body3;
+    :}
 ;
 
 IF::=
+    If CONDICION:c Then Newline BODY:b1 Newline ELSE:e End If Newline
+    {:
+    Node Body4 = new Node("If");
+                            Body4.addNode(c);
+                            Body4.addNode(b1);
+                            Body4.addNode(e);
+                            RESULT=Body4;
+    :}
+    |
     If CONDICION:c Then Newline BODY:b1 End If Newline
+    {:
+    Node Body4 = new Node("If");
+                            Body4.addNode(c);
+                            Body4.addNode(b1);
+                            RESULT=Body4;
+    :}
 ;
 
+ELSE::=
+    Else Newline BODY:b Newline
+    {:
+    Node Else = new Node("If-Body");
+                            Else.addNode(b);
+                            RESULT=Else;
+    :}
+    |
+    ElseIf CONDICION:c Then Newline BODY:b Newline
+    {:
+    Node Else = new Node("If-Body");
+                            Else.addNode(c);
+                            Else.addNode(b);
+                            RESULT=Else;
+    :}
+;
+   
 DO_WHILE::=
     Do While CONDICION:c Newline BODY:b1 Loop Newline
 ;
@@ -162,53 +421,164 @@ CONDICION ::=
     
 OP_AR ::=
     OP_AR:o SumaResta:s T:t 
+    {:
+    Node Operacion = new Node("Operacion");
+                            Operacion.addNode(o);
+                            Operacion.addNode(new Node("SumaResta", ((String) s)));
+                            Operacion.addNode(t);
+                            RESULT=Operacion;
+    :}
     |
     T:t
+    {:
+    Node Operacion = new Node("Operacion");
+                            Operacion.addNode(t);
+                            RESULT=Operacion;
+    :}
 ;
 
 T ::=
     T:t MultDiv:m F:f 
+    {:
+    Node Oper2 = new Node("MultDiv");
+                            Oper2.addNode(t);
+                            Oper2.addNode(new Node("MultDiv", ((String) m)));
+                            Oper2.addNode(f);
+                            RESULT=Oper2;
+    :}
     |
     F:f
+    {:
+    Node Oper2 = new Node("Valor");
+                            Oper2.addNode(f);
+                            RESULT=Oper2;
+    :}
 ;
 
 F ::= 
     Num:n
+    {:
+    Node Valor=new Node("Integer", ((String) n) );
+                           RESULT=Valor;
+    :}
     |
     Id:n 
+    {:
+    Node Valor=new Node("Id", ((String) n) );
+                           RESULT=Valor;
+    :}
     |
     Parder OP_AR:o Parizq
+    {:
+    Node Valor=new Node("oper");
+                           Valor.addNode(o);
+                           RESULT=Valor;
+    :}
 ;
 
 IDS ::=
     Id:i Coma IDS:id 
+    {:
+    Node Ids = new Node("Id");
+                            Ids.addNode(new Node("Id", ((String) i)));
+                            Ids.addNode(id);
+                            RESULT=Ids;
+    :}
     |
     Num:n Coma IDS:id 
+    {:
+    Node Ids = new Node("Id");
+                            Ids.addNode(new Node("Integer", ((String) n)));
+                            Ids.addNode(id);
+                            RESULT=Ids;
+    :}
     |
     Id:i 
+    {:
+    Node Ids = new Node("Id");
+                            Ids.addNode(new Node("Id", ((String) i)));
+                            RESULT=Ids;
+    :}
     |
     Num:n
+    {:
+    Node Ids = new Node("Id");
+                            Ids.addNode(new Node("Integer", ((String) n)));
+                            RESULT=Ids;
+    :}
 ;
+
 
 CONCAT ::=
     Id:i1 Igual:s Id:i2 SENT_CONCAT:sc
+    {:
+    Node Concat = new Node("Concat");
+                            Concat.addNode(new Node("Id", ((String) i1)));
+                            Concat.addNode(new Node("Igual", ((String) s)));
+                            Concat.addNode(new Node("Id", ((String) i2)));
+                            Concat.addNode(sc);
+                            RESULT=Concat;
+    :}
 ;
 
 SENT_CONCAT ::=
     Ampersand Id:i1 SENT_CONCAT:sc 
+    {:
+    Node SConcat = new Node("Sent-concat");
+                            SConcat.addNode(new Node("Id", ((String) i1)));
+                            SConcat.addNode(sc);
+                            RESULT=SConcat;
+    :}
     |
     Ampersand ContString:cs SENT_CONCAT:sc 
+    {:
+    Node SConcat = new Node("Sent-concat");
+                            SConcat.addNode(new Node("ContString", ((String) cs)));
+                            SConcat.addNode(sc);
+                            RESULT=SConcat;
+    :}
     |
     Ampersand Id:i1 
+    {:
+    Node SConcat = new Node("Sent-concat");
+                            SConcat.addNode(new Node("Id", ((String) i1)));
+                            RESULT=SConcat;
+    :}
     |
     Ampersand ContString:cs
+    {:
+    Node SConcat = new Node("Sent-concat");
+                            SConcat.addNode(new Node("ContString", ((String) cs)));
+                            RESULT=SConcat;
+    :}
 ;
-
 
 ASIG_VAR ::=
     Id:i Igual:s OP_AR:o 
+    {:
+    Node AsigVar = new Node("Asignar-var");
+                            AsigVar.addNode(new Node("Id", ((String) i)));
+                            AsigVar.addNode(new Node("Igual", ((String) s)));
+                            AsigVar.addNode(o);
+                            RESULT=AsigVar;
+    :}
     |
     Id:i1 Igual:s Id:i2 Parizq Parder 
+    {:
+    Node AsigVar = new Node("Asignar-var");
+                            AsigVar.addNode(new Node("Id", ((String) i1)));
+                            AsigVar.addNode(new Node("Igual", ((String) s)));
+                            AsigVar.addNode(new Node("Id", ((String) i2)));
+                            RESULT=AsigVar;
+    :}    
     |
     Id:i1 Igual:s Id:i2 Parizq IDS:id Parder
+    {:
+    Node AsigVar = new Node("Asignar-var");
+                            AsigVar.addNode(new Node("Id", ((String) i1)));
+                            AsigVar.addNode(new Node("Igual", ((String) s)));
+                            AsigVar.addNode(new Node("Id", ((String) i2)));
+                            AsigVar.addNode(id);
+                            RESULT=AsigVar;
+    :}
 ;
