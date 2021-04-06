@@ -1,0 +1,214 @@
+package proyectocompi;
+
+import java_cup.runtime.Symbol;
+
+parser code
+{:
+    public static Node raiz;
+    private Symbol s;
+
+    public void syntax_error(Symbol s){
+        this.s=s;
+    }
+
+    public Symbol getS(){
+        return this.s;
+    }
+:};
+
+terminal Num, Newline, Parizq, Parder, Coma, End, Write, Read, SumaResta, MultDiv, Igual, OpRel, Ampersand, 
+If, Then, Else, ElseIf, For, To, Next, Step, Do, While, Loop, ByVal, Function, Sub, Structure, Module,
+TypeBoolean, TypeInteger, TypeString, Dim, As, Id, ContString, Error;
+
+non terminal INICIO, CONTENIDO, PROCEDIMIENTO, PROCEDIMIENTO_ST, PARAMS, VAR_TIPOS, BODY, STRUCT_BODY, M_PARAMS, CONDICION, IF_BODY, CONCAT, ASIG_VAR, 
+OP_AR, T, F, SENT_CONCAT, IDS,FUNCTION,SUB,STRUCTURE,DIM,FOR,FOR_STEP,IF,DO_WHILE,WRITE,DIM_READ,CONCATENAR,ASIGN;
+
+precedence left SumaResta;
+precedence left MultDiv;
+
+start with INICIO;
+INICIO ::= 
+    CONTENIDO:c {:
+        Syntax.raiz=(Node)c;
+    :}
+;
+CONTENIDO ::=
+    Module Id:i Newline PROCEDIMIENTO_ST:p End Module
+    |
+;
+
+PROCEDIMIENTO_ST ::=
+    PROCEDIMIENTO_ST:p1 PROCEDIMIENTO:p2 Newline  
+    |
+    PROCEDIMIENTO:p1 Newline
+;
+
+PROCEDIMIENTO ::=
+    FUNCTION
+    |SUB
+    |STRUCTURE
+;
+FUNCTION::=
+    Function Id:i Parizq PARAMS:p1 Parder As VAR_TIPOS:v Newline BODY:b End Function
+    |
+    Function Id:i Parizq Parder As VAR_TIPOS:v Newline BODY:b End Function
+;
+SUB::=
+    Sub Id:i Parizq PARAMS:p1 Parder Newline BODY:b End Sub 
+    |
+    Sub Id:i Parizq Parder Newline BODY:b End Sub 
+;
+
+STRUCTURE::=
+    Structure Id:i Newline STRUCT_BODY:sb End Structure
+;
+
+VAR_TIPOS ::=
+    TypeBoolean:t 
+    |
+    TypeInteger:t 
+    |
+    TypeString:t
+;
+
+PARAMS ::=
+    ByVal Id:i As VAR_TIPOS:v 
+    |
+    ByVal Id:i As VAR_TIPOS:v M_PARAMS:m
+;
+
+M_PARAMS ::=
+    Coma ByVal Id:i As VAR_TIPOS:v Coma PARAMS:p 
+    |      
+    Coma ByVal Id:i As VAR_TIPOS:v
+;
+
+BODY ::= 
+    BODY DIM
+    |DIM
+    |BODY FOR
+    |FOR
+    |BODY FOR_STEP
+    |FOR_STEP
+    |BODY IF
+    |IF
+    |BODY DO_WHILE
+    |DO_WHILE
+    |BODY WRITE
+    |WRITE
+    |BODY DIM_READ
+    |DIM_READ
+    |BODY CONCATENAR
+    |CONCATENAR
+    |BODY ASIGN
+    |ASIGN
+;
+
+DIM::=
+    Dim Id:i As VAR_TIPOS:v Newline
+;
+
+FOR::=
+    For Id:i Igual:s Num:n1 To Num:n2 Newline BODY:b1 Next Newline
+;
+
+FOR_STEP::=
+    For Id:i Igual:s Num:n1 To Num:n2 Step Num:n3 Newline BODY:b1 Next Newline
+;
+
+IF::=
+    If CONDICION:c Then Newline BODY:b1 End If Newline
+;
+
+DO_WHILE::=
+    Do While CONDICION:c Newline BODY:b1 Loop Newline
+;
+
+DIM_READ::=
+    Dim Id:i As VAR_TIPOS:v Igual:s Read Parizq Parder Newline
+;
+
+WRITE::=
+    Write Parizq Num:n1 Parder Newline 
+    |
+    Write Parizq Id:i Parder Newline
+;
+
+CONCATENAR::=
+    CONCAT:c Newline
+; 
+
+ASIGN::=
+    ASIG_VAR:c Newline
+;
+
+
+STRUCT_BODY ::=
+    Id:i As VAR_TIPOS:v Newline 
+    |
+    Id:i As VAR_TIPOS:v Newline STRUCT_BODY:sb
+
+;
+
+CONDICION ::=
+    Id:i1 OpRel:o Id:i2 
+    |
+    Num:i1 OpRel:o Id:i2 
+    |
+    Id:i1 OpRel:o Num:i2 
+    |
+    Num:i1 OpRel:o Num:i2
+;
+    
+OP_AR ::=
+    OP_AR:o SumaResta:s T:t 
+    |
+    T:t
+;
+
+T ::=
+    T:t MultDiv:m F:f 
+    |
+    F:f
+;
+
+F ::= 
+    Num:n
+    |
+    Id:n 
+    |
+    Parder OP_AR:o Parizq
+;
+
+IDS ::=
+    Id:i Coma IDS:id 
+    |
+    Num:n Coma IDS:id 
+    |
+    Id:i 
+    |
+    Num:n
+;
+
+CONCAT ::=
+    Id:i1 Igual:s Id:i2 SENT_CONCAT:sc
+;
+
+SENT_CONCAT ::=
+    Ampersand Id:i1 SENT_CONCAT:sc 
+    |
+    Ampersand ContString:cs SENT_CONCAT:sc 
+    |
+    Ampersand Id:i1 
+    |
+    Ampersand ContString:cs
+;
+
+
+ASIG_VAR ::=
+    Id:i Igual:s OP_AR:o 
+    |
+    Id:i1 Igual:s Id:i2 Parizq Parder 
+    |
+    Id:i1 Igual:s Id:i2 Parizq IDS:id Parder
+;
