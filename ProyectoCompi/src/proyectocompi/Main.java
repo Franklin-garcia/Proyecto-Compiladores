@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringReader;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java_cup.runtime.Symbol;
@@ -40,7 +41,7 @@ public class Main extends javax.swing.JFrame {
                 Tokens tokens = lexer.yylex();
                 if (tokens == null) {
                     resultado += "# Fin del archivo #";
-                    ta_lex_result.setText(resultado);
+                    ta_syntax_result.setText(resultado);
                     return;
                 }
                 switch (tokens) {
@@ -111,24 +112,20 @@ public class Main extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         jtree = new javax.swing.JTree();
-        jPanel2 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        ta_lex_result = new javax.swing.JTextArea();
-        jPanel3 = new javax.swing.JPanel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        ta_syntax_result = new javax.swing.JTextArea();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         ta_entrada = new javax.swing.JTextArea();
         jPanel5 = new javax.swing.JPanel();
         bt_abrir = new javax.swing.JButton();
-        bt_analizar = new javax.swing.JButton();
-        bt_syntax = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         label_linea = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         label_columna = new javax.swing.JLabel();
         bt_syntax1 = new javax.swing.JButton();
+        bt_syntax2 = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        ta_syntax_result = new javax.swing.JTextArea();
 
         jLabel2.setText("AST");
 
@@ -172,54 +169,6 @@ public class Main extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Análisis Léxico", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 18))); // NOI18N
-
-        ta_lex_result.setEditable(false);
-        ta_lex_result.setColumns(20);
-        ta_lex_result.setRows(5);
-        jScrollPane1.setViewportView(ta_lex_result);
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1)
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 315, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Análisis Sintáctico", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 18))); // NOI18N
-
-        ta_syntax_result.setEditable(false);
-        ta_syntax_result.setColumns(20);
-        ta_syntax_result.setRows(5);
-        jScrollPane3.setViewportView(ta_syntax_result);
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Código", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 18))); // NOI18N
 
         ta_entrada.setColumns(20);
@@ -256,22 +205,6 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        bt_analizar.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        bt_analizar.setText("Lex");
-        bt_analizar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bt_analizarActionPerformed(evt);
-            }
-        });
-
-        bt_syntax.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        bt_syntax.setText("Syntax");
-        bt_syntax.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bt_syntaxActionPerformed(evt);
-            }
-        });
-
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         jLabel1.setText("Línea:");
 
@@ -292,6 +225,14 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
+        bt_syntax2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        bt_syntax2.setText("Compilar");
+        bt_syntax2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_syntax2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -305,13 +246,11 @@ public class Main extends javax.swing.JFrame {
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(label_columna)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(bt_syntax1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bt_syntax)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bt_analizar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(31, 31, 31)
+                .addComponent(bt_syntax2)
+                .addGap(46, 46, 46)
                 .addComponent(bt_abrir)
                 .addContainerGap())
         );
@@ -321,15 +260,20 @@ public class Main extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bt_abrir)
-                    .addComponent(bt_analizar)
-                    .addComponent(bt_syntax)
                     .addComponent(jLabel1)
                     .addComponent(label_linea)
                     .addComponent(jLabel5)
                     .addComponent(label_columna)
-                    .addComponent(bt_syntax1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(bt_syntax1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(bt_syntax2))
                 .addContainerGap())
         );
+
+        jLabel3.setText("SALIDA");
+
+        ta_syntax_result.setColumns(20);
+        ta_syntax_result.setRows(5);
+        jScrollPane5.setViewportView(ta_syntax_result);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -338,28 +282,34 @@ public class Main extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(329, 329, 329))
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(200, 200, 200)
+                        .addComponent(jLabel3))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 399, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(30, 30, 30))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap()
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(46, 46, 46)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(42, Short.MAX_VALUE))
         );
 
         pack();
@@ -379,30 +329,6 @@ public class Main extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_bt_abrirActionPerformed
 
-    private void bt_analizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_analizarActionPerformed
-        try {
-            analizarLexico();
-        } catch (IOException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_bt_analizarActionPerformed
-
-    private void bt_syntaxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_syntaxActionPerformed
-        String ST = ta_entrada.getText();
-        Syntax s = new Syntax(new proyectocompi.Lexer_Syn(new StringReader(ST)));
-        
-        try {
-            s.parse();
-            root = s.raiz;
-            ta_syntax_result.setText("Análisis sintáctico finalizado");
-            ta_syntax_result.setForeground(new Color(25, 111, 61));
-        } catch (Exception ex) {
-            Symbol sym = s.getS();
-            ta_syntax_result.setText("Error de sintaxis. Linea: " + (sym.right + 1) + " Columna: " + (sym.left + 1) + ", Texto: \"" + sym.value + "\"");
-            ta_syntax_result.setForeground(Color.red);
-        }
-    }//GEN-LAST:event_bt_syntaxActionPerformed
-
     private void ta_entradaCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_ta_entradaCaretUpdate
         try {
             int caretpos = ta_entrada.getCaretPosition();
@@ -417,33 +343,59 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_ta_entradaCaretUpdate
 
     private void bt_syntax1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_syntax1ActionPerformed
-  try {
-           arbolin.setModal(true);
+        try {
+            arbolin.setModal(true);
             arbolin.pack();
             arbolin.setLocationRelativeTo(this);
             arbolin.setVisible(true);
         } catch (Exception e) {
-        }        
+        }
     }//GEN-LAST:event_bt_syntax1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
             arbol = new DefaultMutableTreeNode(root);
-            DefaultTreeModel modelo = (DefaultTreeModel)jtree.getModel();
+            DefaultTreeModel modelo = (DefaultTreeModel) jtree.getModel();
             llenar(root, arbol);
             modelo.setRoot(arbol);
             jtree.setModel(modelo);
         } catch (Exception e) {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
-        public static void llenar(Node root, DefaultMutableTreeNode current){
+
+    private void bt_syntax2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_syntax2ActionPerformed
+/////////////////////////////Parte lexica/////////////////////////////////////////////////////////////////////////
+        try {
+            analizarLexico();
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+/////////////////////////////Parte sintactica//////////////////////////////////////////////////////////////////////
+        String ST = ta_entrada.getText();
+        Syntax s = new Syntax(new proyectocompi.Lexer_Syn(new StringReader(ST)));
+
+        try {
+            s.parse();
+            root = s.raiz;
+            ta_syntax_result.setText("Análisis sintáctico finalizado");
+            ta_syntax_result.setForeground(new Color(25, 111, 61));
+        } catch (Exception ex) {
+            Symbol sym = s.getS();
+            ta_syntax_result.setText("Error de sintaxis. Linea: " + (sym.right + 1) + " Columna: " + (sym.left + 1) + ", Texto: \"" + sym.value + "\"");
+            ta_syntax_result.setForeground(Color.red);
+        }
+//////////////////////////////Parte Semantica////////////////////////////////////////////////////////////////////////
+////--------------------------Comprobar tipos ---------------------------------------------------------------------
+    }//GEN-LAST:event_bt_syntax2ActionPerformed
+    public static void llenar(Node root, DefaultMutableTreeNode current) {
         for (int i = 0; i < root.hijos.size(); i++) {
             current.add(new DefaultMutableTreeNode(root.hijos.get(i)));
-            if(!root.hijos.get(i).hijos.isEmpty()){
-                llenar(root.hijos.get(i), (DefaultMutableTreeNode)current.getChildAt(i));
+            if (!root.hijos.get(i).hijos.isEmpty()) {
+                llenar(root.hijos.get(i), (DefaultMutableTreeNode) current.getChildAt(i));
             }
         }
     }
+
     /**
      * @param args the command line arguments
      */
@@ -482,28 +434,25 @@ public class Main extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDialog arbolin;
     private javax.swing.JButton bt_abrir;
-    private javax.swing.JButton bt_analizar;
-    private javax.swing.JButton bt_syntax;
     private javax.swing.JButton bt_syntax1;
+    private javax.swing.JButton bt_syntax2;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTree jtree;
     private javax.swing.JLabel label_columna;
     private javax.swing.JLabel label_linea;
     private javax.swing.JTextArea ta_entrada;
-    private javax.swing.JTextArea ta_lex_result;
     private javax.swing.JTextArea ta_syntax_result;
     // End of variables declaration//GEN-END:variables
     public static Node root;
     DefaultMutableTreeNode arbol;
+    public static ArrayList<Entry> tabla_simbolos = new ArrayList<Entry>();
 }
