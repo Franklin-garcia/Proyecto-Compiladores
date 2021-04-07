@@ -43,22 +43,23 @@ write = "Console.WriteLine"
 read = "Console.ReadLine"
 
 //Operadores Aritmeticos
-sumaresta = ((\+)|(-))
-multdiv = ((\*)|(\/))
+sumaresta = "+"|"-"
+multdiv = "*"|"/"
 
 //Operadores de Relacionales
-igual = (=)
-oprel = (<|<=|>|>=|<>)
+igual = "="
+oprel = "<"|"<="|">"|">="|"<>"
+oprel2 = "~="|"=="
 
 //Operadores de Concatenacion
-amp = (&)
-//suma = (\+)
+amp = "&"
 
 //Sentencia If
 if = "If"
 then = "Then"
 else = "Else"
 elseif = "ElseIf"
+endif ="End If"
 
 //Bucles
 for = "For"
@@ -114,6 +115,7 @@ id = {letra}+({num}|{letra}|{guionbajo})*
 
     {igual}         {return new Symbol (sym.Igual, yycolumn, yyline, yytext());}
     {oprel}         {return new Symbol (sym.OpRel, yycolumn, yyline, yytext());}
+    {oprel2}        {return new Symbol (sym.OpRel2, yycolumn, yyline, yytext());}
 
     {amp}           {return new Symbol (sym.Ampersand, yycolumn, yyline, yytext());}
 
@@ -121,6 +123,7 @@ id = {letra}+({num}|{letra}|{guionbajo})*
     {then}          {return new Symbol (sym.Then, yycolumn, yyline, yytext());}
     {else}          {return new Symbol (sym.Else, yycolumn, yyline, yytext());}  
     {elseif}        {return new Symbol (sym.ElseIf, yycolumn, yyline, yytext());}
+    {endif}         {return new Symbol (sym.EndIf, yycolumn, yyline, yytext());}
 
     {for}           {return new Symbol (sym.For, yycolumn, yyline, yytext());}       
     {to}            {return new Symbol (sym.To, yycolumn, yyline, yytext());}

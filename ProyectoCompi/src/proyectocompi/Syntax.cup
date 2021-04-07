@@ -16,12 +16,12 @@ parser code
     }
 :};
 
-terminal Num, Newline, Parizq, Parder, Coma, End, Write, Read, SumaResta, MultDiv, Igual, OpRel, Ampersand, 
+terminal Num, Newline, Parizq, Parder, Coma, End, Write, Read, SumaResta, MultDiv, Igual, OpRel,OpRel2, Ampersand, 
 If, Then, Else, ElseIf, For, To, Next, Step, Do, While, Loop, ByVal, Function, Sub, Structure, Module,
-TypeBoolean, TypeInteger, TypeString, Dim, As, Id, ContString, Error;
+TypeBoolean, TypeInteger, TypeString, Dim, As, Id, ContString, Error,EndIf;
 
 non terminal INICIO, CONTENIDO, PROCEDIMIENTO, PROCEDIMIENTO_ST, PARAMS, VAR_TIPOS, BODY, STRUCT_BODY, M_PARAMS, CONDICION, IF_BODY, CONCAT, ASIG_VAR, 
-OP_AR, T, F, SENT_CONCAT, IDS,FUNCTION,SUB,STRUCTURE,DIM,FOR,FOR_STEP,IF,DO_WHILE,WRITE,DIM_READ,CONCATENAR,ASIGN,ELSE;
+OP_AR, T, F,Y,Z, SENT_CONCAT, IDS,FUNCTION,SUB,STRUCTURE,DIM,FOR,FOR_STEP,IF,DO_WHILE,WRITE,DIM_READ,CONCATENAR,ASIGN,ELSE;
 
 precedence left SumaResta;
 precedence left MultDiv;
@@ -291,14 +291,14 @@ BODY ::=
                             Body.addNode(c);
                             RESULT=Body;
     :}
-    |BODY:b ASIGN:c
+    |BODY:b ASIG_VAR:c
     {:
     Node Body = new Node("Code");
                             Body.addNode(b);
                             Body.addNode(c);
                             RESULT=Body;
     :}
-    |ASIGN:c
+    |ASIG_VAR:c
     {:
     Node Body = new Node("Code");
                             Body.addNode(c);
@@ -344,7 +344,7 @@ FOR_STEP::=
 ;
 
 IF::=
-    If CONDICION:c Then Newline BODY:b1 Newline ELSE:e End If Newline
+    If CONDICION:c Then Newline BODY:b1 ELSE:e EndIf Newline
     {:
     Node Body4 = new Node("If");
                             Body4.addNode(c);
@@ -353,7 +353,7 @@ IF::=
                             RESULT=Body4;
     :}
     |
-    If CONDICION:c Then Newline BODY:b1 End If Newline
+    If CONDICION:c Then Newline BODY:b1 EndIf Newline
     {:
     Node Body4 = new Node("If");
                             Body4.addNode(c);
@@ -363,14 +363,14 @@ IF::=
 ;
 
 ELSE::=
-    Else Newline BODY:b Newline
+    Else Newline BODY:b 
     {:
     Node Else = new Node("If-Body");
                             Else.addNode(b);
                             RESULT=Else;
     :}
     |
-    ElseIf CONDICION:c Then Newline BODY:b Newline
+    ElseIf CONDICION:c Then Newline BODY:b 
     {:
     Node Else = new Node("If-Body");
                             Else.addNode(c);
@@ -381,44 +381,124 @@ ELSE::=
    
 DO_WHILE::=
     Do While CONDICION:c Newline BODY:b1 Loop Newline
+    {:
+    Node Body5 = new Node("Do-While");
+                            Body5.addNode(c);
+                            Body5.addNode(b1);
+                            RESULT=Body5;
+    :}
 ;
 
 DIM_READ::=
     Dim Id:i As VAR_TIPOS:v Igual:s Read Parizq Parder Newline
+    {:
+    Node Body6 = new Node("Dim-read");
+                            Body6.addNode(new Node("Id", ((String) i)));
+                            Body6.addNode(v);
+                            Body6.addNode(new Node("Igual", ((String) s)));
+                            RESULT=Body6;
+    :}
+
 ;
 
 WRITE::=
     Write Parizq Num:n1 Parder Newline 
+    {:
+    Node Body7 = new Node("Write");
+                            Body7.addNode(new Node("Integer", ((String) n1)));
+                            RESULT=Body7;
+    :}
     |
     Write Parizq Id:i Parder Newline
+    {:
+    Node Body7 = new Node("Write");
+                            Body7.addNode(new Node("Id", ((String) i)));
+                            RESULT=Body7;
+    :}
 ;
 
 CONCATENAR::=
     CONCAT:c Newline
+    {:
+    Node Body8 = new Node("Concat");
+                            Body8.addNode(c);
+                            RESULT=Body8;
+    :}
 ; 
 
 ASIGN::=
     ASIG_VAR:c Newline
+      {:
+    Node Body9 = new Node("Asignar");
+                            Body9.addNode(c);
+                            RESULT=Body9;
+    :}
 ;
 
 
 STRUCT_BODY ::=
     Id:i As VAR_TIPOS:v Newline 
+    {:
+    Node SBody = new Node("Struct-body");
+                            SBody.addNode(new Node("Id", ((String) i)));
+                            SBody.addNode(v);
+                            RESULT=SBody;
+    :}
     |
     Id:i As VAR_TIPOS:v Newline STRUCT_BODY:sb
+    {:
+    Node SBody = new Node("Struct-body");
+                            SBody.addNode(new Node("Id", ((String) i)));
+                            SBody.addNode(v);
+                            SBody.addNode(sb);
+                            RESULT=SBody;
+    :}
 
 ;
 
 CONDICION ::=
-    Id:i1 OpRel:o Id:i2 
-    |
-    Num:i1 OpRel:o Id:i2 
-    |
-    Id:i1 OpRel:o Num:i2 
-    |
-    Num:i1 OpRel:o Num:i2
+    Z:z1 OpRel:o Z:z2
+    {:
+    Node Condicion = new Node("Condicion");
+                            Condicion.addNode(z1);
+                            Condicion.addNode(new Node("OP_RELA", ((String) o)));
+                            Condicion.addNode(z2);
+                            RESULT=Condicion;
+    :}
+    |Y:y
+    {:
+    Node Condicion = new Node("Condicion");
+                            Condicion.addNode(y);
+                            RESULT=Condicion;
+    :}
 ;
-    
+
+Y::=
+    Z:z1 OpRel2:o Z:z2
+    {:
+    Node Condicion2 = new Node("Condicion-I");
+                            Condicion2.addNode(z1);
+                            Condicion2.addNode(new Node("OP_RELA", ((String) o)));
+                            Condicion2.addNode(z2);
+                            RESULT=Condicion2;
+    :}
+;
+ 
+
+Z::=
+    Num:n
+    {:
+    Node Valor=new Node("Integer", ((String) n) );
+                           RESULT=Valor;
+    :}
+    |
+    Id:n 
+    {:
+    Node Valor=new Node("Id", ((String) n) );
+                           RESULT=Valor;
+    :}
+;
+   
 OP_AR ::=
     OP_AR:o SumaResta:s T:t 
     {:
@@ -554,7 +634,7 @@ SENT_CONCAT ::=
 ;
 
 ASIG_VAR ::=
-    Id:i Igual:s OP_AR:o 
+    Id:i Igual:s OP_AR:o Newline 
     {:
     Node AsigVar = new Node("Asignar-var");
                             AsigVar.addNode(new Node("Id", ((String) i)));
@@ -563,7 +643,7 @@ ASIG_VAR ::=
                             RESULT=AsigVar;
     :}
     |
-    Id:i1 Igual:s Id:i2 Parizq Parder 
+    Id:i1 Igual:s Id:i2 Parizq Parder Newline 
     {:
     Node AsigVar = new Node("Asignar-var");
                             AsigVar.addNode(new Node("Id", ((String) i1)));
@@ -572,7 +652,7 @@ ASIG_VAR ::=
                             RESULT=AsigVar;
     :}    
     |
-    Id:i1 Igual:s Id:i2 Parizq IDS:id Parder
+    Id:i1 Igual:s Id:i2 Parizq IDS:id Parder Newline
     {:
     Node AsigVar = new Node("Asignar-var");
                             AsigVar.addNode(new Node("Id", ((String) i1)));
