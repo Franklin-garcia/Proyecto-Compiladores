@@ -544,13 +544,13 @@ T ::=
 F ::= 
     Num:n
     {:
-    Node Valor=new Node("Integer", ((String) n) );
+    Node Valor=new Node("Integer", ((String) n),nright,nleft);
                            RESULT=Valor;
     :}
     |
-    Id:n 
+    Id:i 
     {:
-    Node Valor=new Node("Id", ((String) n) );
+    Node Valor=new Node("Id", ((String) i),iright,ileft);
                            RESULT=Valor;
     :}
     |
@@ -643,7 +643,7 @@ ASIG_VAR ::=
     Id:i Igual:s OP_AR:o Newline 
     {:
     Node AsigVar = new Node("Asignar-var");
-                            AsigVar.addNode(new Node("Id", ((String) i)));
+                            AsigVar.addNode(new Node("Id", ((String) i),iright,ileft));
                             AsigVar.addNode(new Node("Igual", ((String) s)));
                             AsigVar.addNode(o);
                             RESULT=AsigVar;

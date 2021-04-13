@@ -31,7 +31,7 @@ public class Main extends javax.swing.JFrame {
     public Main() {
         initComponents();
     }
-    
+
     private void analizarLexico() throws IOException {
         try {
             String expr = (String) ta_entrada.getText();
@@ -94,7 +94,7 @@ public class Main extends javax.swing.JFrame {
                 }
             }
         } catch (Exception e) {
-            
+
         }
     }
 
@@ -380,7 +380,7 @@ public class Main extends javax.swing.JFrame {
 /////////////////////////////Parte sintactica//////////////////////////////////////////////////////////////////////
         String ST = ta_entrada.getText();
         s = new Syntax(new proyectocompi.Lexer_Syn(new StringReader(ST)));
-        
+
         try {
             s.parse();
             root = s.raiz;
@@ -396,7 +396,7 @@ public class Main extends javax.swing.JFrame {
         tabla_simbolos = new ArrayList<Entry>();
         Errores_compTipos = new ArrayList();
         llenar_tabla_simbolos(root);
-        
+
         try {
             String mensaje = "";
             for (int i = 0; i < tabla_simbolos.size(); i++) {
@@ -437,10 +437,46 @@ public class Main extends javax.swing.JFrame {
             ambito += "," + ambito_cont;
             ambito_cont++;
             ambito_control++;
-            
+
         }
+////////////////////////////////////////Dim////////////////////////////////////////////////////////////////////////////////////
         if (actual.nombre.equals("Dim")) {
             agregar(new Entry(actual.hijos.get(0).valor, actual.hijos.get(1).valor, ambito, offset, activo), actual.hijos.get(0).linea, actual.hijos.get(0).columna);
+        }
+////////////////////////////////////////Asignar///////////////////////////////////////////////////////////////////////////////        
+        if (actual.nombre.equals("Asignar-var")) {
+            if (actual.hijos.get(2).hijos.size() > 1) {
+            }
+            if (actual.hijos.get(2).hijos.size() == 1) {
+                Node temp = actual.hijos.get(2).hijos.get(0);
+                if (temp.nombre.equals("Valor")) {
+                    if (temp.hijos.get(0).nombre.equals("Id")) {
+                        int amb1=validar_variable(actual.hijos.get(0).valor),
+                            amb2=validar_variable(temp.hijos.get(0).valor);
+                        if (amb1 == 1
+                            && amb2 == 1) {
+                            String t1=get_tipo(actual.hijos.get(0).valor),
+                            t2=get_tipo(temp.hijos.get(0).valor);
+                            if (t1.equals("Integer") && t2.equals("Integer")) {
+                            }else{
+                                if (!t1.equals("Integer")) {
+                                     Errores_compTipos.add("Error de tipo en Asignacion con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                                }
+                                if (!t2.equals("Integer")) {
+                                     Errores_compTipos.add("Error de tipo en Asignacion con la variable " + temp.hijos.get(0).valor + ". Linea: " + (temp.hijos.get(0).linea) + " Columna: " + temp.hijos.get(0).columna);
+                                }
+                            }
+                        } else {
+                            if (amb1!=1) {
+                                Errores_ambito.add("Error ambito en Asignacion con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                            }
+                            if (amb2!=1) {
+                                Errores_ambito.add("Error ambito en Condicion con la variable " + temp.hijos.get(0).valor + ". Linea: " + (temp.hijos.get(0).linea) + " Columna: " + temp.hijos.get(0).columna);
+                            }
+                        }
+                    }
+                }
+            }
         }
 ///////////////////////////////Comprobar for//////////////////////////////////////////////////////////////////////////////////
         if (actual.nombre.equals("For")) {
@@ -454,7 +490,7 @@ public class Main extends javax.swing.JFrame {
                     } else {
                         Errores_compTipos.add("Error de tipo en For con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(3).linea) + " Columna: " + actual.hijos.get(3).columna);
                     }
-                    
+
                 } else {
                     System.out.println("llegamos");
                     Errores_compTipos.add("Error de tipo en For con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
@@ -465,14 +501,13 @@ public class Main extends javax.swing.JFrame {
         }
 ///////////////////////////////Comprobar Write////////////////////////////////////////////////////////////////////////////////
         if (actual.nombre.equals("Write")) {
-            if (validar_variable(actual.hijos.get(0).valor)==1) {
+            if (validar_variable(actual.hijos.get(0).valor) == 1) {
                 if (get_tipo(actual.hijos.get(0).valor).equals("Integer")
-                   ||     get_tipo(actual.hijos.get(0).valor).equals("String")
-                   ) {
-                }else{
+                        || get_tipo(actual.hijos.get(0).valor).equals("String")) {
+                } else {
                     Errores_compTipos.add("Error de tipo en Console.write con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
                 }
-            }else{
+            } else {
                 Errores_ambito.add("Error ambito en Console.write con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
             }
         }
@@ -493,7 +528,7 @@ public class Main extends javax.swing.JFrame {
                     } else {
                         Errores_compTipos.add("Error de tipo en For con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(4).linea) + " Columna: " + actual.hijos.get(4).columna);
                     }
-                    
+
                 } else {
                     Errores_compTipos.add("Error de tipo en For con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
                 }
@@ -643,7 +678,7 @@ public class Main extends javax.swing.JFrame {
                 offset = 0;
                 ambito_cont = 1;
             }
-            
+
             if (!actual.hijos.get(i).hijos.isEmpty()) {
                 llenar_tabla_simbolos(actual.hijos.get(i));
             }
@@ -660,7 +695,7 @@ public class Main extends javax.swing.JFrame {
             //System.out.println(ambito);
         }
     }
-    
+
     public static void agregar(Entry e, int linea, int columna) {
         boolean verifica = false;
         for (int i = 0; i < tabla_simbolos.size(); i++) {
@@ -670,7 +705,7 @@ public class Main extends javax.swing.JFrame {
                     break;
                 }
             }
-            
+
         }
         if (verifica == true) {
             Errores_ambito.add("Error linea: " + linea + " columna:" + columna + "la variable " + e.id + " ya fue declarada en el mismo ambito");
@@ -678,11 +713,11 @@ public class Main extends javax.swing.JFrame {
             tabla_simbolos.add(e);
             //offset += getSize(e.tipo);
             offset += e.tipo.length();
-            
+
         }
-        
+
     }
-    
+
     public static int validar_variable(String e) {
         int verifica = 0;
         for (int i = 0; i < tabla_simbolos.size(); i++) {
@@ -695,7 +730,7 @@ public class Main extends javax.swing.JFrame {
         }
         return verifica;
     }
-    
+
     public static String get_tipo(String nombre) {
         for (int i = 0; i < tabla_simbolos.size(); i++) {
             if (tabla_simbolos.get(i).id.equals(nombre)) {
@@ -704,7 +739,7 @@ public class Main extends javax.swing.JFrame {
         }
         return "";
     }
-    
+
     public static boolean existe(String s) {
         for (int i = 0; i < tabla_simbolos.size(); i++) {
             if (s.equals(tabla_simbolos.get(i).id)) {

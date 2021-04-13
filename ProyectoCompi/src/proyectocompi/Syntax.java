@@ -1660,7 +1660,7 @@ class CUP$Syntax$actions {
 		int nright = ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()).right;
 		Object n = (Object)((java_cup.runtime.Symbol) CUP$Syntax$stack.peek()).value;
 		
-    Node Valor=new Node("Integer", ((String) n) );
+    Node Valor=new Node("Integer", ((String) n),nright,nleft);
                            RESULT=Valor;
     
               CUP$Syntax$result = parser.getSymbolFactory().newSymbol("F",15, ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()), ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()), RESULT);
@@ -1671,11 +1671,11 @@ class CUP$Syntax$actions {
           case 65: // F ::= Id 
             {
               Object RESULT =null;
-		int nleft = ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()).left;
-		int nright = ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()).right;
-		Object n = (Object)((java_cup.runtime.Symbol) CUP$Syntax$stack.peek()).value;
+		int ileft = ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()).left;
+		int iright = ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()).right;
+		Object i = (Object)((java_cup.runtime.Symbol) CUP$Syntax$stack.peek()).value;
 		
-    Node Valor=new Node("Id", ((String) n) );
+    Node Valor=new Node("Id", ((String) i),iright,ileft);
                            RESULT=Valor;
     
               CUP$Syntax$result = parser.getSymbolFactory().newSymbol("F",15, ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()), ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()), RESULT);
@@ -1885,7 +1885,7 @@ class CUP$Syntax$actions {
 		Object o = (Object)((java_cup.runtime.Symbol) CUP$Syntax$stack.elementAt(CUP$Syntax$top-1)).value;
 		
     Node AsigVar = new Node("Asignar-var");
-                            AsigVar.addNode(new Node("Id", ((String) i)));
+                            AsigVar.addNode(new Node("Id", ((String) i),iright,ileft));
                             AsigVar.addNode(new Node("Igual", ((String) s)));
                             AsigVar.addNode(o);
                             RESULT=AsigVar;
