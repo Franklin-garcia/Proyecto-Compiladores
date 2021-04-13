@@ -226,17 +226,32 @@ BODY ::=
                             Body.addNode(c);
                             RESULT=Body;
     :}
-    |BODY:b IF:c
+    |BODY:b IF:c EndIf Newline
     {:
     Node Body = new Node("Code");
                             Body.addNode(b);
                             Body.addNode(c);
                             RESULT=Body;
     :}
-    |IF:c
+    |IF:c EndIf Newline
     {:
     Node Body = new Node("Code");
                             Body.addNode(c);
+                            RESULT=Body;
+    :}
+    |BODY:b IF:c ELSE:e EndIf Newline
+    {:
+    Node Body = new Node("Code");
+                            Body.addNode(b);
+                            Body.addNode(c);
+                            Body.addNode(e);
+                            RESULT=Body;
+    :}
+    |IF:c ELSE:e EndIf Newline
+    {:
+    Node Body = new Node("Code");
+                            Body.addNode(c);
+                            Body.addNode(e);
                             RESULT=Body;
     :}
     |BODY:b DO_WHILE:c
@@ -310,7 +325,7 @@ DIM::=
     Dim Id:i As VAR_TIPOS:v Newline
     {:
     Node Body1 = new Node("Dim");
-                            Body1.addNode(new Node("Id", ((String) i)));
+                            Body1.addNode(new Node("Id", ((String) i), iright,ileft));
                             Body1.addNode(v);
                             RESULT=Body1;
     :}
@@ -320,10 +335,10 @@ FOR::=
     For Id:i Igual:s Num:n1 To Num:n2 Newline BODY:b1 Next Newline
     {:
     Node Body2 = new Node("For");
-                            Body2.addNode(new Node("Id", ((String) i)));
+                            Body2.addNode(new Node("Id", ((String) i), iright,ileft));
                             Body2.addNode(new Node("Igual", ((String) s)));
-                            Body2.addNode(new Node("Integer", ((String) n1)));
-                            Body2.addNode(new Node("Integer", ((String) n2)));
+                            Body2.addNode(new Node("Integer", ((String) n1), iright,ileft));
+                            Body2.addNode(new Node("Integer", ((String) n2), iright,ileft));
                             Body2.addNode(b1);
                             RESULT=Body2;
     :}
@@ -333,27 +348,18 @@ FOR_STEP::=
     For Id:i Igual:s Num:n1 To Num:n2 Step Num:n3 Newline BODY:b1 Next Newline
     {:
     Node Body3 = new Node("For-step");
-                            Body3.addNode(new Node("Id", ((String) i)));
+                            Body3.addNode(new Node("Id", ((String) i), iright,ileft));
                             Body3.addNode(new Node("Igual", ((String) s)));
-                            Body3.addNode(new Node("Integer", ((String) n1)));
-                            Body3.addNode(new Node("Integer", ((String) n2)));
-                            Body3.addNode(new Node("Integer", ((String) n3)));
+                            Body3.addNode(new Node("Integer", ((String) n1), iright,ileft));
+                            Body3.addNode(new Node("Integer", ((String) n2), iright,ileft));
+                            Body3.addNode(new Node("Integer", ((String) n3), iright,ileft));
                             Body3.addNode(b1);
                             RESULT=Body3;
     :}
 ;
 
 IF::=
-    If CONDICION:c Then Newline BODY:b1 ELSE:e EndIf Newline
-    {:
-    Node Body4 = new Node("If");
-                            Body4.addNode(c);
-                            Body4.addNode(b1);
-                            Body4.addNode(e);
-                            RESULT=Body4;
-    :}
-    |
-    If CONDICION:c Then Newline BODY:b1 EndIf Newline
+    If CONDICION:c Then Newline BODY:b1
     {:
     Node Body4 = new Node("If");
                             Body4.addNode(c);
@@ -365,14 +371,14 @@ IF::=
 ELSE::=
     Else Newline BODY:b 
     {:
-    Node Else = new Node("If-Body");
+    Node Else = new Node("Else");
                             Else.addNode(b);
                             RESULT=Else;
     :}
     |
     ElseIf CONDICION:c Then Newline BODY:b 
     {:
-    Node Else = new Node("If-Body");
+    Node Else = new Node("Else_if");
                             Else.addNode(c);
                             Else.addNode(b);
                             RESULT=Else;
@@ -412,7 +418,7 @@ WRITE::=
     Write Parizq Id:i Parder Newline
     {:
     Node Body7 = new Node("Write");
-                            Body7.addNode(new Node("Id", ((String) i)));
+                            Body7.addNode(new Node("Id", ((String) i), iright,ileft));
                             RESULT=Body7;
     :}
 ;
@@ -488,13 +494,13 @@ Y::=
 Z::=
     Num:n
     {:
-    Node Valor=new Node("Integer", ((String) n) );
-                           RESULT=Valor;
+    Node Valor=new Node("Integer", ((String) n),nright,nleft);
+                          RESULT=Valor;
     :}
     |
-    Id:n 
+    Id:i 
     {:
-    Node Valor=new Node("Id", ((String) n) );
+    Node Valor=new Node("Id", ((String) i),iright,ileft);
                            RESULT=Valor;
     :}
 ;

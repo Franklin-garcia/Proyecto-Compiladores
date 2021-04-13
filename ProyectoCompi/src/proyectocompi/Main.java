@@ -31,7 +31,7 @@ public class Main extends javax.swing.JFrame {
     public Main() {
         initComponents();
     }
-
+    
     private void analizarLexico() throws IOException {
         try {
             String expr = (String) ta_entrada.getText();
@@ -94,7 +94,7 @@ public class Main extends javax.swing.JFrame {
                 }
             }
         } catch (Exception e) {
-
+            
         }
     }
 
@@ -115,6 +115,9 @@ public class Main extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         ta_entrada = new javax.swing.JTextArea();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        ta_syntax_result = new javax.swing.JTextArea();
+        jLabel3 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         bt_abrir = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
@@ -123,9 +126,6 @@ public class Main extends javax.swing.JFrame {
         label_columna = new javax.swing.JLabel();
         bt_syntax1 = new javax.swing.JButton();
         bt_syntax2 = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        ta_syntax_result = new javax.swing.JTextArea();
 
         jLabel2.setText("AST");
 
@@ -180,20 +180,40 @@ public class Main extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(ta_entrada);
 
+        ta_syntax_result.setColumns(20);
+        ta_syntax_result.setRows(5);
+        jScrollPane5.setViewportView(ta_syntax_result);
+
+        jLabel3.setText("SALIDA");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2)
+                .addContainerGap(13, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 508, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(167, 167, 167)
+                        .addComponent(jLabel3))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 399, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 515, Short.MAX_VALUE)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 515, Short.MAX_VALUE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -246,7 +266,7 @@ public class Main extends javax.swing.JFrame {
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(label_columna)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
                 .addComponent(bt_syntax1)
                 .addGap(31, 31, 31)
                 .addComponent(bt_syntax2)
@@ -269,47 +289,25 @@ public class Main extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jLabel3.setText("SALIDA");
-
-        ta_syntax_result.setColumns(20);
-        ta_syntax_result.setRows(5);
-        jScrollPane5.setViewportView(ta_syntax_result);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(329, 329, 329))
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(200, 200, 200)
-                        .addComponent(jLabel3))
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 399, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(30, 30, 30))
+                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(46, 46, 46)
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addContainerGap()
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(42, Short.MAX_VALUE))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
 
         pack();
@@ -364,6 +362,15 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void bt_syntax2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_syntax2ActionPerformed
+////////////////////////////Reinicio//////////////////////////////////////////////////////////////////////////////
+        tabla_simbolos = new ArrayList<Entry>();
+        Errores_compTipos = new ArrayList<String>();
+        Errores_ambito = new ArrayList<String>();
+        ambito_cont = 1;
+        ambito_control = -1;
+        offset = 0;
+        ambito = "";
+
 /////////////////////////////Parte lexica/////////////////////////////////////////////////////////////////////////
         try {
             analizarLexico();
@@ -372,8 +379,8 @@ public class Main extends javax.swing.JFrame {
         }
 /////////////////////////////Parte sintactica//////////////////////////////////////////////////////////////////////
         String ST = ta_entrada.getText();
-        Syntax s = new Syntax(new proyectocompi.Lexer_Syn(new StringReader(ST)));
-
+        s = new Syntax(new proyectocompi.Lexer_Syn(new StringReader(ST)));
+        
         try {
             s.parse();
             root = s.raiz;
@@ -386,6 +393,29 @@ public class Main extends javax.swing.JFrame {
         }
 //////////////////////////////Parte Semantica////////////////////////////////////////////////////////////////////////
 ////--------------------------Comprobar tipos ---------------------------------------------------------------------
+        tabla_simbolos = new ArrayList<Entry>();
+        Errores_compTipos = new ArrayList();
+        llenar_tabla_simbolos(root);
+        
+        try {
+            String mensaje = "";
+            for (int i = 0; i < tabla_simbolos.size(); i++) {
+                mensaje += "ID: " + tabla_simbolos.get(i).id
+                        + " TIPO: " + tabla_simbolos.get(i).tipo
+                        + " AMBITO: " + tabla_simbolos.get(i).ambito
+                        + " OFFSET: " + tabla_simbolos.get(i).offset + "\n";
+            }
+            System.out.println(mensaje);
+        } catch (Exception e) {
+        }
+        System.out.println("Errorees tipos" + Errores_compTipos.size());
+        for (int i = 0; i < Errores_compTipos.size(); i++) {
+            System.out.println(Errores_compTipos.get(i));
+        }
+        System.out.println("Errores ambito");
+        for (int i = 0; i < Errores_ambito.size(); i++) {
+            System.out.println(Errores_ambito.get(i));
+        }
     }//GEN-LAST:event_bt_syntax2ActionPerformed
     public static void llenar(Node root, DefaultMutableTreeNode current) {
         for (int i = 0; i < root.hijos.size(); i++) {
@@ -394,6 +424,296 @@ public class Main extends javax.swing.JFrame {
                 llenar(root.hijos.get(i), (DefaultMutableTreeNode) current.getChildAt(i));
             }
         }
+    }
+/////////////////////////////////////Comprobar Tipos//////////////////////////////////////////////////////////////////////////
+
+    public static void llenar_tabla_simbolos(Node actual) {
+        if (actual.nombre.equals("For")
+                || actual.nombre.equals("For-step")
+                || actual.nombre.equals("If")
+                || actual.nombre.equals("Else")
+                || actual.nombre.equals("Else_if")
+                || actual.nombre.equals("Do-While")) {
+            ambito += "," + ambito_cont;
+            ambito_cont++;
+            ambito_control++;
+            
+        }
+        if (actual.nombre.equals("Dim")) {
+            agregar(new Entry(actual.hijos.get(0).valor, actual.hijos.get(1).valor, ambito, offset, activo), actual.hijos.get(0).linea, actual.hijos.get(0).columna);
+        }
+///////////////////////////////Comprobar for//////////////////////////////////////////////////////////////////////////////////
+        if (actual.nombre.equals("For")) {
+            if (validar_variable(actual.hijos.get(0).valor) == 1) {
+                if (get_tipo(actual.hijos.get(0).valor).equals("Integer")) {
+                    if (actual.hijos.get(2).nombre.equals("Integer")) {
+                    } else {
+                        Errores_compTipos.add("Error de tipo en For con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(2).linea) + " Columna: " + actual.hijos.get(2).columna);
+                    }
+                    if (actual.hijos.get(3).nombre.equals("Integer")) {
+                    } else {
+                        Errores_compTipos.add("Error de tipo en For con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(3).linea) + " Columna: " + actual.hijos.get(3).columna);
+                    }
+                    
+                } else {
+                    System.out.println("llegamos");
+                    Errores_compTipos.add("Error de tipo en For con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                }
+            } else {
+                Errores_ambito.add("Error ambito en For con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+            }
+        }
+///////////////////////////////Comprobar Write////////////////////////////////////////////////////////////////////////////////
+        if (actual.nombre.equals("Write")) {
+            if (validar_variable(actual.hijos.get(0).valor)==1) {
+                if (get_tipo(actual.hijos.get(0).valor).equals("Integer")
+                   ||     get_tipo(actual.hijos.get(0).valor).equals("String")
+                   ) {
+                }else{
+                    Errores_compTipos.add("Error de tipo en Console.write con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                }
+            }else{
+                Errores_ambito.add("Error ambito en Console.write con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+            }
+        }
+
+///////////////////////////////Comprobar for-step////////////////////////////////////////////////////////////////////////////
+        if (actual.nombre.equals("For-step")) {
+            if (validar_variable(actual.hijos.get(0).valor) == 1) {
+                if (get_tipo(actual.hijos.get(0).valor).equals("Integer")) {
+                    if (actual.hijos.get(2).nombre.equals("Integer")) {
+                    } else {
+                        Errores_compTipos.add("Error de tipo en For con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(2).linea) + " Columna: " + actual.hijos.get(2).columna);
+                    }
+                    if (actual.hijos.get(3).nombre.equals("Integer")) {
+                    } else {
+                        Errores_compTipos.add("Error de tipo en For con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(3).linea) + " Columna: " + actual.hijos.get(3).columna);
+                    }
+                    if (actual.hijos.get(4).nombre.equals("Integer")) {
+                    } else {
+                        Errores_compTipos.add("Error de tipo en For con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(4).linea) + " Columna: " + actual.hijos.get(4).columna);
+                    }
+                    
+                } else {
+                    Errores_compTipos.add("Error de tipo en For con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                }
+            } else {
+                Errores_ambito.add("Error ambito en For con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+            }
+        }
+///////////////////////////////Condicion//////////////////////////////////////////////////////////////////////////////////////
+        if (actual.nombre.equals("Condicion")
+                && actual.hijos.size() > 1 //Validar si es la condicion <,>,<=,>=,
+                ) {
+            if (actual.hijos.get(0).nombre.equals("Id") && actual.hijos.get(2).nombre.equals("Id")) {
+                int amb1 = validar_variable(actual.hijos.get(0).valor),
+                        amb2 = validar_variable(actual.hijos.get(2).valor);
+                if (amb1 == 1 && amb2 == 1) {
+                    String t1 = get_tipo(actual.hijos.get(0).valor),
+                            t2 = get_tipo(actual.hijos.get(2).valor);
+                    if (t1.equals("Integer") && t2.equals("Integer")) {
+                    } else {
+                        if (!t1.equals("Integer")) {
+                            Errores_compTipos.add("Error de tipo en Condicion con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                        }
+                        if (!t2.equals("Integer")) {
+                            Errores_compTipos.add("Error de tipo en Condicion con la variable " + actual.hijos.get(2).valor + ". Linea: " + (actual.hijos.get(2).linea) + " Columna: " + actual.hijos.get(2).columna);
+                        }
+                    }
+                } else {
+                    if (amb1 != 1) {
+                        Errores_ambito.add("Error ambito en Condicion con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                    }
+                    if (amb2 != 1) {
+                        Errores_ambito.add("Error ambito en Condicion con la variable " + actual.hijos.get(2).valor + ". Linea: " + (actual.hijos.get(2).linea) + " Columna: " + actual.hijos.get(2).columna);
+                    }
+                }
+            }
+            if (actual.hijos.get(0).nombre.equals("Id") && actual.hijos.get(2).nombre.equals("Integer")) {
+                int amb1 = validar_variable(actual.hijos.get(0).valor);
+                if (amb1 == 1) {
+                    String t1 = get_tipo(actual.hijos.get(0).valor);
+                    if (t1.equals("Integer")) {
+                    } else {
+                        if (!t1.equals("Integer")) {
+                            Errores_compTipos.add("Error de tipo en Condicion con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                        }
+                    }
+                } else {
+                    if (amb1 != 1) {
+                        Errores_ambito.add("Error ambito en Condicion con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                    }
+                }
+            }
+            if (actual.hijos.get(0).nombre.equals("Integer") && actual.hijos.get(2).nombre.equals("Id")) {
+                int amb2 = validar_variable(actual.hijos.get(2).valor);
+                if (amb2 == 1) {
+                    String t2 = get_tipo(actual.hijos.get(2).valor);
+                    if (t2.equals("Integer")) {
+                    } else {
+                        if (!t2.equals("Integer")) {
+                            Errores_compTipos.add("Error de tipo en Condicion con la variable " + actual.hijos.get(2).valor + ". Linea: " + (actual.hijos.get(2).linea) + " Columna: " + actual.hijos.get(2).columna);
+                        }
+                    }
+                } else {
+                    if (amb2 != 1) {
+                        Errores_ambito.add("Error ambito en Condicion con la variable " + actual.hijos.get(2).valor + ". Linea: " + (actual.hijos.get(2).linea) + " Columna: " + actual.hijos.get(2).columna);
+                    }
+                }
+            }
+            if (actual.hijos.get(0).nombre.equals("Integer") && actual.hijos.get(2).nombre.equals("Integer")) {
+            }
+        }
+        /////---------------------------otra condicion menor presedencia----------------------------
+        if (actual.nombre.equals("Condicion-I")
+                && actual.hijos.size() > 1 //Validar si es la condicion ==,!=
+                ) {
+            if (actual.hijos.get(0).nombre.equals("Id") && actual.hijos.get(2).nombre.equals("Id")) {
+                int amb1 = validar_variable(actual.hijos.get(0).valor),
+                        amb2 = validar_variable(actual.hijos.get(2).valor);
+                if (amb1 == 1 && amb2 == 1) {
+                    String t1 = get_tipo(actual.hijos.get(0).valor),
+                            t2 = get_tipo(actual.hijos.get(2).valor);
+                    if (t1.equals("Integer") && t2.equals("Integer")) {
+                    } else {
+                        if (!t1.equals("Integer")) {
+                            Errores_compTipos.add("Error de tipo en Condicion con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                        }
+                        if (!t2.equals("Integer")) {
+                            Errores_compTipos.add("Error de tipo en Condicion con la variable " + actual.hijos.get(2).valor + ". Linea: " + (actual.hijos.get(2).linea) + " Columna: " + actual.hijos.get(2).columna);
+                        }
+                    }
+                } else {
+                    if (amb1 != 1) {
+                        Errores_ambito.add("Error ambito en Condicion con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                    }
+                    if (amb2 != 1) {
+                        Errores_ambito.add("Error ambito en Condicion con la variable " + actual.hijos.get(2).valor + ". Linea: " + (actual.hijos.get(2).linea) + " Columna: " + actual.hijos.get(2).columna);
+                    }
+                }
+            }
+            if (actual.hijos.get(0).nombre.equals("Id") && actual.hijos.get(2).nombre.equals("Integer")) {
+                int amb1 = validar_variable(actual.hijos.get(0).valor);
+                if (amb1 == 1) {
+                    String t1 = get_tipo(actual.hijos.get(0).valor);
+                    if (t1.equals("Integer")) {
+                    } else {
+                        if (!t1.equals("Integer")) {
+                            Errores_compTipos.add("Error de tipo en Condicion con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                        }
+                    }
+                } else {
+                    if (amb1 != 1) {
+                        Errores_ambito.add("Error ambito en Condicion con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                    }
+                }
+            }
+            if (actual.hijos.get(0).nombre.equals("Integer") && actual.hijos.get(2).nombre.equals("Id")) {
+                int amb2 = validar_variable(actual.hijos.get(2).valor);
+                if (amb2 == 1) {
+                    String t2 = get_tipo(actual.hijos.get(2).valor);
+                    if (t2.equals("Integer")) {
+                    } else {
+                        if (!t2.equals("Integer")) {
+                            Errores_compTipos.add("Error de tipo en Condicion con la variable " + actual.hijos.get(2).valor + ". Linea: " + (actual.hijos.get(2).linea) + " Columna: " + actual.hijos.get(2).columna);
+                        }
+                    }
+                } else {
+                    if (amb2 != 1) {
+                        Errores_ambito.add("Error ambito en Condicion con la variable " + actual.hijos.get(2).valor + ". Linea: " + (actual.hijos.get(2).linea) + " Columna: " + actual.hijos.get(2).columna);
+                    }
+                }
+            }
+            if (actual.hijos.get(0).nombre.equals("Integer") && actual.hijos.get(2).nombre.equals("Integer")) {
+            }
+        }
+
+///////////////////////////////Recorrer arbol////////////////////////////////////////////////////////////////////////////////
+        for (int i = 0; i < actual.hijos.size(); i++) {
+            if (actual.nombre.equals("Function")) {
+                ambito = actual.hijos.get(0).valor;
+                offset = 0;
+                ambito_cont = 1;
+            } else if (actual.nombre.equals("Sub")) {
+                ambito = actual.hijos.get(0).valor;
+                offset = 0;
+                ambito_cont = 1;
+            } else if (actual.nombre.equals("Structure")) {
+                ambito = actual.hijos.get(0).valor;
+                offset = 0;
+                ambito_cont = 1;
+            }
+            
+            if (!actual.hijos.get(i).hijos.isEmpty()) {
+                llenar_tabla_simbolos(actual.hijos.get(i));
+            }
+        }
+        if (ambito_control >= 0
+                && (actual.nombre.equals("For")
+                || actual.nombre.equals("For-step")
+                || actual.nombre.equals("If")
+                || actual.nombre.equals("Else")
+                || actual.nombre.equals("Else_if")
+                || actual.nombre.equals("Do-While"))) {
+            ambito = ambito.substring(0, ambito.lastIndexOf(","));
+            ambito_control--;
+            //System.out.println(ambito);
+        }
+    }
+    
+    public static void agregar(Entry e, int linea, int columna) {
+        boolean verifica = false;
+        for (int i = 0; i < tabla_simbolos.size(); i++) {
+            if (e.id.equals(tabla_simbolos.get(i).id)) {
+                if (ambito.contains(tabla_simbolos.get(i).ambito)) {
+                    verifica = true;
+                    break;
+                }
+            }
+            
+        }
+        if (verifica == true) {
+            Errores_ambito.add("Error linea: " + linea + " columna:" + columna + "la variable " + e.id + " ya fue declarada en el mismo ambito");
+        } else {
+            tabla_simbolos.add(e);
+            //offset += getSize(e.tipo);
+            offset += e.tipo.length();
+            
+        }
+        
+    }
+    
+    public static int validar_variable(String e) {
+        int verifica = 0;
+        for (int i = 0; i < tabla_simbolos.size(); i++) {
+            if (e.equals(tabla_simbolos.get(i).id)) {
+                if (ambito.contains(tabla_simbolos.get(i).ambito)) {
+                    verifica = 1;
+                    break;
+                }
+            }
+        }
+        return verifica;
+    }
+    
+    public static String get_tipo(String nombre) {
+        for (int i = 0; i < tabla_simbolos.size(); i++) {
+            if (tabla_simbolos.get(i).id.equals(nombre)) {
+                return tabla_simbolos.get(i).tipo;
+            }
+        }
+        return "";
+    }
+    
+    public static boolean existe(String s) {
+        for (int i = 0; i < tabla_simbolos.size(); i++) {
+            if (s.equals(tabla_simbolos.get(i).id)) {
+                if (ambito.contains(tabla_simbolos.get(i).ambito)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -454,5 +774,16 @@ public class Main extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
     public static Node root;
     DefaultMutableTreeNode arbol;
+    ///////////////////tipos///////////////////////////////////////////
     public static ArrayList<Entry> tabla_simbolos = new ArrayList<Entry>();
+    public static ArrayList<String> Errores_compTipos = new ArrayList<String>();
+    public static Syntax s;
+    ///////////////////////////////////ambito//////////////////
+    public static int ambito_cont = 0, ambito_control = -1, offset = 0;
+    public static String ambito = "";
+    public static boolean activo = true;
+    public static ArrayList<String> Errores_ambito = new ArrayList<String>();
+    /////////////////////////////////codigo intermedio//////////////////////////
+
+    ////////////////////////////////codigo final///////////////////////////////////
 }

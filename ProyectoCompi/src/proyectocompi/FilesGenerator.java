@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-//import java_cup.runtime.Symbol;
+import java_cup.runtime.Symbol;
 
 public class FilesGenerator {
 

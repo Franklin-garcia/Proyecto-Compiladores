@@ -12,10 +12,18 @@ package proyectocompi;
 import java.util.ArrayList;
 
 public class Node {
-    public String nombre="";
+ public String nombre="";
     public String valor="";    
     public ArrayList<Node> hijos;
-
+    public String lugar = "";
+    public String verdadera = "";
+    public String falsa = "";
+    public String siguiente = "";
+    public String comienzo = "";
+    public String asig = "";
+    public int linea = 0;
+    public int columna = 0;
+    
     public Node(String nombre) {
         this.nombre = nombre;
         this.valor = "<non-terminal>";
@@ -25,6 +33,14 @@ public class Node {
     public Node(String nombre, String valor) {
         this.nombre = nombre;
         this.valor = valor;
+        hijos = new ArrayList();
+    }
+
+    public Node(String nombre, String valor, int linea, int columna) {
+        this.nombre = nombre;
+        this.valor = valor;
+        this.linea = linea + 1;
+        this.columna = columna + 1;
         hijos = new ArrayList();
     }
 
@@ -80,13 +96,10 @@ public class Node {
     @Override
     public String toString() {
         if (valor.equals("<non-terminal>")) {
-            return nombre;
+            return nombre; //+ " " + linea + ":" + columna;
         }else{
-            return valor;
+            return valor; //+ " " + linea + ":" + columna;
         }
     }
-    
-    
-    
 }
 

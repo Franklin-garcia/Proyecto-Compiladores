@@ -10,14 +10,14 @@ package proyectocompi;
  * @author edujg
  */
 public class Entry {
-    String id, ambito, tipo;
+    String id,tipo , ambito;
     int offset;
-    int parametros = 0;
-    String descriptor = "";
-    Entry(String i, String t, String a, int o){
+    boolean activo;
+    Entry(String i, String t, String a,int o,boolean bool){
         id = i;
         tipo = t;
         ambito = a;
-        offset = o;
+        offset=o;
+        activo=bool;
     }
 }
