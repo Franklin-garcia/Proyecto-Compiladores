@@ -444,40 +444,64 @@ public class Main extends javax.swing.JFrame {
             agregar(new Entry(actual.hijos.get(0).valor, actual.hijos.get(1).valor, ambito, offset, activo), actual.hijos.get(0).linea, actual.hijos.get(0).columna);
         }
 ////////////////////////////////////////Asignar///////////////////////////////////////////////////////////////////////////////        
+
         if (actual.nombre.equals("Asignar-var")) {
             if (actual.hijos.get(2).hijos.size() > 1) {
+                Node temp = actual.hijos.get(2);
+                validar_oa(temp);
             }
+//----------------------------------solo 1  valor Id o Num--------------------------------------------------------------      
             if (actual.hijos.get(2).hijos.size() == 1) {
                 Node temp = actual.hijos.get(2).hijos.get(0);
                 if (temp.nombre.equals("Valor")) {
+                    //id
                     if (temp.hijos.get(0).nombre.equals("Id")) {
-                        int amb1=validar_variable(actual.hijos.get(0).valor),
-                            amb2=validar_variable(temp.hijos.get(0).valor);
+                        int amb1 = validar_variable(actual.hijos.get(0).valor),
+                                amb2 = validar_variable(temp.hijos.get(0).valor);
                         if (amb1 == 1
-                            && amb2 == 1) {
-                            String t1=get_tipo(actual.hijos.get(0).valor),
-                            t2=get_tipo(temp.hijos.get(0).valor);
+                                && amb2 == 1) {
+                            String t1 = get_tipo(actual.hijos.get(0).valor),
+                                    t2 = get_tipo(temp.hijos.get(0).valor);
                             if (t1.equals("Integer") && t2.equals("Integer")) {
-                            }else{
+                            } else {
                                 if (!t1.equals("Integer")) {
-                                     Errores_compTipos.add("Error de tipo en Asignacion con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                                    Errores_compTipos.add("Error de tipo en Asignacion con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
                                 }
                                 if (!t2.equals("Integer")) {
-                                     Errores_compTipos.add("Error de tipo en Asignacion con la variable " + temp.hijos.get(0).valor + ". Linea: " + (temp.hijos.get(0).linea) + " Columna: " + temp.hijos.get(0).columna);
+                                    Errores_compTipos.add("Error de tipo en Asignacion con la variable " + temp.hijos.get(0).valor + ". Linea: " + (temp.hijos.get(0).linea) + " Columna: " + temp.hijos.get(0).columna);
                                 }
                             }
                         } else {
-                            if (amb1!=1) {
+                            if (amb1 != 1) {
                                 Errores_ambito.add("Error ambito en Asignacion con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
                             }
-                            if (amb2!=1) {
+                            if (amb2 != 1) {
                                 Errores_ambito.add("Error ambito en Condicion con la variable " + temp.hijos.get(0).valor + ". Linea: " + (temp.hijos.get(0).linea) + " Columna: " + temp.hijos.get(0).columna);
+                            }
+                        }
+                    }
+                    //Integer
+                    if (temp.hijos.get(0).nombre.equals("Integer")) {
+                        int amb1 = validar_variable(actual.hijos.get(0).valor);
+                        if (amb1 == 1) {
+                            String t1 = get_tipo(actual.hijos.get(0).valor);
+                            if (t1.equals("Integer")) {
+                            } else {
+                                if (!t1.equals("Integer")) {
+                                    Errores_compTipos.add("Error de tipo en Asignacion con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                                }
+                            }
+                        } else {
+                            if (amb1 != 1) {
+                                Errores_ambito.add("Error ambito en Asignacion con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
                             }
                         }
                     }
                 }
             }
+
         }
+
 ///////////////////////////////Comprobar for//////////////////////////////////////////////////////////////////////////////////
         if (actual.nombre.equals("For")) {
             if (validar_variable(actual.hijos.get(0).valor) == 1) {
@@ -729,6 +753,29 @@ public class Main extends javax.swing.JFrame {
             }
         }
         return verifica;
+    }
+
+    public static void validar_oa(Node e) {
+        
+        if (e.nombre.equals("Valor")) {
+            if (e.hijos.get(0).nombre.equals("Id")) {
+                 if (validar_variable(e.hijos.get(0).valor)==1) {
+                     if (get_tipo(e.hijos.get(0).valor).equals("Integer")) {
+                     }else{
+                      Errores_compTipos.add("Error de tipo en Condicion con la variable " + e.hijos.get(0).valor + ". Linea: " + (e.hijos.get(0).linea) + " Columna: " + e.hijos.get(0).columna);
+                     }
+                }else{
+                    Errores_ambito.add("Error ambito en Condicion con la variable " + e.hijos.get(0).valor + ". Linea: " + (e.hijos.get(0).linea) + " Columna: " + e.hijos.get(0).columna);
+                }
+            }
+        }
+        
+        
+        for (int i = 0; i < e.hijos.size(); i++) {
+            if (!e.hijos.get(i).hijos.isEmpty()) {
+                validar_oa(e.hijos.get(i));
+            }
+        }
     }
 
     public static String get_tipo(String nombre) {
