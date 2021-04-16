@@ -366,6 +366,7 @@ public class Main extends javax.swing.JFrame {
         tabla_simbolos = new ArrayList<Entry>();
         Errores_compTipos = new ArrayList<String>();
         Errores_ambito = new ArrayList<String>();
+
         ambito_cont = 1;
         ambito_control = -1;
         offset = 0;
@@ -408,7 +409,7 @@ public class Main extends javax.swing.JFrame {
             System.out.println(mensaje);
         } catch (Exception e) {
         }
-        System.out.println("Errorees tipos" + Errores_compTipos.size());
+        System.out.println("Errorees tipos");
         for (int i = 0; i < Errores_compTipos.size(); i++) {
             System.out.println(Errores_compTipos.get(i));
         }
@@ -439,6 +440,32 @@ public class Main extends javax.swing.JFrame {
             ambito_control++;
 
         }
+//////////////////////////////////Function///////////////////////////////////////////////////////////////////////////////        
+        if (actual.nombre.equals("Function")) {
+            if (actual.hijos.size() == 4) {
+                agregarE(new Entry(actual.hijos.get(0).valor, actual.hijos.get(2).valor, "module", offset, activo), actual.hijos.get(0).linea, actual.hijos.get(0).columna);
+            }
+            if (actual.hijos.size() == 3) {
+                agregarE(new Entry(actual.hijos.get(0).valor, actual.hijos.get(1).valor, "module", offset, activo), actual.hijos.get(0).linea, actual.hijos.get(0).columna);
+            }
+        }
+//--------------------------------Agregar parametros---------------------------------------       
+
+        if (actual.nombre.equals("Function") && actual.hijos.size() == 4) {
+            String a = actual.hijos.get(0).valor;
+            agregar_param(actual, a);
+        }
+
+//////////////////////////////////Function///////////////////////////////////////////////////////////////////////////////        
+        if (actual.nombre.equals("Sub")) {
+            agregarE(new Entry(actual.hijos.get(0).valor, "sub", "module", offset, activo), actual.hijos.get(0).linea, actual.hijos.get(0).columna);
+        }
+//--------------------------------Agregar parametros---------------------------------------       
+
+        if (actual.nombre.equals("Sub") && actual.hijos.size() == 3) {
+            String a = actual.hijos.get(0).valor;
+            agregar_param(actual, a);
+        }
 ////////////////////////////////////////Dim////////////////////////////////////////////////////////////////////////////////////
         if (actual.nombre.equals("Dim")) {
             agregar(new Entry(actual.hijos.get(0).valor, actual.hijos.get(1).valor, ambito, offset, activo), actual.hijos.get(0).linea, actual.hijos.get(0).columna);
@@ -462,14 +489,10 @@ public class Main extends javax.swing.JFrame {
                                 && amb2 == 1) {
                             String t1 = get_tipo(actual.hijos.get(0).valor),
                                     t2 = get_tipo(temp.hijos.get(0).valor);
-                            if (t1.equals("Integer") && t2.equals("Integer")) {
+                            if (t1.equals(t2)) {
                             } else {
-                                if (!t1.equals("Integer")) {
-                                    Errores_compTipos.add("Error de tipo en Asignacion con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
-                                }
-                                if (!t2.equals("Integer")) {
-                                    Errores_compTipos.add("Error de tipo en Asignacion con la variable " + temp.hijos.get(0).valor + ". Linea: " + (temp.hijos.get(0).linea) + " Columna: " + temp.hijos.get(0).columna);
-                                }
+                                Errores_compTipos.add("Error de tipo en Asignacion con la variable " + temp.hijos.get(0).valor + ". Linea: " + (temp.hijos.get(0).linea) + " Columna: " + temp.hijos.get(0).columna);
+
                             }
                         } else {
                             if (amb1 != 1) {
@@ -499,7 +522,75 @@ public class Main extends javax.swing.JFrame {
                     }
                 }
             }
-
+            //boolean
+            if (actual.hijos.get(2).nombre.equals("Boolean")) {
+                if (validar_variable(actual.hijos.get(0).valor) == 1) {
+                    String t = get_tipo(actual.hijos.get(0).valor);
+                    if (t.equals("Boolean")) {
+                    } else {
+                        Errores_compTipos.add("Error de tipo en Asignacion con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                    }
+                } else {
+                    Errores_ambito.add("Error ambito en Asignacion con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                }
+            }
+            //String
+            if (actual.hijos.get(2).nombre.equals("String")) {
+                if (validar_variable(actual.hijos.get(0).valor) == 1) {
+                    String t = get_tipo(actual.hijos.get(0).valor);
+                    if (t.equals("String")) {
+                    } else {
+                        Errores_compTipos.add("Error de tipo en Asignacion con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                    }
+                } else {
+                    Errores_ambito.add("Error ambito en Asignacion con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                }
+            }
+            //--------------Verifica asignacion function-------------------------------            
+            //Sin argumentos
+            if (actual.hijos.get(2).nombre.equals("Id")) {
+                if (actual.hijos.size() == 3) {
+                    int a1 = validar_variable(actual.hijos.get(0).valor),
+                            a2 = existeE(actual.hijos.get(2).valor);
+                    if (a1 == 1 && a2 == 1) {
+                        String t1 = get_tipo(actual.hijos.get(0).valor),
+                                t2 = get_tipo(actual.hijos.get(2).valor);
+                        if (t1.equals(t2)) {
+                            comprobar_param(root,actual.hijos.get(2).valor, actual.hijos.get(2).linea);
+                        } else {
+                            Errores_compTipos.add("Error de tipo en Asignacion con la variable " + actual.hijos.get(2).valor + ". Linea: " + (actual.hijos.get(2).linea) + " Columna: " + actual.hijos.get(2).columna);
+                        }
+                    } else {
+                        if (a1 != 1) {
+                            Errores_ambito.add("Error ambito en Asignacion con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                        }
+                        if (a2 != 1) {
+                            Errores_ambito.add("Error ambito en Asignacion con la variable " + actual.hijos.get(2).valor + ". Linea: " + (actual.hijos.get(2).linea) + " Columna: " + actual.hijos.get(2).columna);
+                        }
+                    }
+                }
+                /// Con argumentos 
+                if (actual.hijos.size() == 4) {
+                    int a1 = validar_variable(actual.hijos.get(0).valor),
+                            a2 = existeE(actual.hijos.get(2).valor);
+                    if (a1 == 1 && a2 == 1) {
+                        String t1 = get_tipo(actual.hijos.get(0).valor),
+                                t2 = get_tipo(actual.hijos.get(2).valor);
+                        if (t1.equals(t2)) {
+                            verifica_params(actual.hijos.get(3), actual.hijos.get(2).valor, actual.hijos.get(0).linea);
+                        } else {
+                            Errores_compTipos.add("Error de tipo en Asignacion con la variable " + actual.hijos.get(2).valor + ". Linea: " + (actual.hijos.get(2).linea) + " Columna: " + actual.hijos.get(2).columna);
+                        }
+                    } else {
+                        if (a1 != 1) {
+                            Errores_ambito.add("Error ambito en Asignacion con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                        }
+                        if (a2 != 1) {
+                            Errores_ambito.add("Error ambito en Asignacion con la variable " + actual.hijos.get(2).valor + ". Linea: " + (actual.hijos.get(2).linea) + " Columna: " + actual.hijos.get(2).columna);
+                        }
+                    }
+                }
+            }
         }
 
 ///////////////////////////////Comprobar for//////////////////////////////////////////////////////////////////////////////////
@@ -707,6 +798,7 @@ public class Main extends javax.swing.JFrame {
                 llenar_tabla_simbolos(actual.hijos.get(i));
             }
         }
+////////////////////////////////////////////////////////////////////////////////////////////        
         if (ambito_control >= 0
                 && (actual.nombre.equals("For")
                 || actual.nombre.equals("For-step")
@@ -732,7 +824,7 @@ public class Main extends javax.swing.JFrame {
 
         }
         if (verifica == true) {
-            Errores_ambito.add("Error linea: " + linea + " columna:" + columna + "la variable " + e.id + " ya fue declarada en el mismo ambito");
+            Errores_ambito.add("Error linea: " + linea + " columna: " + columna + " la variable " + e.id + " ya fue declarada en el mismo ambito");
         } else {
             tabla_simbolos.add(e);
             //offset += getSize(e.tipo);
@@ -742,6 +834,28 @@ public class Main extends javax.swing.JFrame {
 
     }
 
+///Agregar estructura FUNCTION, SUB , ESTRUCTURE
+    public static void agregarE(Entry e, int linea, int columna) {
+        int verifica = 0;
+        for (int i = 0; i < tabla_simbolos.size(); i++) {
+            if (tabla_simbolos.get(i).ambito.equals("module")) {
+                if (e.id.equals(tabla_simbolos.get(i).id)) {
+                    verifica++;
+                }
+            }
+        }
+        if (verifica > 0) {
+            Errores_ambito.add("Error linea: " + linea + " columna: " + columna + " la variable " + e.id + " ya fue declarada en el mismo ambito");
+        } else {
+            tabla_simbolos.add(e);
+            //offset += getSize(e.tipo);
+            offset += e.tipo.length();
+
+        }
+
+    }
+
+// Valida que la variable exista en el ambito
     public static int validar_variable(String e) {
         int verifica = 0;
         for (int i = 0; i < tabla_simbolos.size(); i++) {
@@ -755,22 +869,22 @@ public class Main extends javax.swing.JFrame {
         return verifica;
     }
 
-    public static void validar_oa(Node e) {
-        
+///Valida la operacion aritmetica
+    public static void validar_oa(Node e) {//validar operacion aritmetica
+
         if (e.nombre.equals("Valor")) {
             if (e.hijos.get(0).nombre.equals("Id")) {
-                 if (validar_variable(e.hijos.get(0).valor)==1) {
-                     if (get_tipo(e.hijos.get(0).valor).equals("Integer")) {
-                     }else{
-                      Errores_compTipos.add("Error de tipo en Condicion con la variable " + e.hijos.get(0).valor + ". Linea: " + (e.hijos.get(0).linea) + " Columna: " + e.hijos.get(0).columna);
-                     }
-                }else{
+                if (validar_variable(e.hijos.get(0).valor) == 1) {
+                    if (get_tipo(e.hijos.get(0).valor).equals("Integer")) {
+                    } else {
+                        Errores_compTipos.add("Error de tipo en Condicion con la variable " + e.hijos.get(0).valor + ". Linea: " + (e.hijos.get(0).linea) + " Columna: " + e.hijos.get(0).columna);
+                    }
+                } else {
                     Errores_ambito.add("Error ambito en Condicion con la variable " + e.hijos.get(0).valor + ". Linea: " + (e.hijos.get(0).linea) + " Columna: " + e.hijos.get(0).columna);
                 }
             }
         }
-        
-        
+
         for (int i = 0; i < e.hijos.size(); i++) {
             if (!e.hijos.get(i).hijos.isEmpty()) {
                 validar_oa(e.hijos.get(i));
@@ -778,7 +892,22 @@ public class Main extends javax.swing.JFrame {
         }
     }
 
-    public static String get_tipo(String nombre) {
+///Agrega los parametros de una function
+    public static void agregar_param(Node e, String a) {
+        if (e.nombre.equals("Param")) {
+            tabla_simbolos.add(new Entry(e.hijos.get(0).valor, e.hijos.get(1).valor, a, offset, activo));
+            offset += e.hijos.get(1).valor.length();
+        }
+
+        for (int i = 0; i < e.hijos.size(); i++) {
+            if (!e.hijos.get(i).hijos.isEmpty()) {
+                agregar_param(e.hijos.get(i), a);
+            }
+        }
+    }
+
+//Obtiene el tipo de una variable
+    public static String get_tipo(String nombre) {////////obtener el tipo de una variable
         for (int i = 0; i < tabla_simbolos.size(); i++) {
             if (tabla_simbolos.get(i).id.equals(nombre)) {
                 return tabla_simbolos.get(i).tipo;
@@ -796,6 +925,115 @@ public class Main extends javax.swing.JFrame {
             }
         }
         return false;
+    }
+
+//revisa las estructuras Funtion
+    public static int existeE(String s) {///esxiste function o structure
+        int validar = 0;
+        for (int i = 0; i < tabla_simbolos.size(); i++) {
+            if (s.equals(tabla_simbolos.get(i).id)) {
+                validar++;
+            }
+        }
+        if (validar > 0) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+//verifica los parametros
+    public static void verifica_params(Node actual, String f, int linea) {
+        auxiliarParams = 0;
+        Params = new ArrayList<String>();
+        Argumentos = new ArrayList<String>();
+        show_argumentos(actual);
+        add_params(f, root);
+        if (auxiliarParams == 0) {
+            Errores_ambito.add("Error en la funcion " + f + " ya que es sin parametros linea " + linea);
+        }
+        if (Params.size() == Argumentos.size()) {
+            int tam = Params.size();
+            for (int i = 0; i < tam; i++) {
+                if (Params.get(i).equals(Argumentos.get(i))) {
+                } else {
+                    Errores_compTipos.add("Error de tipos en los argumentos linea: " + linea + " inconpatibles " + Params.get(i) + " con " + Argumentos.get(i));
+                }
+            }
+        } else {
+            Errores_ambito.add("Error en tamaño de los argumentos linea: " + linea);
+        }
+        auxiliarParams = 0;
+        Params = new ArrayList<String>();
+        Argumentos = new ArrayList<String>();
+
+    }
+
+    public static void show_argumentos(Node e) {
+        if (e.nombre.equals("Argu")) {
+            if (e.hijos.get(0).nombre.equals("Id")) {
+                if (validar_variable(e.hijos.get(0).valor) == 1) {
+                    Argumentos.add(get_tipo(e.hijos.get(0).valor));
+                } else {
+                    Errores_ambito.add("Error ambito en Argumentos con la variable " + e.hijos.get(0).valor + ". Linea: " + (e.hijos.get(0).linea) + " Columna: " + e.hijos.get(0).columna);
+                }
+            }
+            if (e.hijos.get(0).nombre.equals("Integer")
+                || e.hijos.get(0).nombre.equals("String")
+                || e.hijos.get(0).nombre.equals("Boolean")
+                ) {
+                Argumentos.add(e.hijos.get(0).nombre);
+            }
+        }
+
+        for (int i = 0; i < e.hijos.size(); i++) {
+            if (!e.hijos.get(i).hijos.isEmpty()) {
+                show_argumentos(e.hijos.get(i));
+            }
+        }
+
+    }
+
+    public static void add_params(String f, Node e) {
+        if (e.nombre.equals("Function") && e.hijos.get(0).valor.equals(f)) {
+            if (e.hijos.size() == 4) {
+                auxiliarParams++;
+                show_params(e);
+            }
+        }
+        for (int i = 0; i < e.hijos.size(); i++) {
+            if (!e.hijos.get(i).hijos.isEmpty()) {
+                add_params(f, e.hijos.get(i));
+            }
+        }
+    }
+
+    public static void show_params(Node e) {
+        if (e.nombre.equals("Param")) {
+            Params.add(e.hijos.get(1).valor);
+        }
+
+        for (int i = 0; i < e.hijos.size(); i++) {
+            if (!e.hijos.get(i).hijos.isEmpty()) {
+                show_params(e.hijos.get(i));
+            }
+        }
+    }
+    
+//verifica si la funcion es void
+    public static void comprobar_param(Node e,String f,int linea){
+        if (e.nombre.equals("Function") && e.hijos.get(0).valor.equals(f)) {
+            if (e.hijos.size()==3) {
+            }else{
+                Errores_ambito.add("Error en la funcion "+f+" ya que esta tiene parametros linea "+linea);
+            }
+        }
+        
+        for (int i = 0; i < e.hijos.size(); i++) {
+            if (!e.hijos.get(i).hijos.isEmpty()) {
+                comprobar_param(e.hijos.get(i),f,linea);
+            }
+        }
     }
 
     /**
@@ -832,6 +1070,7 @@ public class Main extends javax.swing.JFrame {
             }
         });
     }
+//verifica si la funcion es en realidad con params o sin params
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDialog arbolin;
@@ -860,6 +1099,9 @@ public class Main extends javax.swing.JFrame {
     public static ArrayList<Entry> tabla_simbolos = new ArrayList<Entry>();
     public static ArrayList<String> Errores_compTipos = new ArrayList<String>();
     public static Syntax s;
+    public static ArrayList<String> Params = new ArrayList<String>();//auxiliar de comprobacion
+    public static ArrayList<String> Argumentos = new ArrayList<String>();//auxiliar de comprobacion
+    public static int auxiliarParams = 0;
     ///////////////////////////////////ambito//////////////////
     public static int ambito_cont = 0, ambito_control = -1, offset = 0;
     public static String ambito = "";

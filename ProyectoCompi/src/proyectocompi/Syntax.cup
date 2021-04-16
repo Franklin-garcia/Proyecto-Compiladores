@@ -16,7 +16,7 @@ parser code
     }
 :};
 
-terminal Num, Newline, Parizq, Parder, Coma, End, Write, Read, SumaResta, MultDiv, Igual, OpRel,OpRel2, Ampersand, 
+terminal Num, Bool, Cadena, Newline, Parizq, Parder, Coma, End, Write, Read, SumaResta, MultDiv, Igual, OpRel,OpRel2, Ampersand, 
 If, Then, Else, ElseIf, For, To, Next, Step, Do, While, Loop, ByVal, Function, Sub, Structure, Module,
 TypeBoolean, TypeInteger, TypeString, Dim, As, Id, ContString, Error,EndIf;
 
@@ -83,7 +83,7 @@ FUNCTION::=
     Function Id:i Parizq PARAMS:p1 Parder As VAR_TIPOS:v Newline BODY:b End Function
     {:
     Node Function = new Node("Function");
-                            Function.addNode(new Node("Id", ((String) i)));
+                            Function.addNode(new Node("Id", ((String) i),iright,ileft));
                             Function.addNode(p1);
                             Function.addNode(v);
                             Function.addNode(b);
@@ -93,7 +93,7 @@ FUNCTION::=
     Function Id:i Parizq Parder As VAR_TIPOS:v Newline BODY:b End Function
     {:
     Node Function = new Node("Function");
-                            Function.addNode(new Node("Id", ((String) i)));
+                            Function.addNode(new Node("Id", ((String) i),iright,ileft));
                             Function.addNode(v);
                             Function.addNode(b);
                             RESULT=Function;
@@ -152,39 +152,21 @@ PARAMS ::=
     ByVal Id:i As VAR_TIPOS:v 
     {:
     Node Parametros = new Node("Param");
-                            Parametros.addNode(new Node("Id", ((String) i)));
+                            Parametros.addNode(new Node("Id", ((String) i),iright,ileft));
                             Parametros.addNode(v);
                             RESULT=Parametros;
     :}    
     |
-    ByVal Id:i As VAR_TIPOS:v M_PARAMS:m
+    ByVal Id:i As VAR_TIPOS:v Coma PARAMS:m
     {:
     Node Parametro = new Node("Param");
-                            Parametro.addNode(new Node("Id", ((String) i)));
+                            Parametro.addNode(new Node("Id", ((String) i),iright,ileft));
                             Parametro.addNode(v);
                             Parametro.addNode(m);
                             RESULT=Parametro;
     :}
 ;
 
-M_PARAMS ::=
-    Coma ByVal Id:i As VAR_TIPOS:v Coma PARAMS:p 
-    {:
-    Node Parametros = new Node("Param");
-                            Parametros.addNode(new Node("Id", ((String) i)));
-                            Parametros.addNode(v);
-                            Parametros.addNode(p);
-                            RESULT=Parametros;
-    :}
-    |      
-    Coma ByVal Id:i As VAR_TIPOS:v
-    {:
-    Node Parametros = new Node("Param");
-                            Parametros.addNode(new Node("Id", ((String) i)));
-                            Parametros.addNode(v);
-                            RESULT=Parametros;
-    :}
-;
 
 BODY ::= 
     BODY:b DIM:c
@@ -565,7 +547,7 @@ F ::=
 IDS ::=
     Id:i Coma IDS:id 
     {:
-    Node Ids = new Node("Id");
+    Node Ids = new Node("Argu");
                             Ids.addNode(new Node("Id", ((String) i)));
                             Ids.addNode(id);
                             RESULT=Ids;
@@ -573,23 +555,54 @@ IDS ::=
     |
     Num:n Coma IDS:id 
     {:
-    Node Ids = new Node("Id");
+    Node Ids = new Node("Argu");
                             Ids.addNode(new Node("Integer", ((String) n)));
+                            Ids.addNode(id);
+                            RESULT=Ids;
+    :}
+    |
+    Cadena:n Coma IDS:id 
+    {:
+    Node Ids = new Node("Argu");
+                            Ids.addNode(new Node("String", ((String) n)));
+                            Ids.addNode(id);
+                            RESULT=Ids;
+    :}
+    |
+    Bool:n Coma IDS:id 
+    {:
+    Node Ids = new Node("Argu");
+                            Ids.addNode(new Node("Boolean", ((String) n)));
                             Ids.addNode(id);
                             RESULT=Ids;
     :}
     |
     Id:i 
     {:
-    Node Ids = new Node("Id");
+    Node Ids = new Node("Argu");
                             Ids.addNode(new Node("Id", ((String) i)));
                             RESULT=Ids;
     :}
     |
     Num:n
     {:
-    Node Ids = new Node("Id");
+    Node Ids = new Node("Argu");
                             Ids.addNode(new Node("Integer", ((String) n)));
+                            RESULT=Ids;
+    :}
+    |
+    Cadena:n
+    {:
+    Node Ids = new Node("Argu");
+                            Ids.addNode(new Node("String", ((String) n)));
+                            RESULT=Ids;
+    :}
+    |
+    
+    Bool:n
+    {:
+    Node Ids = new Node("Argu");
+                            Ids.addNode(new Node("Boolean", ((String) n)));
                             RESULT=Ids;
     :}
 ;
@@ -652,19 +665,35 @@ ASIG_VAR ::=
     Id:i1 Igual:s Id:i2 Parizq Parder Newline 
     {:
     Node AsigVar = new Node("Asignar-var");
-                            AsigVar.addNode(new Node("Id", ((String) i1)));
+                            AsigVar.addNode(new Node("Id", ((String) i1),i1right,i1left));
                             AsigVar.addNode(new Node("Igual", ((String) s)));
-                            AsigVar.addNode(new Node("Id", ((String) i2)));
+                            AsigVar.addNode(new Node("Id", ((String) i2),i2right,i2left));
                             RESULT=AsigVar;
     :}    
     |
     Id:i1 Igual:s Id:i2 Parizq IDS:id Parder Newline
     {:
     Node AsigVar = new Node("Asignar-var");
-                            AsigVar.addNode(new Node("Id", ((String) i1)));
+                            AsigVar.addNode(new Node("Id", ((String) i1),i1right,i1left));
                             AsigVar.addNode(new Node("Igual", ((String) s)));
-                            AsigVar.addNode(new Node("Id", ((String) i2)));
+                            AsigVar.addNode(new Node("Id", ((String) i2),i2right,i2left));
                             AsigVar.addNode(id);
+                            RESULT=AsigVar;
+    :}
+    |Id:i Igual:s Bool:b Newline
+    {:
+    Node AsigVar = new Node("Asignar-var");
+                            AsigVar.addNode(new Node("Id", ((String) i),iright,ileft));
+                            AsigVar.addNode(new Node("Igual", ((String) s)));
+                            AsigVar.addNode(new Node("Boolean", ((String) b)));
+                            RESULT=AsigVar;
+    :}
+    |Id:i Igual:s Cadena:c Newline
+     {:
+    Node AsigVar = new Node("Asignar-var");
+                            AsigVar.addNode(new Node("Id", ((String) i),iright,ileft));
+                            AsigVar.addNode(new Node("Igual", ((String) s)));
+                            AsigVar.addNode(new Node("String", ((String) c)));
                             RESULT=AsigVar;
     :}
 ;

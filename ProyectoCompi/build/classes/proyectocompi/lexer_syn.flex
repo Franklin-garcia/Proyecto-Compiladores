@@ -25,8 +25,11 @@ import java_cup.runtime.Symbol;
 %}
 
 //Misc
+
 letra = [a-zA-Z]
 num = [0-9]
+Caracteres="+"|"-"|"/"|"*"|">"|"<"|">="|"<="|"!="|"!"|"="|":"|";"|"."|","|"-"|"_"|"&"|"'"|"@"|"#"|"("|")"|"["|"]"|"{"|"}"|"^"|"%"|"?"
+Espacio=[ \n\r\t]+
 nums = {num}+
 espacios = [ \r\t]
 enter = (\n)+
@@ -37,6 +40,8 @@ guionbajo = "_"
 end = "End"
 comment = "'"
 sstring = \"
+cadena=\"({letra}|{num}|{Espacio}|{Caracteres})*\"
+boolean="true"|"false"
 
 //Write y Read
 write = "Console.WriteLine"
@@ -99,6 +104,8 @@ id = {letra}+({num}|{letra}|{guionbajo})*
 %%
 <YYINITIAL> {
     {nums}          {return new Symbol (sym.Num, yycolumn, yyline, yytext());}
+    {cadena}        {return new Symbol (sym.Cadena, yycolumn, yyline, yytext());}
+    {boolean}       {return new Symbol (sym.Bool, yycolumn, yyline, yytext());}
     {enter}         {return new Symbol (sym.Newline, yycolumn, yyline, yytext());}
     {parenizq}      {return new Symbol (sym.Parizq, yycolumn, yyline, yytext());}
     {parender}      {return new Symbol (sym.Parder, yycolumn, yyline, yytext());}
