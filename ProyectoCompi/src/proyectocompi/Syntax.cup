@@ -275,14 +275,14 @@ BODY ::=
                             Body.addNode(c);
                             RESULT=Body;
     :}
-    |BODY:b CONCATENAR:c
+    |BODY:b CONCAT:c Newline
     {:
     Node Body = new Node("Code");
                             Body.addNode(b);
                             Body.addNode(c);
                             RESULT=Body;
     :}
-    |CONCATENAR:c
+    |CONCAT:c Newline
     {:
     Node Body = new Node("Code");
                             Body.addNode(c);
@@ -405,30 +405,12 @@ WRITE::=
     :}
 ;
 
-CONCATENAR::=
-    CONCAT:c Newline
-    {:
-    Node Body8 = new Node("Concat");
-                            Body8.addNode(c);
-                            RESULT=Body8;
-    :}
-; 
-
-ASIGN::=
-    ASIG_VAR:c Newline
-      {:
-    Node Body9 = new Node("Asignar");
-                            Body9.addNode(c);
-                            RESULT=Body9;
-    :}
-;
-
 
 STRUCT_BODY ::=
     Id:i As VAR_TIPOS:v Newline 
     {:
     Node SBody = new Node("Struct-body");
-                            SBody.addNode(new Node("Id", ((String) i)));
+                            SBody.addNode(new Node("Id", ((String) i),iright,ileft));
                             SBody.addNode(v);
                             RESULT=SBody;
     :}
@@ -436,7 +418,7 @@ STRUCT_BODY ::=
     Id:i As VAR_TIPOS:v Newline STRUCT_BODY:sb
     {:
     Node SBody = new Node("Struct-body");
-                            SBody.addNode(new Node("Id", ((String) i)));
+                            SBody.addNode(new Node("Id", ((String) i),iright,ileft));
                             SBody.addNode(v);
                             SBody.addNode(sb);
                             RESULT=SBody;
@@ -612,9 +594,19 @@ CONCAT ::=
     Id:i1 Igual:s Id:i2 SENT_CONCAT:sc
     {:
     Node Concat = new Node("Concat");
-                            Concat.addNode(new Node("Id", ((String) i1)));
+                            Concat.addNode(new Node("Id", ((String) i1),i1right,i1left));
                             Concat.addNode(new Node("Igual", ((String) s)));
-                            Concat.addNode(new Node("Id", ((String) i2)));
+                            Concat.addNode(new Node("Id", ((String) i2),i2right,i2left));
+                            Concat.addNode(sc);
+                            RESULT=Concat;
+    :}
+    |
+    Id:i1 Igual:s Cadena:ca SENT_CONCAT:sc
+    {:
+    Node Concat = new Node("Concat");
+                            Concat.addNode(new Node("Id", ((String) i1),i1right,i1left));
+                            Concat.addNode(new Node("Igual", ((String) s)));
+                            Concat.addNode(new Node("String", ((String) ca)));
                             Concat.addNode(sc);
                             RESULT=Concat;
     :}
@@ -624,12 +616,12 @@ SENT_CONCAT ::=
     Ampersand Id:i1 SENT_CONCAT:sc 
     {:
     Node SConcat = new Node("Sent-concat");
-                            SConcat.addNode(new Node("Id", ((String) i1)));
+                            SConcat.addNode(new Node("Id", ((String) i1),i1right,i1left));
                             SConcat.addNode(sc);
                             RESULT=SConcat;
     :}
     |
-    Ampersand ContString:cs SENT_CONCAT:sc 
+    Ampersand Cadena:cs SENT_CONCAT:sc 
     {:
     Node SConcat = new Node("Sent-concat");
                             SConcat.addNode(new Node("ContString", ((String) cs)));
@@ -640,11 +632,11 @@ SENT_CONCAT ::=
     Ampersand Id:i1 
     {:
     Node SConcat = new Node("Sent-concat");
-                            SConcat.addNode(new Node("Id", ((String) i1)));
+                            SConcat.addNode(new Node("Id", ((String) i1),i1right,i1left));
                             RESULT=SConcat;
     :}
     |
-    Ampersand ContString:cs
+    Ampersand Cadena:cs
     {:
     Node SConcat = new Node("Sent-concat");
                             SConcat.addNode(new Node("ContString", ((String) cs)));
