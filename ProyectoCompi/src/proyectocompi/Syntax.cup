@@ -16,12 +16,12 @@ parser code
     }
 :};
 
-terminal Num, Bool, Cadena, Newline, Parizq, Parder, Coma, End, Write, Read, SumaResta, MultDiv, Igual, OpRel,OpRel2, Ampersand, 
+terminal Num, Bool, Cadena, Newline, Parizq, Parder, Coma,Punto, End, Write, Read, SumaResta, MultDiv, Igual, OpRel,OpRel2, Ampersand, 
 If, Then, Else, ElseIf, For, To, Next, Step, Do, While, Loop, ByVal, Function, Sub, Structure, Module,
 TypeBoolean, TypeInteger, TypeString, Dim, As, Id, ContString, Error,EndIf;
 
 non terminal INICIO, CONTENIDO, PROCEDIMIENTO, PROCEDIMIENTO_ST, PARAMS, VAR_TIPOS, BODY, STRUCT_BODY, M_PARAMS, CONDICION, IF_BODY, CONCAT, ASIG_VAR, 
-OP_AR, T, F,Y,Z, SENT_CONCAT, IDS,FUNCTION,SUB,STRUCTURE,DIM,FOR,FOR_STEP,IF,DO_WHILE,WRITE,DIM_READ,CONCATENAR,ASIGN,ELSE;
+OP_AR, T, F,Y,Z, SENT_CONCAT, IDS,FUNCTION,SUB,STRUCTURE,DIM,FOR,FOR_STEP,IF,DO_WHILE,WRITE,DIM_READ,CONCATENAR,ASIGN,ELSE,ASIG_STRUCT,VALUE;
 
 precedence left SumaResta;
 precedence left MultDiv;
@@ -182,7 +182,23 @@ BODY ::=
                             Body.addNode(c);
                             RESULT=Body;
     :}
-    |BODY:b FOR:c
+    |
+    BODY:b ASIG_STRUCT:c
+    {:
+    Node Body = new Node("Code");
+                            Body.addNode(b);
+                            Body.addNode(c);
+                            RESULT=Body;
+    :}
+    |
+    ASIG_STRUCT:c
+    {:
+    Node Body = new Node("Code");
+                            Body.addNode(c);
+                            RESULT=Body;
+    :}
+    |
+    BODY:b FOR:c
     {:
     Node Body = new Node("Code");
                             Body.addNode(b);
@@ -309,6 +325,14 @@ DIM::=
     Node Body1 = new Node("Dim");
                             Body1.addNode(new Node("Id", ((String) i), iright,ileft));
                             Body1.addNode(v);
+                            RESULT=Body1;
+    :}
+    |
+    Dim Id:i As Id:v Newline
+    {:
+    Node Body1 = new Node("Dim");
+                            Body1.addNode(new Node("Id", ((String) i), iright,ileft));
+                            Body1.addNode(new Node("Id", ((String) v), vright,vleft));
                             RESULT=Body1;
     :}
 ;
@@ -688,4 +712,52 @@ ASIG_VAR ::=
                             AsigVar.addNode(new Node("String", ((String) c)));
                             RESULT=AsigVar;
     :}
+;
+
+    ASIG_STRUCT::=
+        Id:i1 Punto Id:i2 Igual:s VALUE:v
+        {:
+         Node AsigVars = new Node("Asignar-varS1");
+                            AsigVars.addNode(new Node("Id", ((String) i1),i1right,i1left));
+                            AsigVars.addNode(new Node("Id", ((String) i2),i2right,i2left));
+                            AsigVars.addNode(new Node("Igual", ((String) s)));
+                            AsigVars.addNode(v);
+                            RESULT=AsigVars;
+         :}
+        |
+        Id:i1 Igual:s Id:i2 Punto Id:i3
+        {:
+         Node AsigVars = new Node("Asignar-varS2");
+                            AsigVars.addNode(new Node("Id", ((String) i1),i1right,i1left));
+                            AsigVars.addNode(new Node("Igual", ((String) s)));
+                            AsigVars.addNode(new Node("Id", ((String) i2),i2right,i2left));
+                            AsigVars.addNode(new Node("Id", ((String) i3),i3right,i3left));
+                            RESULT=AsigVars;
+         :}
+;
+
+    VALUE::=
+        Id:i
+        {:
+        Node Value=new Node("Id", ((String) i),iright,ileft);
+                           RESULT=Value;
+        :}
+        |
+        Bool:i
+        {:
+        Node Value=new Node("Boolean", ((String) i),iright,ileft);
+                           RESULT=Value;
+        :}
+        |
+        Cadena:i
+        {:
+        Node Value=new Node("String", ((String) i),iright,ileft);
+                           RESULT=Value;
+        :}
+        |
+        Num:i
+        {:
+        Node Value=new Node("Integer", ((String) i),iright,ileft);
+                           RESULT=Value;
+        :}
 ;

@@ -35,6 +35,7 @@ espacios = [ \r\t]
 enter = (\n)+
 parenizq = "("
 parender = ")"
+punto = "."
 coma = ","
 guionbajo = "_"
 end = "End"
@@ -110,6 +111,7 @@ id = {letra}+({num}|{letra}|{guionbajo})*
     {parenizq}      {return new Symbol (sym.Parizq, yycolumn, yyline, yytext());}
     {parender}      {return new Symbol (sym.Parder, yycolumn, yyline, yytext());}
     {coma}          {return new Symbol (sym.Coma, yycolumn, yyline, yytext());}
+    {punto}         {return new Symbol (sym.Punto, yycolumn, yyline, yytext());}
     {end}           {return new Symbol (sym.End, yycolumn, yyline, yytext());}
     {comment}       {yybegin(COMMENT);}
     {sstring}       {yybegin(STRING);}

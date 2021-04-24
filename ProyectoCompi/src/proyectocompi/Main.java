@@ -476,7 +476,24 @@ public class Main extends javax.swing.JFrame {
 
 ////////////////////////////////////////Dim////////////////////////////////////////////////////////////////////////////////////
         if (actual.nombre.equals("Dim")) {
-            agregar(new Entry(actual.hijos.get(0).valor, actual.hijos.get(1).valor, ambito, offset, activo), actual.hijos.get(0).linea, actual.hijos.get(0).columna);
+            if (actual.hijos.get(1).valor.equals("String") 
+                    || actual.hijos.get(1).valor.equals("Boolean")
+                    || actual.hijos.get(1).valor.equals("Integer")) {
+                 agregar(new Entry(actual.hijos.get(0).valor, actual.hijos.get(1).valor, ambito, offset, activo), actual.hijos.get(0).linea, actual.hijos.get(0).columna);
+            } 
+            if (actual.hijos.get(1).nombre.equals("Id")) {
+                 int amb=existeE(actual.hijos.get(1).valor);
+                 if (amb==1) {
+                    String t1=get_tipo(actual.hijos.get(1).valor);
+                     if (t1.equals("Structure")) {
+                          
+                     }else{
+                         Errores_compTipos.add("Error de tipo en Declaracion con la variable " + actual.hijos.get(1).valor + ". Linea: " + (actual.hijos.get(1).linea) + " Columna: " + actual.hijos.get(1).columna);
+                     }
+                }else{
+                    Errores_ambito.add("Error ambito en Declaracion con la variable " + actual.hijos.get(1).valor + ". Linea: " + (actual.hijos.get(1).linea) + " Columna: " + actual.hijos.get(1).columna);
+                }
+            }
         }
 ////////////////////////////////////////Asignar///////////////////////////////////////////////////////////////////////////////        
 
@@ -648,7 +665,6 @@ public class Main extends javax.swing.JFrame {
                     }
 
                 } else {
-                    System.out.println("llegamos");
                     Errores_compTipos.add("Error de tipo en For con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
                 }
             } else {
