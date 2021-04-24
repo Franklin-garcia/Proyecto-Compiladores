@@ -715,7 +715,7 @@ ASIG_VAR ::=
 ;
 
     ASIG_STRUCT::=
-        Id:i1 Punto Id:i2 Igual:s VALUE:v
+        Id:i1 Punto Id:i2 Igual:s VALUE:v Newline
         {:
          Node AsigVars = new Node("Asignar-varS1");
                             AsigVars.addNode(new Node("Id", ((String) i1),i1right,i1left));
@@ -725,7 +725,7 @@ ASIG_VAR ::=
                             RESULT=AsigVars;
          :}
         |
-        Id:i1 Igual:s Id:i2 Punto Id:i3
+        Id:i1 Igual:s Id:i2 Punto Id:i3 Newline
         {:
          Node AsigVars = new Node("Asignar-varS2");
                             AsigVars.addNode(new Node("Id", ((String) i1),i1right,i1left));

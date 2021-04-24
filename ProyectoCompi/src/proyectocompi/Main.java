@@ -617,7 +617,54 @@ public class Main extends javax.swing.JFrame {
                 }
             }
         }
-
+ //----------------------- y utilizacion de structure------------------------------
+        if (actual.nombre.equals("Asignar-varS1")) {
+             int amb1=existeE(actual.hijos.get(0).valor);
+             int amb2=validar_variable(actual.hijos.get(3).valor);
+             if (amb1==1 && amb2==1) {
+                 String t1=EncontrarVE(actual.hijos.get(0).valor,actual.hijos.get(1).valor);
+                 String t2=get_tipo(actual.hijos.get(3).valor);
+                 if (!t1.equals("") ) {
+                     if (t1.equals(t2)) {
+                     }else{
+                          Errores_compTipos.add("Error de tipo en Asignacion con la variable " + actual.hijos.get(3).valor + ". Linea: " + (actual.hijos.get(3).linea) + " Columna: " + actual.hijos.get(3).columna);
+                     }
+                 }else{
+                     Errores_ambito.add("Error ambito en Asignacion con la variable " + actual.hijos.get(1).valor + ". Linea: " + (actual.hijos.get(1).linea) + " Columna: " + actual.hijos.get(1).columna);
+                 }
+             }else{
+                 if (amb1!=1) {
+                     Errores_ambito.add("Error ambito en Asignacion con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                 }
+                 if (amb2!=1) {
+                     Errores_ambito.add("Error ambito en Asignacion con la variable " + actual.hijos.get(3).valor + ". Linea: " + (actual.hijos.get(3).linea) + " Columna: " + actual.hijos.get(3).columna);
+                 }
+             }
+        }
+        if (actual.nombre.equals("Asignar-varS2")) {
+             int amb1=existeE(actual.hijos.get(2).valor);
+             int amb2=validar_variable(actual.hijos.get(0).valor);
+            
+             if (amb1==1 && amb2==1) {
+                 String t1=EncontrarVE(actual.hijos.get(2).valor,actual.hijos.get(3).valor);
+                 String t2=get_tipo(actual.hijos.get(0).valor);
+                 if (!t1.equals("") ) {
+                     if (t1.equals(t2)) {
+                     }else{
+                          Errores_compTipos.add("Error de tipo en Asignacion con la variable " + actual.hijos.get(3).valor + ". Linea: " + (actual.hijos.get(3).linea) + " Columna: " + actual.hijos.get(3).columna);
+                     }
+                 }else{
+                     Errores_ambito.add("Error ambito en Asignacion con la variable " + actual.hijos.get(3).valor + ". Linea: " + (actual.hijos.get(3).linea) + " Columna: " + actual.hijos.get(3).columna);
+                 }
+             }else{
+                 if (amb1!=1) {
+                     Errores_ambito.add("Error ambito en Asignacion con la variable " + actual.hijos.get(2).valor + ". Linea: " + (actual.hijos.get(2).linea) + " Columna: " + actual.hijos.get(2).columna);
+                 }
+                 if (amb2!=1) {
+                     Errores_ambito.add("Error ambito en Asignacion con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                 }
+             }
+        }
 //------------------------concatenacion-----------------------------------------------        
         //inicio de concatenacion    
         if (actual.nombre.equals("Concat")) {
@@ -634,7 +681,6 @@ public class Main extends javax.swing.JFrame {
 
             if (actual.hijos.get(2).nombre.equals("Id")) {//inicio de la concatenacion hay variabke
                 int amb2 = validar_variable(actual.hijos.get(2).valor);
-                System.out.println("y");
                 if (amb2 == 1) {
                 } else {
                     Errores_ambito.add("Error ambito en Concatenacion con la variable " + actual.hijos.get(2).valor + ". Linea: " + (actual.hijos.get(2).linea) + " Columna: " + actual.hijos.get(2).columna);
@@ -1092,6 +1138,38 @@ public class Main extends javax.swing.JFrame {
         }
     }
 
+    public static String EncontrarVE(String nombre,String var){
+        auxiliarStr="";
+        AyudaE(root,nombre,var);
+        String retorno=auxiliarStr;
+        auxiliarStr="";
+        return retorno;
+    } 
+    
+    public static void AyudaE(Node e,String nombre,String var){
+        if (e.nombre.equals("Structure") && e.hijos.get(0).valor.equals(nombre)) {
+             VerV(e,var);
+        }
+        for (int i = 0; i < e.hijos.size(); i++) {
+            if (!e.hijos.get(i).hijos.isEmpty()) {
+                AyudaE(e.hijos.get(i),nombre,var);
+            }
+        }
+    }
+    
+    public static void VerV(Node e, String var){
+        if (e.nombre.equals("Struct-body")) {
+             if (e.hijos.get(0).valor.equals(var)) {
+                 auxiliarStr=e.hijos.get(1).valor;
+            }
+        }
+        for (int i = 0; i < e.hijos.size(); i++) {
+            if (!e.hijos.get(i).hijos.isEmpty()) {
+                VerV(e.hijos.get(i),var);
+            }
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -1158,6 +1236,7 @@ public class Main extends javax.swing.JFrame {
     public static ArrayList<String> Params = new ArrayList<String>();//auxiliar de comprobacion
     public static ArrayList<String> Argumentos = new ArrayList<String>();//auxiliar de comprobacion
     public static int auxiliarParams = 0;
+    public static String auxiliarStr="";
     ///////////////////////////////////ambito//////////////////
     public static int ambito_cont = 0, ambito_control = -1, offset = 0;
     public static String ambito = "";
