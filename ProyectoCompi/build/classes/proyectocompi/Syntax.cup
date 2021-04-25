@@ -16,7 +16,7 @@ parser code
     }
 :};
 
-terminal Num, Bool, Cadena, Newline, Parizq, Parder, Coma,Punto, End, Write, Read, SumaResta, MultDiv, Igual, OpRel,OpRel2, Ampersand, 
+terminal Num, Bool, Cadena, Newline, Parizq, Parder, Coma,Punto, End, Write, Read, SumaResta, MultDiv, Igual, OpRel,OpRel2, Ampersand, Ampersand2, 
 If, Then, Else, ElseIf, For, To, Next, Step, Do, While, Loop, ByVal, Function, Sub, Structure, Module,
 TypeBoolean, TypeInteger, TypeString, Dim, As, Id, ContString, Error,EndIf;
 
@@ -661,6 +661,36 @@ SENT_CONCAT ::=
     :}
     |
     Ampersand Cadena:cs
+    {:
+    Node SConcat = new Node("Sent-concat");
+                            SConcat.addNode(new Node("ContString", ((String) cs)));
+                            RESULT=SConcat;
+    :}
+    |
+    Ampersand2 Newline Id:i1 SENT_CONCAT:sc 
+    {:
+    Node SConcat = new Node("Sent-concat");
+                            SConcat.addNode(new Node("Id", ((String) i1),i1right,i1left));
+                            SConcat.addNode(sc);
+                            RESULT=SConcat;
+    :}
+    |
+    Ampersand2 Newline Cadena:cs SENT_CONCAT:sc 
+    {:
+    Node SConcat = new Node("Sent-concat");
+                            SConcat.addNode(new Node("ContString", ((String) cs)));
+                            SConcat.addNode(sc);
+                            RESULT=SConcat;
+    :}
+    |
+    Ampersand2 Newline Id:i1 
+    {:
+    Node SConcat = new Node("Sent-concat");
+                            SConcat.addNode(new Node("Id", ((String) i1),i1right,i1left));
+                            RESULT=SConcat;
+    :}
+    |
+    Ampersand2 Newline Cadena:cs
     {:
     Node SConcat = new Node("Sent-concat");
                             SConcat.addNode(new Node("ContString", ((String) cs)));

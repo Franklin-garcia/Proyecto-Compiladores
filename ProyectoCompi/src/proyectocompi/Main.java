@@ -495,6 +495,9 @@ public class Main extends javax.swing.JFrame {
                 }
             }
         }
+        if (actual.nombre.equals("Dim-read")) {
+               agregar(new Entry(actual.hijos.get(0).valor, actual.hijos.get(1).valor, ambito, offset, activo), actual.hijos.get(0).linea, actual.hijos.get(0).columna);
+        }
 ////////////////////////////////////////Asignar///////////////////////////////////////////////////////////////////////////////        
 
         if (actual.nombre.equals("Asignar-var")) {

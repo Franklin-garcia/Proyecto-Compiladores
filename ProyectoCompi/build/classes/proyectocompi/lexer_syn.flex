@@ -59,6 +59,7 @@ oprel2 = "~="|"=="
 
 //Operadores de Concatenacion
 amp = "&"
+amp2 = "&_"
 
 //Sentencia If
 if = "If"
@@ -127,6 +128,7 @@ id = {letra}+({num}|{letra}|{guionbajo})*
     {oprel2}        {return new Symbol (sym.OpRel2, yycolumn, yyline, yytext());}
 
     {amp}           {return new Symbol (sym.Ampersand, yycolumn, yyline, yytext());}
+    ("&_")          {return new Symbol (sym.Ampersand2, yycolumn, yyline, yytext());}
 
     {if}            {return new Symbol (sym.If, yycolumn, yyline, yytext());}
     {then}          {return new Symbol (sym.Then, yycolumn, yyline, yytext());}

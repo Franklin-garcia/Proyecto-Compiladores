@@ -8,48 +8,49 @@ package proyectocompi;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int TypeInteger = 36;
+  public static final int TypeInteger = 37;
   public static final int End = 10;
   public static final int Coma = 8;
-  public static final int If = 19;
-  public static final int Id = 40;
-  public static final int Sub = 32;
-  public static final int Else = 21;
+  public static final int If = 20;
+  public static final int Id = 41;
+  public static final int Sub = 33;
+  public static final int Else = 22;
+  public static final int Ampersand2 = 19;
   public static final int Read = 12;
   public static final int MultDiv = 14;
-  public static final int Error = 42;
+  public static final int Error = 43;
   public static final int OpRel2 = 17;
-  public static final int Then = 20;
-  public static final int TypeBoolean = 35;
+  public static final int Then = 21;
+  public static final int TypeBoolean = 36;
   public static final int Punto = 9;
   public static final int Parizq = 6;
-  public static final int While = 28;
-  public static final int To = 24;
+  public static final int While = 29;
+  public static final int To = 25;
   public static final int Cadena = 4;
   public static final int Ampersand = 18;
-  public static final int For = 23;
+  public static final int For = 24;
   public static final int EOF = 0;
-  public static final int Step = 26;
-  public static final int Function = 31;
+  public static final int Step = 27;
+  public static final int Function = 32;
   public static final int error = 1;
-  public static final int Module = 34;
-  public static final int As = 39;
-  public static final int Do = 27;
+  public static final int Module = 35;
+  public static final int As = 40;
+  public static final int Do = 28;
   public static final int Num = 2;
-  public static final int ElseIf = 22;
+  public static final int ElseIf = 23;
   public static final int SumaResta = 13;
-  public static final int Dim = 38;
-  public static final int TypeString = 37;
+  public static final int Dim = 39;
+  public static final int TypeString = 38;
   public static final int OpRel = 16;
-  public static final int EndIf = 43;
+  public static final int EndIf = 44;
   public static final int Parder = 7;
-  public static final int ContString = 41;
-  public static final int Structure = 33;
-  public static final int ByVal = 30;
+  public static final int ContString = 42;
+  public static final int Structure = 34;
+  public static final int ByVal = 31;
   public static final int Bool = 3;
   public static final int Write = 11;
-  public static final int Next = 25;
-  public static final int Loop = 29;
+  public static final int Next = 26;
+  public static final int Loop = 30;
   public static final int Igual = 15;
   public static final int Newline = 5;
   public static final String[] terminalNames = new String[] {
@@ -72,6 +73,7 @@ public class sym {
   "OpRel",
   "OpRel2",
   "Ampersand",
+  "Ampersand2",
   "If",
   "Then",
   "Else",
