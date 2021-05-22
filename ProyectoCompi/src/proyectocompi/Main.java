@@ -381,16 +381,31 @@ public class Main extends javax.swing.JFrame {
 /////////////////////////////Parte sintactica//////////////////////////////////////////////////////////////////////
         String ST = ta_entrada.getText();
         s = new Syntax(new proyectocompi.Lexer_Syn(new StringReader(ST)));
-
+        String temporal = "------Errores Sintacticos------\n";
         try {
-            s.parse();
-            root = s.raiz;
-            ta_syntax_result.setText("Análisis sintáctico finalizado");
-            ta_syntax_result.setForeground(new Color(25, 111, 61));
-        } catch (Exception ex) {
-            Symbol sym = s.getS();
-            ta_syntax_result.setText("Error de sintaxis. Linea: " + (sym.right + 1) + " Columna: " + (sym.left + 1) + ", Texto: \"" + sym.value + "\"");
-            ta_syntax_result.setForeground(Color.red);
+            s.parse();       
+        } catch (Exception ex) { 
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (Syntax.Errores.isEmpty()) {
+            try {
+                root = s.raiz;
+                System.out.println("Analisis rizado correctamente");
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        } else {
+            try {
+                Symbol sym = s.getS();
+                temporal = temporal + Syntax.Errores;
+                //temporal = temporal + "Error de sintaxis. Linea: " + (sym.right + 1) + " Columna: " + (sym.left + 1) + ", Texto: \"" + sym.value + "\" \n";
+                System.out.println(temporal);
+                temporal = "";
+                Syntax.Errores.clear();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
 //////////////////////////////Parte Semantica////////////////////////////////////////////////////////////////////////
 ////--------------------------Comprobar tipos ---------------------------------------------------------------------
@@ -418,6 +433,7 @@ public class Main extends javax.swing.JFrame {
             System.out.println(Errores_ambito.get(i));
         }
     }//GEN-LAST:event_bt_syntax2ActionPerformed
+    
     public static void llenar(Node root, DefaultMutableTreeNode current) {
         for (int i = 0; i < root.hijos.size(); i++) {
             current.add(new DefaultMutableTreeNode(root.hijos.get(i)));
@@ -1028,7 +1044,7 @@ public class Main extends javax.swing.JFrame {
                 if (ambito.contains(tabla_simbolos.get(i).ambito)) {
                     return true;
                 }
-            }
+            } 
         }
         return false;
     }

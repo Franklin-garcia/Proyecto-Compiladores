@@ -1,19 +1,462 @@
 package proyectocompi;
 
 import java_cup.runtime.Symbol;
+import java.util.LinkedList;
 
 parser code
 {:
+    public static Symbol found;
     public static Node raiz;
+    public static LinkedList<String> Errores = new LinkedList<String>();
     private Symbol s;
-
-    public void syntax_error(Symbol s){
-        this.s=s;
-    }
 
     public Symbol getS(){
         return this.s;
     }
+
+    /* Reporte de error encontrado. */
+    public void report_error(String message, Object info) {
+        found = (Symbol)info;
+        StringBuilder m = new StringBuilder("Error Sintactico");
+        if (info instanceof java_cup.runtime.Symbol) {
+            if (found.left >= 0) {                
+                if (found.right >= 0)
+                    m.append(", linea "+(found.right+1));
+            }
+        }
+        m.append(" : "+message);
+        System.err.println(m);
+        Syntax.Errores.add(m.toString());
+
+    }
+   
+
+    public void report_fatal_error(String message, Object info) {
+        report_error(message, info);
+
+    }
+
+    public static void Contenido_Error(){
+        switch(found.sym){
+            case sym.Newline: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Module \n");
+                break;
+            case sym.End: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Procedimiento \n");
+                break;
+            case sym.Module: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: End \n");
+                break;
+            default:
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Contenido \n");
+                break;
+        }
+        Syntax.Errores.add("[Contenido_Error] encontro: "+found.value.toString()+" en la linea: "+(found.right+1)+" columna: "+found.left+"\n");
+    }
+
+    public static void ProcedimientoST_Error(){
+        switch(found.sym){
+            case sym.Newline: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Un procedimiento \n");
+                break;
+            default:
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: ; o proposicion \n");
+                break;
+        }
+        Syntax.Errores.add("[ProcedientoST_Error] encontro: "+found.value.toString()+" en la linea: "+(found.right+1)+" columna: "+found.left+"\n");
+    }
+
+    public static void Procedimiento_Error(){
+        switch(found.sym){
+            default:
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Procedimiento \n");
+                break;
+        }
+        Syntax.Errores.add("[Procedimiento_Error] encontro: "+found.value.toString()+" en la linea: "+(found.right+1)+" columna: "+found.left+"\n");
+    }
+
+    public static void Function_Error(){
+        switch(found.sym){
+            case sym.Id: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Function \n");
+                break;
+            case sym.Parizq: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Identificador \n");
+                break;
+            case sym.Parder: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Parametro o ( \n");
+                break;
+            case sym.As: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Cierre de parentesis \n");
+                break;
+            case sym.Newline: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Tipo de Variable \n");
+                break;
+            case sym.End: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Se espereaba el cuerpo de la funcion \n");
+                break;
+            case sym.Function: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: End \n");
+                break;
+            default:
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Function \n");
+                break;
+        }
+        Syntax.Errores.add("[Function_Error] encontro: "+found.value.toString()+" en la linea: "+(found.right+1)+" columna: "+found.left+"\n");
+    }
+
+    public static void Sub_Error(){
+        switch(found.sym){
+            case sym.Id: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Sub \n");
+                break;
+            case sym.Parizq: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Identificador \n");
+                break;
+            case sym.Parder: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Parametro o ( \n");
+                break;
+            case sym.Newline: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: ) \n");
+                break;
+            case sym.End: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Se espereaba el cuerpo de Sub \n");
+                break;
+            case sym.Sub: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: End \n");
+                break;
+            default:
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Sub \n");
+                break;
+        }
+        Syntax.Errores.add("[Sub_Error] encontro: "+found.value.toString()+" en la linea: "+(found.right+1)+" columna: "+found.left+"\n");
+    }
+
+public static void Structure_Error(){
+        switch(found.sym){
+            case sym.Id: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Structure \n");
+                break;
+            case sym.Newline: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Identificardor \n");
+                break;
+            case sym.End: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Cuerpo de estructura \n");
+                break;
+            case sym.Structure: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: End \n");
+                break;
+            default:
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: ; o proposicion \n");
+                break;
+        }
+        Syntax.Errores.add("[Structure_Error] encontro: "+found.value.toString()+" en la linea: "+(found.right+1)+" columna: "+found.left+"\n");
+    }
+
+
+public static void Params_Error(){
+        switch(found.sym){
+            case sym.Id: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: ByVal \n");
+                break;
+            case sym.As: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Identificador \n");
+                break;
+            case sym.Coma: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Tipo de Variable \n");
+                break;
+            default:
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Parametro \n");
+                break;
+        }
+        Syntax.Errores.add("[Parameter_Error] encontro: "+found.value.toString()+" en la linea: "+(found.right+1)+" columna: "+found.left+"\n");
+    }
+
+public static void Dim_Error(){
+        switch(found.sym){
+            case sym.Id: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Dim \n");
+                break;
+            case sym.As: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Identificador \n");
+                break;
+            case sym.Newline: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Tipo dee variable o Id \n");
+                break;
+            default:
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Dim \n");
+                break;
+        }
+        Syntax.Errores.add("[Dim_Error] encontro: "+found.value.toString()+" en la linea: "+(found.right+1)+" columna: "+found.left+"\n");
+    }
+
+public static void For_Error(){
+        switch(found.sym){
+            case sym.Id: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: For \n");
+                break;
+            case sym.Igual: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Id \n");
+                break;
+            case sym.Num: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: = o To \n");
+                break;
+            case sym.To: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Num \n");
+                break;
+            case sym.Next: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Cuerpo del For \n");
+                break;
+            case sym.Newline: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Next \n");
+                break;
+            default:
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: For \n");
+                break;
+        }
+        Syntax.Errores.add("For_Error] encontro: "+found.value.toString()+" en la linea: "+(found.right+1)+" columna: "+found.left+"\n");
+    }
+
+public static void ForStep_Error(){
+        switch(found.sym){
+            case sym.Id: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: For \n");
+                break;
+            case sym.Igual: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Id \n");
+                break;
+            case sym.Num: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: = o To \n");
+                break;
+            case sym.To: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Num \n");
+                break;
+            case sym.Next: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Cuerpo del For \n");
+                break;
+            case sym.Step: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Num \n");
+                break;
+            case sym.Newline: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Num o Cuerpo de for \n");
+                break;
+            default:
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: ; o proposicion \n");
+                break;
+        }
+        Syntax.Errores.add("[ForStep_Error] encontro: "+found.value.toString()+" en la linea: "+(found.right+1)+" columna: "+found.left+"\n");
+    }
+
+    public static void If_Error(){
+        switch(found.sym){
+            case sym.Then: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Condicion \n");
+                break;
+            case sym.Newline: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Then \n");
+                break;
+            default:
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: If \n");
+                break;
+        }
+        Syntax.Errores.add("[If_Error] encontro: "+found.value.toString()+" en la linea: "+(found.right+1)+" columna: "+found.left+"\n");
+    }
+
+    public static void Else_Error(){
+        switch(found.sym){
+            case sym.Newline: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Else o Then \n");
+                break;
+            case sym.Then: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Condicion \n");
+                break;
+            default:
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Else \n");
+                break;
+        }
+        Syntax.Errores.add("[Else_Error] encontro: "+found.value.toString()+" en la linea: "+(found.right+1)+" columna: "+found.left+"\n");
+    }
+
+    public static void DoWhile_Error(){
+        switch(found.sym){
+            case sym.Newline: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Condicion o Loop \n");
+                break;
+            case sym.While: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Do \n");
+                break;
+            case sym.Loop: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Body \n");
+                break;
+            default:
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: ; Do while \n");
+                break;
+        }
+        Syntax.Errores.add("[While_Error] encontro: "+found.value.toString()+" en la linea: "+(found.right+1)+" columna: "+found.left+"\n");
+    }
+
+    public static void DimRead_Error(){
+        switch(found.sym){
+            case sym.Newline: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: ) \n");
+                break;
+            case sym.Id: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Dim \n");
+                break;
+            case sym.As : 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Id \n");
+                break;
+            case sym.Igual: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Tipo de Variable \n");
+                break;
+            case sym.Read: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: = \n");
+                break;
+            case sym.Parizq: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Read \n");
+                break;
+            case sym.Parder: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: ( \n");
+                break;
+            default:
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Dim Read \n");
+                break;
+        }
+        Syntax.Errores.add("[DimRead_Error] encontro: "+found.value.toString()+" en la linea: "+(found.right+1)+" columna: "+found.left+"\n");
+    }
+
+    public static void Write_Error(){
+        switch(found.sym){
+            case sym.Parizq: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Write \n");
+                break;
+            case sym.Num: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: ( \n");
+                break;
+            case sym.Parder: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Numero \n");
+                break;
+            case sym.Newline: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: ) \n");
+                break;   
+            default:
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Write \n");
+                break;
+        }
+        Syntax.Errores.add("[Write_Error] encontro: "+found.value.toString()+" en la linea: "+(found.right+1)+" columna: "+found.left+"\n");
+    }
+
+    public static void Ids_Error(){
+        switch(found.sym){
+            case sym.Coma: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Valor \n");
+                break;
+            default:
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Ids \n");
+                break;
+        }
+        Syntax.Errores.add("[Ids_Error] encontro: "+found.value.toString()+" en la linea: "+(found.right+1)+" columna: "+found.left+"\n");
+    }
+
+    public static void StructBody_Error(){
+        switch(found.sym){
+            case sym.Newline: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Tipo de Variable \n");
+                break;
+            case sym.As: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Identificador \n");
+                break;
+            default:
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: ; o proposicion \n");
+                break;
+        }
+        Syntax.Errores.add("[StructBody_Error] encontro: "+found.value.toString()+" en la linea: "+(found.right+1)+" columna: "+found.left+"\n");
+    }
+    public static void AsigStruct_Error(){
+        switch(found.sym){
+            case sym.Newline: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Valor o Identificador \n");
+                break;
+            case sym.Igual: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Identificador \n");
+                break;
+            case sym.Id: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: . o = \n");
+                break;
+            case sym.Punto: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Identificador \n");
+                break;
+            default:
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Struct Asignacion \n");
+                break;
+        }
+        Syntax.Errores.add("[AsigStruct_Error] encontro: "+found.value.toString()+" en la linea: "+(found.right+1)+" columna: "+found.left+"\n");
+    }
+    public static void AsigVar_Error(){
+        switch(found.sym){
+            case sym.Newline: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Operador Relacional o ) \n");
+                break;
+            case sym.Igual: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Identificador \n");
+                break;
+            case sym.Id: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: = \n");
+                break;
+            case sym.Parizq: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Identificador \n");
+                break;
+            case sym.Parder: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: ( \n");
+                break;
+            case sym.Bool: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: = \n");
+                break;
+            case sym.Cadena: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: = \n");
+                break;
+            default:
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: AsigVar \n");
+                break;
+        }
+        Syntax.Errores.add("[AsigVar_Error] encontro: "+found.value.toString()+" en la linea: "+(found.right+1)+" columna: "+found.left+"\n");
+    }
+    public static void SentConcat_Error(){
+        switch(found.sym){
+            case sym.Newline: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: & \n");
+                break;
+            case sym.Id: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: & \n");
+                break;
+            case sym.Cadena: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: & \n");
+                break;
+            default:
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: SentConcat \n");
+                break;
+        }
+        Syntax.Errores.add("[SentConcat_Error] encontro: "+found.value.toString()+" en la linea: "+(found.right+1)+" columna: "+found.left+"\n");
+    }
+
+    public static void Concat_Error(){
+        switch(found.sym){
+            case sym.Igual: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Id \n");
+                break;
+            case sym.Cadena: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: = \n");
+                break;
+            case sym.Id: 
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: = \n");
+                break;
+            default:
+                Syntax.Errores.add("[Error_Syntaxis] se esperaba: Concat \n");
+                break;
+        }
+        Syntax.Errores.add("[Concat_Error] encontro: "+found.value.toString()+" en la linea: "+(found.right+1)+" columna: "+found.left+"\n");
+    }
+    
 :};
 
 terminal Num, Bool, Cadena, Newline, Parizq, Parder, Coma,Punto, End, Write, Read, SumaResta, MultDiv, Igual, OpRel,OpRel2, Ampersand, Ampersand2, 
@@ -39,7 +482,7 @@ CONTENIDO ::=
                             Contenido.addNode(p);
                             RESULT=Contenido;
      :} 
-    |
+    | error {:System.out.println("Contenido"); Syntax.Contenido_Error(); :}
 ;
 
 PROCEDIMIENTO_ST ::=
@@ -57,6 +500,7 @@ PROCEDIMIENTO_ST ::=
                             Procedimientos.addNode(p1);
                             RESULT=Procedimientos;
     :}
+    | error {:System.out.println("ProcedimientoST"); Syntax.ProcedimientoST_Error(); :}
 ;
 
 PROCEDIMIENTO ::=
@@ -98,6 +542,7 @@ FUNCTION::=
                             Function.addNode(b);
                             RESULT=Function;
     :}
+    | Function error {:System.out.println("Function"); Syntax.Function_Error(); :}
 ;
 SUB::=
     Sub Id:i Parizq PARAMS:p1 Parder Newline BODY:b End Sub
@@ -116,6 +561,7 @@ SUB::=
                             Sub.addNode(b);
                             RESULT=Sub;
     :}
+    | Sub error {:System.out.println("Sub"); Syntax.Sub_Error(); :}
 ;
 
 STRUCTURE::=
@@ -126,6 +572,7 @@ STRUCTURE::=
                             Procedimiento.addNode(sb);
                             RESULT=Procedimiento;
     :}
+    | Structure error {:System.out.println("Structure"); Syntax.Structure_Error(); :}
 ;
 
 VAR_TIPOS ::=
@@ -165,6 +612,7 @@ PARAMS ::=
                             Parametro.addNode(m);
                             RESULT=Parametro;
     :}
+    | ByVal error {:System.out.println("Function"); Syntax.Params_Error(); :}
 ;
 
 
@@ -335,6 +783,7 @@ DIM::=
                             Body1.addNode(new Node("Id", ((String) v), vright,vleft));
                             RESULT=Body1;
     :}
+    | Dim error {:System.out.println("Dim"); Syntax.Dim_Error(); :}
 ;
 
 FOR::=
@@ -348,6 +797,7 @@ FOR::=
                             Body2.addNode(b1);
                             RESULT=Body2;
     :}
+    | For error {:System.out.println("For"); Syntax.For_Error(); :}
 ;
 
 FOR_STEP::=
@@ -362,6 +812,7 @@ FOR_STEP::=
                             Body3.addNode(b1);
                             RESULT=Body3;
     :}
+    | For Id error {:System.out.println("ForStep "); Syntax.ForStep_Error(); :}
 ;
 
 IF::=
@@ -372,6 +823,7 @@ IF::=
                             Body4.addNode(b1);
                             RESULT=Body4;
     :}
+    | If error {:System.out.println("If"); Syntax.If_Error(); :}
 ;
 
 ELSE::=
@@ -389,6 +841,7 @@ ELSE::=
                             Else.addNode(b);
                             RESULT=Else;
     :}
+    | Else error {:System.out.println("Else"); Syntax.Else_Error(); :}
 ;
    
 DO_WHILE::=
@@ -399,6 +852,7 @@ DO_WHILE::=
                             Body5.addNode(b1);
                             RESULT=Body5;
     :}
+    | Do error {:System.out.println("Do While"); Syntax.DoWhile_Error(); :}
 ;
 
 DIM_READ::=
@@ -410,6 +864,7 @@ DIM_READ::=
                             Body6.addNode(new Node("Igual", ((String) s)));
                             RESULT=Body6;
     :}
+    | error {:System.out.println("DimRead"); Syntax.DimRead_Error(); :}
 
 ;
 
@@ -427,6 +882,7 @@ WRITE::=
                             Body7.addNode(new Node("Id", ((String) i), iright,ileft));
                             RESULT=Body7;
     :}
+    | Write error {:System.out.println("Write"); Syntax.Write_Error(); :}
 ;
 
 
@@ -447,6 +903,7 @@ STRUCT_BODY ::=
                             SBody.addNode(sb);
                             RESULT=SBody;
     :}
+    | Id error {:System.out.println("Struct Body"); Syntax.StructBody_Error(); :}
 
 ;
 
@@ -611,6 +1068,7 @@ IDS ::=
                             Ids.addNode(new Node("Boolean", ((String) n)));
                             RESULT=Ids;
     :}
+    | error {:System.out.println("Ids"); Syntax.Ids_Error(); :}
 ;
 
 
@@ -634,6 +1092,7 @@ CONCAT ::=
                             Concat.addNode(sc);
                             RESULT=Concat;
     :}
+    | error {:System.out.println("Concat"); Syntax.Concat_Error(); :}
 ;
 
 SENT_CONCAT ::=
@@ -696,6 +1155,7 @@ SENT_CONCAT ::=
                             SConcat.addNode(new Node("ContString", ((String) cs)));
                             RESULT=SConcat;
     :}
+    | error {:System.out.println("Sent Concat"); Syntax.SentConcat_Error(); :}
 ;
 
 ASIG_VAR ::=
@@ -742,52 +1202,55 @@ ASIG_VAR ::=
                             AsigVar.addNode(new Node("String", ((String) c)));
                             RESULT=AsigVar;
     :}
+    | Id Igual error {:System.out.println("Asig Variable"); Syntax.AsigVar_Error(); :}
+
 ;
 
-    ASIG_STRUCT::=
-        Id:i1 Punto Id:i2 Igual:s VALUE:v Newline
-        {:
-         Node AsigVars = new Node("Asignar-varS1");
-                            AsigVars.addNode(new Node("Id", ((String) i1),i1right,i1left));
-                            AsigVars.addNode(new Node("Id", ((String) i2),i2right,i2left));
-                            AsigVars.addNode(new Node("Igual", ((String) s)));
-                            AsigVars.addNode(v);
-                            RESULT=AsigVars;
-         :}
-        |
-        Id:i1 Igual:s Id:i2 Punto Id:i3 Newline
-        {:
-         Node AsigVars = new Node("Asignar-varS2");
-                            AsigVars.addNode(new Node("Id", ((String) i1),i1right,i1left));
-                            AsigVars.addNode(new Node("Igual", ((String) s)));
-                            AsigVars.addNode(new Node("Id", ((String) i2),i2right,i2left));
-                            AsigVars.addNode(new Node("Id", ((String) i3),i3right,i3left));
-                            RESULT=AsigVars;
-         :}
+ASIG_STRUCT::=
+    Id:i1 Punto Id:i2 Igual:s VALUE:v Newline
+    {:
+     Node AsigVars = new Node("Asignar-varS1");
+                        AsigVars.addNode(new Node("Id", ((String) i1),i1right,i1left));
+                        AsigVars.addNode(new Node("Id", ((String) i2),i2right,i2left));
+                        AsigVars.addNode(new Node("Igual", ((String) s)));
+                        AsigVars.addNode(v);
+                        RESULT=AsigVars;
+     :}
+    |
+    Id:i1 Igual:s Id:i2 Punto Id:i3 Newline
+    {:
+     Node AsigVars = new Node("Asignar-varS2");
+                        AsigVars.addNode(new Node("Id", ((String) i1),i1right,i1left));
+                        AsigVars.addNode(new Node("Igual", ((String) s)));
+                        AsigVars.addNode(new Node("Id", ((String) i2),i2right,i2left));
+                        AsigVars.addNode(new Node("Id", ((String) i3),i3right,i3left));
+                        RESULT=AsigVars;
+     :}
+    | Id error {:System.out.println("ASIG_STRUCT"); Syntax.AsigStruct_Error(); :}
 ;
 
-    VALUE::=
-        Id:i
-        {:
-        Node Value=new Node("Id", ((String) i),iright,ileft);
-                           RESULT=Value;
-        :}
-        |
-        Bool:i
-        {:
-        Node Value=new Node("Boolean", ((String) i),iright,ileft);
-                           RESULT=Value;
-        :}
-        |
-        Cadena:i
-        {:
-        Node Value=new Node("String", ((String) i),iright,ileft);
-                           RESULT=Value;
-        :}
-        |
-        Num:i
-        {:
-        Node Value=new Node("Integer", ((String) i),iright,ileft);
-                           RESULT=Value;
-        :}
+VALUE::=
+    Id:i
+    {:
+    Node Value=new Node("Id", ((String) i),iright,ileft);
+                       RESULT=Value;
+    :}
+    |
+    Bool:i
+    {:
+    Node Value=new Node("Boolean", ((String) i),iright,ileft);
+                       RESULT=Value;
+    :}
+    |
+    Cadena:i
+    {:
+    Node Value=new Node("String", ((String) i),iright,ileft);
+                       RESULT=Value;
+    :}
+    |
+    Num:i
+    {:
+    Node Value=new Node("Integer", ((String) i),iright,ileft);
+                       RESULT=Value;
+    :}
 ;
