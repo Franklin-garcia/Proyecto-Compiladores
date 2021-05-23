@@ -1232,7 +1232,7 @@ class CUP$Syntax$actions {
 		Object sb = (Object)((java_cup.runtime.Symbol) CUP$Syntax$stack.elementAt(CUP$Syntax$top-2)).value;
 		
     Node Procedimiento = new Node("Structure");
-                            Procedimiento.addNode(new Node("Id", ((String) i)));
+                            Procedimiento.addNode(new Node("Id", ((String) i),iright,ileft));
                             Procedimiento.addNode(sb);
                             RESULT=Procedimiento;
     

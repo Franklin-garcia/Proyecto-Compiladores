@@ -568,7 +568,7 @@ STRUCTURE::=
     Structure Id:i Newline STRUCT_BODY:sb End Structure
     {:
     Node Procedimiento = new Node("Structure");
-                            Procedimiento.addNode(new Node("Id", ((String) i)));
+                            Procedimiento.addNode(new Node("Id", ((String) i),iright,ileft));
                             Procedimiento.addNode(sb);
                             RESULT=Procedimiento;
     :}
