@@ -460,7 +460,7 @@ public class Main extends javax.swing.JFrame {
             ambito += "," + ambito_cont;
             ambito_cont++;
             ambito_control++;
-
+            inicioff=offset;
         }
 
 //////////////////////////////////Function///////////////////////////////////////////////////////////////////////////////        
@@ -473,7 +473,6 @@ public class Main extends javax.swing.JFrame {
                 tipo = tipo.substring(0, tipo.length() - 2);
                 tipo += "->" + actual.hijos.get(2).valor;
                 tabla_simbolos.add(new Entry(actual.hijos.get(0).valor, tipo, "module", -1, activo));
-                offset += actual.hijos.get(2).valor.length();
                 agregar_param(actual, a);
             }
             if (actual.hijos.size() == 3) {
@@ -860,6 +859,7 @@ public class Main extends javax.swing.JFrame {
                 || actual.nombre.equals("Else_if")
                 || actual.nombre.equals("Do-While"))) {
             ambito = ambito.substring(0, ambito.lastIndexOf(","));
+            offset=inicioff;
             ambito_control--;
         }
     }
@@ -1048,7 +1048,12 @@ public class Main extends javax.swing.JFrame {
             tabla_simbolos.add(e);
             //offset += getSize(e.tipo);
             offset += e.tipo.length();
-
+            if (e.tipo.equals("Integer")) {
+                offset+=4;
+            }else if(e.tipo.equals("String")){
+                
+            }
+ 
         }
 
     }
@@ -1363,7 +1368,7 @@ public class Main extends javax.swing.JFrame {
     public static int auxiliarParams = 0;
     public static String auxiliarStr = "";
     ///////////////////////////////////ambito//////////////////
-    public static int ambito_cont = 0, ambito_control = -1, offset = 0;
+    public static int ambito_cont = 0, ambito_control = -1, offset =0,inicioff=0;
     public static String ambito = "";
     public static boolean activo = true;
     public static ArrayList<String> Errores_ambito = new ArrayList<String>();
