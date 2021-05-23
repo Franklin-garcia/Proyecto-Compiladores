@@ -470,7 +470,7 @@ public class Main extends javax.swing.JFrame {
                 tipos_param(actual, a);
                 String tipo = tiposf;
                 tiposf = "";
-                tipo = tipo.substring(0, tipo.length() - 1);
+                tipo = tipo.substring(0, tipo.length() - 2);
                 tipo += "->" + actual.hijos.get(2).valor;
                 tabla_simbolos.add(new Entry(actual.hijos.get(0).valor, tipo, "module", offset, activo));
                 offset += actual.hijos.get(2).valor.length();
@@ -492,7 +492,7 @@ public class Main extends javax.swing.JFrame {
                 tipos_param(actual, a);
                 String tipo = tiposf;
                 tiposf = "";
-                tipo = tipo.substring(0, tipo.length() - 1);
+                tipo = tipo.substring(0, tipo.length() - 2);
                 tipo += "->void";
                 tabla_simbolos.add(new Entry(actual.hijos.get(0).valor, tipo, "module", offset, activo));
                 agregar_param(actual, a);
@@ -1109,7 +1109,7 @@ public class Main extends javax.swing.JFrame {
 
     public static void tipos_param(Node e, String a) {
         if (e.nombre.equals("Param")) {
-            tiposf += e.hijos.get(1).valor + ",";
+            tiposf += e.hijos.get(1).valor + " x ";
         }
 
         for (int i = 0; i < e.hijos.size(); i++) {
