@@ -472,13 +472,13 @@ public class Main extends javax.swing.JFrame {
                 tiposf = "";
                 tipo = tipo.substring(0, tipo.length() - 2);
                 tipo += "->" + actual.hijos.get(2).valor;
-                tabla_simbolos.add(new Entry(actual.hijos.get(0).valor, tipo, "module", offset, activo));
+                tabla_simbolos.add(new Entry(actual.hijos.get(0).valor, tipo, "module", -1, activo));
                 offset += actual.hijos.get(2).valor.length();
                 agregar_param(actual, a);
             }
             if (actual.hijos.size() == 3) {
                 String tipo1 = "void->" + actual.hijos.get(1).valor;
-                tabla_simbolos.add(new Entry(actual.hijos.get(0).valor, tipo1, "module", offset, activo));
+                tabla_simbolos.add(new Entry(actual.hijos.get(0).valor, tipo1, "module", -1, activo));
             }
         }
 //--------------------------------Agregar parametros---------------------------------------       
@@ -494,20 +494,20 @@ public class Main extends javax.swing.JFrame {
                 tiposf = "";
                 tipo = tipo.substring(0, tipo.length() - 2);
                 tipo += "->void";
-                tabla_simbolos.add(new Entry(actual.hijos.get(0).valor, tipo, "module", offset, activo));
+                tabla_simbolos.add(new Entry(actual.hijos.get(0).valor, tipo, "module", -1, activo));
                 agregar_param(actual, a);
             }
 
             if (actual.hijos.size() == 2) {
                 String tipo = "void->void";
-                tabla_simbolos.add(new Entry(actual.hijos.get(0).valor, tipo, "module", offset, activo));
+                tabla_simbolos.add(new Entry(actual.hijos.get(0).valor, tipo, "module", -1, activo));
             }
 
         }
 /////////////////////////////////Structure/////////////////////////////////////////////////////////////////////////////////////      
         if (actual.nombre.equals("Structure")) {
             // agregarE(new Entry(actual.hijos.get(0).valor, "Structure", "module", offset, activo), actual.hijos.get(0).linea, actual.hijos.get(0).columna);
-            tabla_simbolos.add(new Entry(actual.hijos.get(0).valor, "void->void", "module", offset, activo));
+            tabla_simbolos.add(new Entry(actual.hijos.get(0).valor, "void->void", "module", -1, activo));
         }
         if (actual.nombre.equals("Struct-body")) {
             agregar(new Entry(actual.hijos.get(0).valor, actual.hijos.get(1).valor, ambito, offset, activo), actual.hijos.get(0).linea, actual.hijos.get(0).columna);
