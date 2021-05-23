@@ -473,6 +473,7 @@ public class Main extends javax.swing.JFrame {
                 tipo = tipo.substring(0, tipo.length() - 2);
                 tipo += "->" + actual.hijos.get(2).valor;
                 tabla_simbolos.add(new Entry(actual.hijos.get(0).valor, tipo, "module", -1, activo));
+                offset=0;
                 agregar_param(actual, a);
             }
             if (actual.hijos.size() == 3) {
@@ -494,6 +495,7 @@ public class Main extends javax.swing.JFrame {
                 tipo = tipo.substring(0, tipo.length() - 2);
                 tipo += "->void";
                 tabla_simbolos.add(new Entry(actual.hijos.get(0).valor, tipo, "module", -1, activo));
+                offset=0;
                 agregar_param(actual, a);
             }
 
@@ -1046,15 +1048,15 @@ public class Main extends javax.swing.JFrame {
             Errores_ambito.add("Error linea: " + linea + " columna: " + columna + " la variable " + e.id + " ya fue declarada en el mismo ambito");
         } else {
             tabla_simbolos.add(e);
-            //offset += getSize(e.tipo);
-            offset += e.tipo.length();
             if (e.tipo.equals("Integer")) {
                 offset+=4;
             }else if(e.tipo.equals("String")){
-                
+                offset+=2;
+            }else if (e.tipo.equals("Boolean")) {
+                offset+=2;
             }
  
-        }
+        } 
 
     }
 
@@ -1128,7 +1130,6 @@ public class Main extends javax.swing.JFrame {
     public static void agregar_param(Node e, String a) {
         if (e.nombre.equals("Param")) {
             tabla_simbolos.add(new Entry(e.hijos.get(0).valor, e.hijos.get(1).valor, a, offset, activo));
-            offset += e.hijos.get(1).valor.length();
         }
 
         for (int i = 0; i < e.hijos.size(); i++) {
