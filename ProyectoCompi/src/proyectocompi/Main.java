@@ -1,14 +1,8 @@
 package proyectocompi;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Reader;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -16,10 +10,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java_cup.runtime.Symbol;
 import javax.swing.JFileChooser;
-import javax.swing.JPanel;
-import javax.swing.JTextPane;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -480,6 +470,7 @@ public class Main extends javax.swing.JFrame {
             if (actual.hijos.size() == 3) {
                 String tipo1 = "void->" + actual.hijos.get(1).valor;
                 tabla_simbolos.add(new Entry(actual.hijos.get(0).valor, tipo1, "module", -1, activo));
+                offset=0;
             }
         }
 //--------------------------------Agregar parametros---------------------------------------       
@@ -503,6 +494,7 @@ public class Main extends javax.swing.JFrame {
             if (actual.hijos.size() == 2) {
                 String tipo = "void->void";
                 tabla_simbolos.add(new Entry(actual.hijos.get(0).valor, tipo, "module", -1, activo));
+                offset=0;
             }
 
         }
@@ -510,6 +502,7 @@ public class Main extends javax.swing.JFrame {
         if (actual.nombre.equals("Structure")) {
             // agregarE(new Entry(actual.hijos.get(0).valor, "Structure", "module", offset, activo), actual.hijos.get(0).linea, actual.hijos.get(0).columna);
             tabla_simbolos.add(new Entry(actual.hijos.get(0).valor, "void->void", "module", -1, activo));
+            offset=0;
         }
         if (actual.nombre.equals("Struct-body")) {
             agregar(new Entry(actual.hijos.get(0).valor, actual.hijos.get(1).valor, ambito, offset, activo), actual.hijos.get(0).linea, actual.hijos.get(0).columna);
@@ -837,15 +830,15 @@ public class Main extends javax.swing.JFrame {
         for (int i = 0; i < actual.hijos.size(); i++) {
             if (actual.nombre.equals("Function")) {
                 ambito = actual.hijos.get(0).valor;
-                offset = 0;
+                //offset = 0;
                 ambito_cont = 1;
             } else if (actual.nombre.equals("Sub")) {
                 ambito = actual.hijos.get(0).valor;
-                offset = 0;
+                //offset = 0;
                 ambito_cont = 1;
             } else if (actual.nombre.equals("Structure")) {
                 ambito = actual.hijos.get(0).valor;
-                offset = 0;
+               // offset = 0;
                 ambito_cont = 1;
             }
 
@@ -1005,15 +998,15 @@ public class Main extends javax.swing.JFrame {
         for (int i = 0; i < actual.hijos.size(); i++) {
             if (actual.nombre.equals("Function")) {
                 ambito = actual.hijos.get(0).valor;
-                offset = 0;
+               // offset = 0;
                 ambito_cont = 1;
             } else if (actual.nombre.equals("Sub")) {
                 ambito = actual.hijos.get(0).valor;
-                offset = 0;
+                //offset = 0;
                 ambito_cont = 1;
             } else if (actual.nombre.equals("Structure")) {
                 ambito = actual.hijos.get(0).valor;
-                offset = 0;
+                //offset = 0;
                 ambito_cont = 1;
             }
 
@@ -1131,6 +1124,14 @@ public class Main extends javax.swing.JFrame {
     public static void agregar_param(Node e, String a) {
         if (e.nombre.equals("Param")) {
             tabla_simbolos.add(new Entry(e.hijos.get(0).valor, e.hijos.get(1).valor, a, offset, activo));
+           
+            if (e.hijos.get(1).valor.equals("Integer")) {
+                offset+=4;
+            }else if(e.hijos.get(1).valor.equals("String")){
+                offset+=2;
+            }else if (e.hijos.get(1).valor.equals("Boolean")) {
+                offset+=2;
+            }
         }
 
         for (int i = 0; i < e.hijos.size(); i++) {
