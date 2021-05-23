@@ -473,6 +473,7 @@ public class Main extends javax.swing.JFrame {
                 tipo = tipo.substring(0, tipo.length() - 1);
                 tipo += "->" + actual.hijos.get(2).valor;
                 tabla_simbolos.add(new Entry(actual.hijos.get(0).valor, tipo, "module", offset, activo));
+                offset += actual.hijos.get(2).valor.length();
                 agregar_param(actual, a);
             }
             if (actual.hijos.size() == 3) {
@@ -972,7 +973,24 @@ public class Main extends javax.swing.JFrame {
 
         }
 ///////////////////////////////Comprobaciones ///////////////////////////////////////////////////////////////     
-    
+        if (actual.nombre.equals("Function")) {
+            String id=actual.hijos.get(0).valor;
+            int linea=actual.hijos.get(0).linea;
+            int columna=actual.hijos.get(0).columna;
+            verificaE(id,linea,columna);
+        }
+        if (actual.nombre.equals("Sub")) {
+            String id=actual.hijos.get(0).valor;
+            int linea=actual.hijos.get(0).linea;
+            int columna=actual.hijos.get(0).columna;
+            verificaE(id,linea,columna);
+        }
+        if (actual.nombre.equals("Structure")) {
+            String id=actual.hijos.get(0).valor;
+            int linea=actual.hijos.get(0).linea;
+            int columna=actual.hijos.get(0).columna;
+            verificaE(id,linea,columna);
+        }
 
 
 
@@ -1032,22 +1050,17 @@ public class Main extends javax.swing.JFrame {
     }
 
 ///Agregar estructura FUNCTION, SUB , STRUCTURE
-    public static void verificaarE(Entry e, int linea, int columna) {
+    public static void verificaE(String id, int linea, int columna) {
         int verifica = 0;
         for (int i = 0; i < tabla_simbolos.size(); i++) {
             if (tabla_simbolos.get(i).ambito.equals("module")) {
-                if (e.id.equals(tabla_simbolos.get(i).id)) {
+                if (id.equals(tabla_simbolos.get(i).id)) {
                     verifica++;
                 }
             }
         }
         if (verifica > 1) {
-            Errores_ambito.add("Error linea: " + linea + " columna: " + columna + " la variable " + e.id + " ya fue declarada en el mismo ambito");
-        } else {
-            tabla_simbolos.add(e);
-            //offset += getSize(e.tipo);
-            offset += e.tipo.length();
-
+            Errores_ambito.add("Error linea: " + linea + " columna: " + columna + " la variable " + id + " ya fue declarada en el mismo ambito");
         }
 
     }
