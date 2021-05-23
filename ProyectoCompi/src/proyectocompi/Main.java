@@ -41,7 +41,7 @@ public class Main extends javax.swing.JFrame {
                 Tokens tokens = lexer.yylex();
                 if (tokens == null) {
                     resultado += "# Fin del archivo #";
-                    ta_syntax_result.setText(resultado);
+                   // ta_syntax_result.setText(resultado);
                     return;
                 }
                 switch (tokens) {
@@ -419,6 +419,7 @@ public class Main extends javax.swing.JFrame {
         ambito = "";
         segundaPasada(root);
         try {
+            ta_syntax_result.setText("Analisis completo");
             String mensaje = "";
             for (int i = 0; i < tabla_simbolos.size(); i++) {
                 mensaje += "ID: " + tabla_simbolos.get(i).id
