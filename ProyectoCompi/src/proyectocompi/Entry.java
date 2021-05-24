@@ -7,7 +7,7 @@ package proyectocompi;
 
 /**
  *
- * @author edujg
+ * @author franklin-garcia
  */
 public class Entry {
     String id,tipo , ambito;
