@@ -1045,7 +1045,7 @@ public class Main extends javax.swing.JFrame {
             if (e.tipo.equals("Integer")) {
                 offset+=4;
             }else if(e.tipo.equals("String")){
-                offset+=2;
+                offset+=4;
             }else if (e.tipo.equals("Boolean")) {
                 offset+=2;
             }
@@ -1123,15 +1123,7 @@ public class Main extends javax.swing.JFrame {
 ///Agrega los parametros de una function
     public static void agregar_param(Node e, String a) {
         if (e.nombre.equals("Param")) {
-            tabla_simbolos.add(new Entry(e.hijos.get(0).valor, e.hijos.get(1).valor, a, offset, activo));
-           
-            if (e.hijos.get(1).valor.equals("Integer")) {
-                offset+=4;
-            }else if(e.hijos.get(1).valor.equals("String")){
-                offset+=2;
-            }else if (e.hijos.get(1).valor.equals("Boolean")) {
-                offset+=2;
-            }
+            tabla_simbolos.add(new Entry(e.hijos.get(0).valor, e.hijos.get(1).valor, a, -1, activo));
         }
 
         for (int i = 0; i < e.hijos.size(); i++) {
@@ -1376,6 +1368,7 @@ public class Main extends javax.swing.JFrame {
     public static boolean activo = true;
     public static ArrayList<String> Errores_ambito = new ArrayList<String>();
     /////////////////////////////////codigo intermedio//////////////////////////
-
+    public static ArrayList<Cuadruplo> cuadruplos= new ArrayList();
+    
     ////////////////////////////////codigo final///////////////////////////////////
 }
