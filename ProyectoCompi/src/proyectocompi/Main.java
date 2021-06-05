@@ -362,6 +362,11 @@ public class Main extends javax.swing.JFrame {
         offset = 0;
         ambito = "";
 
+        cuadruplos = new ArrayList();
+        temporales = 0;
+        cantparam = 0;
+        etiquetas = 0;
+
 /////////////////////////////Parte lexica/////////////////////////////////////////////////////////////////////////
         try {
             analizarLexico();
@@ -429,6 +434,15 @@ public class Main extends javax.swing.JFrame {
         for (int i = 0; i < Errores_ambito.size(); i++) {
             System.out.println(Errores_ambito.get(i));
         }
+
+        System.out.println("\n");
+        Cuadruplos(root);
+        String mensaje = "";
+        mensaje += "---------------------\n";
+        for (int i = 0; i < cuadruplos.size(); i++) {
+            mensaje += cuadruplos.get(i) + "\n";
+        }
+        System.out.println(mensaje);
     }//GEN-LAST:event_bt_syntax2ActionPerformed
 
     public static void llenar(Node root, DefaultMutableTreeNode current) {
@@ -1309,6 +1323,72 @@ public class Main extends javax.swing.JFrame {
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////      Codigo intermedio
+    public static void Cuadruplos(Node root) {
+        boolean salto = false;
+        boolean main = false;
+        boolean code_block = false;
+        boolean falta = false;
+        boolean func = false;
+        if (root.nombre.equals("Code") && root.hijos.size() > 1) {
+            if (root.hijos.get(1).nombre.equals("Do-While")
+                    ) {
+                code_block = true;
+                root.siguiente = etiqueta_nueva();
+                root.hijos.get(1).siguiente = root.siguiente;
+            }
+        } else if (root.nombre.equals("Code") && root.hijos.size() == 1) {
+            if (root.hijos.get(0).nombre.equals("Do-While")) {
+                code_block = true;
+                root.siguiente = etiqueta_nueva();
+                root.hijos.get(0).siguiente = root.siguiente;
+            }
+        }
+        if (root.nombre.equals("Do-While")) {
+            salto = true;
+            root.comienzo = etiqueta_nueva();
+            cuadruplos.add(new Cuadruplo("ETIQ", root.comienzo, "", ""));
+            root.hijos.get(0).verdadera = etiqueta_nueva();
+            root.hijos.get(0).falsa = root.siguiente;
+            //codigoCondicion(root.hijos.get(0));
+            cuadruplos.add(new Cuadruplo("ETIQ", root.hijos.get(0).verdadera, "", ""));
+            root.hijos.get(1).siguiente = root.comienzo;
+            Cuadruplos(root.hijos.get(1));
+            cuadruplos.add(new Cuadruplo("GOTO", root.comienzo, "", ""));
+        }
+        
+        
+        for (int i = 0; i < root.hijos.size(); i++) {
+            if (code_block) {
+                if (i == root.hijos.size() - 1 && !root.hijos.get(i).nombre.equals("Code")) {
+                    falta = true;
+                }
+            }
+            if (!salto) {
+                Cuadruplos(root.hijos.get(i));
+            }
+        }
+
+    }
+
+    public static String temporal_nuevo() {
+        String r = "t" + temporales;
+        temporales = temporales + 1;
+        return r;
+    }
+
+    public static String etiqueta_nueva() {
+        String r = "etiq" + etiquetas;
+        etiquetas = etiquetas + 1;
+        return r;
+    }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////   Codigo final
+
     /**
      * @param args the command line arguments
      */
@@ -1384,6 +1464,6 @@ public class Main extends javax.swing.JFrame {
     public static ArrayList<String> Errores_ambito = new ArrayList<String>();
     /////////////////////////////////codigo intermedio//////////////////////////
     public static ArrayList<Cuadruplo> cuadruplos = new ArrayList();
-
+    public static int temporales = 0, cantparam = 0, etiquetas = 0;
     ////////////////////////////////codigo final///////////////////////////////////
 }
