@@ -1335,13 +1335,16 @@ public class Main extends javax.swing.JFrame {
         boolean func = false;
         if (root.nombre.equals("Code") && root.hijos.size() > 1) {
             if (root.hijos.get(1).nombre.equals("Do-While")
+                || root.hijos.get(1).nombre.equals("For")    
                     ) {
                 code_block = true;
                 root.siguiente = etiqueta_nueva();
                 root.hijos.get(1).siguiente = root.siguiente;
             }
         } else if (root.nombre.equals("Code") && root.hijos.size() == 1) {
-            if (root.hijos.get(0).nombre.equals("Do-While")) {
+            if (root.hijos.get(0).nombre.equals("Do-While")
+                || root.hijos.get(0).nombre.equals("For")    
+                ) {
                 code_block = true;
                 root.siguiente = etiqueta_nueva();
                 root.hijos.get(0).siguiente = root.siguiente;
@@ -1360,6 +1363,45 @@ public class Main extends javax.swing.JFrame {
             Cuadruplos(root.hijos.get(1));
             cuadruplos.add(new Cuadruplo("GOTO", root.comienzo, "", ""));
         }
+        else if(root.nombre.equals("For")){
+            salto =true;
+            cuadruplos.add(new Cuadruplo("=", root.hijos.get(2).valor, "", root.hijos.get(0).valor));
+            root.comienzo = etiqueta_nueva();
+            cuadruplos.add(new Cuadruplo("ETIQ", root.comienzo, "", ""));
+            codigoOpcionales(root.hijos.get(3));
+            String verdadera = etiqueta_nueva();
+            cuadruplos.add(new Cuadruplo("if <=", root.hijos.get(1).valor, root.hijos.get(3).lugar, verdadera));
+            cuadruplos.add(new Cuadruplo("GOTO", root.siguiente, "", ""));
+            root.asig = etiqueta_nueva();
+            root.hijos.get(4).siguiente = root.asig;
+            cuadruplos.add(new Cuadruplo("ETIQ", verdadera, "", ""));
+            Cuadruplos(root.hijos.get(4));
+            cuadruplos.add(new Cuadruplo("ETIQ", root.asig, "", ""));
+            String temp = temporal_nuevo();
+            cuadruplos.add(new Cuadruplo("+", root.hijos.get(0).valor, "1", temp));
+            cuadruplos.add(new Cuadruplo("=", temp, "", root.hijos.get(0).valor));
+            cuadruplos.add(new Cuadruplo("GOTO", root.comienzo, "", ""));
+        }
+        else if(root.nombre.equals("For-step")){
+                salto =true;
+            cuadruplos.add(new Cuadruplo("=", root.hijos.get(2).valor, "", root.hijos.get(0).valor));
+            root.comienzo = etiqueta_nueva();
+            cuadruplos.add(new Cuadruplo("ETIQ", root.comienzo, "", ""));
+            codigoOpcionales(root.hijos.get(3));
+            String verdadera = etiqueta_nueva();
+            cuadruplos.add(new Cuadruplo("if <=", root.hijos.get(1).valor, root.hijos.get(3).lugar, verdadera));
+            cuadruplos.add(new Cuadruplo("GOTO", root.siguiente, "", ""));
+            root.asig = etiqueta_nueva();
+            root.hijos.get(5).siguiente = root.asig;
+            cuadruplos.add(new Cuadruplo("ETIQ", verdadera, "", ""));
+            Cuadruplos(root.hijos.get(5));
+            cuadruplos.add(new Cuadruplo("ETIQ", root.asig, "", ""));
+            String temp = temporal_nuevo();
+            cuadruplos.add(new Cuadruplo("+", root.hijos.get(0).valor, root.hijos.get(4).valor, temp));
+            cuadruplos.add(new Cuadruplo("=", temp, "", root.hijos.get(0).valor));
+            cuadruplos.add(new Cuadruplo("GOTO", root.comienzo, "", ""));
+        }
+        
         
         
         for (int i = 0; i < root.hijos.size(); i++) {
