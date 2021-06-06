@@ -1353,7 +1353,8 @@ public class Main extends javax.swing.JFrame {
             cuadruplos.add(new Cuadruplo("ETIQ", root.comienzo, "", ""));
             root.hijos.get(0).verdadera = etiqueta_nueva();
             root.hijos.get(0).falsa = root.siguiente;
-            //codigoCondicion(root.hijos.get(0));
+            System.out.println(root.hijos.get(0).nombre);
+            codigoCondicion(root.hijos.get(0));
             cuadruplos.add(new Cuadruplo("ETIQ", root.hijos.get(0).verdadera, "", ""));
             root.hijos.get(1).siguiente = root.comienzo;
             Cuadruplos(root.hijos.get(1));
@@ -1371,8 +1372,40 @@ public class Main extends javax.swing.JFrame {
                 Cuadruplos(root.hijos.get(i));
             }
         }
-
+        if (falta) {
+            cuadruplos.add(new Cuadruplo("ETIQ", root.siguiente, "", ""));
+        }
     }
+    public static void  codigoCondicion(Node actual){
+        if (actual.nombre.equals("Condicion") && actual.hijos.size()>1) {
+                codigoOpcionales(actual.hijos.get(0));
+                codigoOpcionales(actual.hijos.get(2));
+                String val = "if "  +actual.hijos.get(1).valor;
+                cuadruplos.add(new Cuadruplo(val, actual.hijos.get(0).lugar,actual.hijos.get(2).lugar, actual.verdadera));
+                cuadruplos.add(new Cuadruplo("GOTO", actual.falsa, "", ""));
+        }else if(actual.nombre.equals("Condicion") && actual.hijos.size()==1){
+        
+        }
+    }
+    
+        public static void codigoOpcionales(Node root) {
+        for (int i = 0; i < root.hijos.size(); i++) {
+            codigoOpcionales(root.hijos.get(i));
+        }
+        boolean funcion = false;
+        if (root.nombre.equals("ID")) {
+            String type = get_tipo(root.valor);
+            //verificar
+            if (type.contains("->")) {
+                funcion = true;
+            }
+        }
+        //////////////////
+        if (root.nombre.equals("Integer") || root.nombre.equals("Id") && root.hijos.size() == 0
+                && !funcion || root.nombre.equals("String") || root.nombre.equals("Boolean")) {
+            root.lugar = root.valor;
+        }
+     }
 
     public static String temporal_nuevo() {
         String r = "t" + temporales;
