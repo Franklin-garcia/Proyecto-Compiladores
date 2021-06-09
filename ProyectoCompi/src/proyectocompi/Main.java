@@ -1329,10 +1329,10 @@ public class Main extends javax.swing.JFrame {
     ////////////      Codigo intermedio
     public static void Cuadruplos(Node root) {
         boolean salto = false;
-        boolean main = false;
         boolean code_block = false;
         boolean falta = false;
         boolean func = false;
+        boolean sub = false;
         if (root.nombre.equals("Code") && root.hijos.size() > 1) {
             if (root.hijos.get(1).nombre.equals("Do-While")
                 || root.hijos.get(1).nombre.equals("For")    
@@ -1413,6 +1413,11 @@ public class Main extends javax.swing.JFrame {
         }else if (root.nombre.equals("Function")) {
             func = true;
             cuadruplos.add(new Cuadruplo("F_ETIQ", root.hijos.get(0).valor, "", ""));
+        }else if (root.nombre.equals("Sub")) {
+            sub=true;
+            cuadruplos.add(new Cuadruplo("S_ETIQ", root.hijos.get(0).valor, "", ""));
+        }else if (root.nombre.equals("Dim-read")) {
+            cuadruplos.add(new Cuadruplo("read", root.hijos.get(0).valor, get_tipo(root.hijos.get(0).valor), ""));
         }
         
         
@@ -1423,7 +1428,7 @@ public class Main extends javax.swing.JFrame {
                 if (i == root.hijos.size() - 1 && !root.hijos.get(i).nombre.equals("Code")) {
                     falta = true;
                 }
-                if (root.hijos.get(i).nombre.equals("CODE")) {
+                if (root.hijos.get(i).nombre.equals("Code")) {
                     cuadruplos.add(new Cuadruplo("ETIQ", root.siguiente, "", ""));
                     falta = false;
                 }
@@ -1437,6 +1442,9 @@ public class Main extends javax.swing.JFrame {
         }
         if (func) {
             cuadruplos.add(new Cuadruplo("E_ETIQ", "fin" + root.hijos.get(0).valor, "", ""));
+        }
+        if (sub) {
+            cuadruplos.add(new Cuadruplo("S_ETIQ", "fin" + root.hijos.get(0).valor, "", ""));
         }
     }
     public static void  codigoCondicion(Node actual){
