@@ -1409,7 +1409,24 @@ public class Main extends javax.swing.JFrame {
                 cuadruplos.add(new Cuadruplo("print",root.hijos.get(0).valor,get_tipo(root.hijos.get(0).valor),""));
             }
         }else if(root.nombre.equals("Asignar-var")){
-        
+            ///Asignacion normal con id,Boolean, String, Integer
+            if (root.hijos.size()==3) {
+                 if (root.hijos.get(2).hijos.size()==0) {///para String y Boolean
+                        codigoOpcionales(root.hijos.get(2));
+                        cuadruplos.add(new Cuadruplo("=", root.hijos.get(2).lugar, "", root.hijos.get(0).valor));
+                }
+                 if (root.hijos.get(2).hijos.size()==1) {//para id y Integer
+                    String valor=root.hijos.get(2).hijos.get(0).hijos.get(0).nombre;
+                     if (valor.equals("Integer")) {///Integer
+                         String asignar=root.hijos.get(2).hijos.get(0).hijos.get(0).valor;
+                         cuadruplos.add(new Cuadruplo("=",asignar, "", root.hijos.get(0).valor));
+                     }
+                     if (valor.equals("Id")) {
+                         String asignar=root.hijos.get(2).hijos.get(0).hijos.get(0).valor;
+                         cuadruplos.add(new Cuadruplo("=",asignar, "", root.hijos.get(0).valor));
+                     }
+                }
+            }
         }else if (root.nombre.equals("Function")) {
             func = true;
             cuadruplos.add(new Cuadruplo("F_ETIQ", root.hijos.get(0).valor, "", ""));
