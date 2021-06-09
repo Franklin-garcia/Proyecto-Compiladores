@@ -1474,6 +1474,14 @@ public class Main extends javax.swing.JFrame {
         }        
         
         for (int i = 0; i < root.hijos.size(); i++) {
+            if (root.nombre.equals("CODE")) {
+                for (int j = 0; j < root.hijos.size(); j++) {
+                    if (root.hijos.get(j).nombre.equals("If")) {
+                        padre = root;
+                        break;
+                    }
+                }
+            }
             if (code_block) {
                 if (i == root.hijos.size() - 1 && !root.hijos.get(i).nombre.equals("Code")) {
                     falta = true;
