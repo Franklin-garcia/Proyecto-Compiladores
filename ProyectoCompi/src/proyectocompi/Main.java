@@ -1333,9 +1333,11 @@ public class Main extends javax.swing.JFrame {
         boolean falta = false;
         boolean func = false;
         boolean sub = false;
+        padre = root;
         if (root.nombre.equals("Code") && root.hijos.size() > 1) {
             if (root.hijos.get(1).nombre.equals("Do-While")
-                || root.hijos.get(1).nombre.equals("For")    
+                || root.hijos.get(1).nombre.equals("For")
+                    || root.hijos.get(1).nombre.equals("If")
                     ) {
                 code_block = true;
                 root.siguiente = etiqueta_nueva();
@@ -1435,10 +1437,41 @@ public class Main extends javax.swing.JFrame {
             cuadruplos.add(new Cuadruplo("S_ETIQ", root.hijos.get(0).valor, "", ""));
         }else if (root.nombre.equals("Dim-read")) {
             cuadruplos.add(new Cuadruplo("read", root.hijos.get(0).valor, get_tipo(root.hijos.get(0).valor), ""));
-        }
-        
-        
-        
+        }else if (root.nombre.equals("If")) {
+            salto = true;
+            if (root.hijos.size() > 1) {
+                System.out.println("");
+                if (padre.hijos.size() == 1) {
+                    root.hijos.get(0).verdadera = etiqueta_nueva();
+                    root.hijos.get(0).falsa = root.siguiente;
+                    codigoCondicion(root.hijos.get(0));
+                    cuadruplos.add(new Cuadruplo("ETIQ", root.hijos.get(0).verdadera, "", ""));
+                    root.hijos.get(1).siguiente = root.siguiente;
+                    Cuadruplos(root.hijos.get(1));
+                } else if (padre.hijos.size() == 2 && padre.hijos.get(1).nombre.equals("CODE")) {
+                    //solo if
+                    root.hijos.get(0).verdadera = etiqueta_nueva();
+                    root.hijos.get(0).falsa = root.siguiente;
+                    codigoCondicion(root.hijos.get(0));
+                    cuadruplos.add(new Cuadruplo("ETIQ", root.hijos.get(0).verdadera, "", ""));
+                    root.hijos.get(1).siguiente = root.siguiente;
+                    Cuadruplos(root.hijos.get(1));
+                } else {
+                    //if con else o else if
+                    root.hijos.get(0).verdadera = etiqueta_nueva();
+                    root.hijos.get(0).falsa = etiqueta_nueva();
+                    codigoCondicion(root.hijos.get(0));
+                    cuadruplos.add(new Cuadruplo("ETIQ", root.hijos.get(0).verdadera, "", ""));
+                    root.hijos.get(1).siguiente = root.siguiente;
+                    padre.hijos.get(1).siguiente = padre.siguiente;
+                    Cuadruplos(root.hijos.get(1));
+                    cuadruplos.add(new Cuadruplo("GOTO", root.siguiente, "", ""));
+                    cuadruplos.add(new Cuadruplo("ETIQ", root.hijos.get(0).falsa, "", ""));
+                    //f.hijos.get(1).siguiente = root.siguiente;
+                    //cuadruplos(f.hijos.get(1));
+                }
+            }
+        }        
         
         for (int i = 0; i < root.hijos.size(); i++) {
             if (code_block) {
@@ -1571,7 +1604,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JTextArea ta_entrada;
     private javax.swing.JTextArea ta_syntax_result;
     // End of variables declaration//GEN-END:variables
-    public static Node root;
+    public static Node root, padre;
     DefaultMutableTreeNode arbol;
     ///////////////////tipos///////////////////////////////////////////
     public static ArrayList<Entry> tabla_simbolos = new ArrayList<Entry>();
