@@ -1336,17 +1336,16 @@ public class Main extends javax.swing.JFrame {
         padre = root;
         if (root.nombre.equals("Code") && root.hijos.size() > 1) {
             if (root.hijos.get(1).nombre.equals("Do-While")
-                || root.hijos.get(1).nombre.equals("For")
-                    || root.hijos.get(1).nombre.equals("If")
-                    ) {
+                    || root.hijos.get(1).nombre.equals("For")
+                    || root.hijos.get(1).nombre.equals("If")) {
                 code_block = true;
                 root.siguiente = etiqueta_nueva();
                 root.hijos.get(1).siguiente = root.siguiente;
             }
         } else if (root.nombre.equals("Code") && root.hijos.size() == 1) {
             if (root.hijos.get(0).nombre.equals("Do-While")
-                || root.hijos.get(0).nombre.equals("For")    
-                ) {
+                    || root.hijos.get(0).nombre.equals("For")
+                    || root.hijos.get(0).nombre.equals("If")) {
                 code_block = true;
                 root.siguiente = etiqueta_nueva();
                 root.hijos.get(0).siguiente = root.siguiente;
@@ -1364,9 +1363,8 @@ public class Main extends javax.swing.JFrame {
             root.hijos.get(1).siguiente = root.comienzo;
             Cuadruplos(root.hijos.get(1));
             cuadruplos.add(new Cuadruplo("GOTO", root.comienzo, "", ""));
-        }
-        else if(root.nombre.equals("For")){
-            salto =true;
+        } else if (root.nombre.equals("For")) {
+            salto = true;
             cuadruplos.add(new Cuadruplo("=", root.hijos.get(2).valor, "", root.hijos.get(0).valor));
             root.comienzo = etiqueta_nueva();
             cuadruplos.add(new Cuadruplo("ETIQ", root.comienzo, "", ""));
@@ -1383,9 +1381,8 @@ public class Main extends javax.swing.JFrame {
             cuadruplos.add(new Cuadruplo("+", root.hijos.get(0).valor, "1", temp));
             cuadruplos.add(new Cuadruplo("=", temp, "", root.hijos.get(0).valor));
             cuadruplos.add(new Cuadruplo("GOTO", root.comienzo, "", ""));
-        }
-        else if(root.nombre.equals("For-step")){
-                salto =true;
+        } else if (root.nombre.equals("For-step")) {
+            salto = true;
             cuadruplos.add(new Cuadruplo("=", root.hijos.get(2).valor, "", root.hijos.get(0).valor));
             root.comienzo = etiqueta_nueva();
             cuadruplos.add(new Cuadruplo("ETIQ", root.comienzo, "", ""));
@@ -1402,45 +1399,58 @@ public class Main extends javax.swing.JFrame {
             cuadruplos.add(new Cuadruplo("+", root.hijos.get(0).valor, root.hijos.get(4).valor, temp));
             cuadruplos.add(new Cuadruplo("=", temp, "", root.hijos.get(0).valor));
             cuadruplos.add(new Cuadruplo("GOTO", root.comienzo, "", ""));
-        }else if(root.nombre.equals("Write")){
+        } else if (root.nombre.equals("Write")) {
             if (root.hijos.get(0).nombre.equals("Integer")) {
-                cuadruplos.add(new Cuadruplo("print",root.hijos.get(0).valor,"Integer",""));
-            }
-            else if (root.hijos.get(0).nombre.equals("Id")) {
+                cuadruplos.add(new Cuadruplo("print", root.hijos.get(0).valor, "Integer", ""));
+            } else if (root.hijos.get(0).nombre.equals("Id")) {
                 codigoOpcionales(root.hijos.get(0));
-                cuadruplos.add(new Cuadruplo("print",root.hijos.get(0).valor,get_tipo(root.hijos.get(0).valor),""));
+                cuadruplos.add(new Cuadruplo("print", root.hijos.get(0).valor, get_tipo(root.hijos.get(0).valor), ""));
             }
-        }else if(root.nombre.equals("Asignar-var")){
+        } else if (root.nombre.equals("Asignar-var")) {
             ///Asignacion normal con id,Boolean, String, Integer
-            if (root.hijos.size()==3) {
-                 if (root.hijos.get(2).hijos.size()==0) {///para String y Boolean
-                        codigoOpcionales(root.hijos.get(2));
-                        cuadruplos.add(new Cuadruplo("=", root.hijos.get(2).lugar, "", root.hijos.get(0).valor));
+            if (root.hijos.size() == 3) {
+                if (root.hijos.get(2).hijos.size() == 0) {///para String y Boolean
+                    codigoOpcionales(root.hijos.get(2));
+                    cuadruplos.add(new Cuadruplo("=", root.hijos.get(2).lugar, "", root.hijos.get(0).valor));
                 }
-                 if (root.hijos.get(2).hijos.size()==1) {//para id y Integer
-                    String valor=root.hijos.get(2).hijos.get(0).hijos.get(0).nombre;
-                     if (valor.equals("Integer")) {///Integer
-                         String asignar=root.hijos.get(2).hijos.get(0).hijos.get(0).valor;
-                         cuadruplos.add(new Cuadruplo("=",asignar, "", root.hijos.get(0).valor));
-                     }
-                     if (valor.equals("Id")) {
-                         String asignar=root.hijos.get(2).hijos.get(0).hijos.get(0).valor;
-                         cuadruplos.add(new Cuadruplo("=",asignar, "", root.hijos.get(0).valor));
-                     }
+                if (root.hijos.get(2).hijos.size() == 1) {//para id y Integer
+                    String valor = root.hijos.get(2).hijos.get(0).hijos.get(0).nombre;
+                    if (valor.equals("Integer")) {///Integer
+                        String asignar = root.hijos.get(2).hijos.get(0).hijos.get(0).valor;
+                        cuadruplos.add(new Cuadruplo("=", asignar, "", root.hijos.get(0).valor));
+                    }
+                    if (valor.equals("Id")) {
+                        String asignar = root.hijos.get(2).hijos.get(0).hijos.get(0).valor;
+                        cuadruplos.add(new Cuadruplo("=", asignar, "", root.hijos.get(0).valor));
+                    }
                 }
             }
-        }else if (root.nombre.equals("Function")) {
+        } else if (root.nombre.equals("Asignar-varF")) {
+
+            if (root.hijos.size() == 3) {
+                cuadruplos.add(new Cuadruplo("call", root.hijos.get(2).valor, "0", ""));
+                root.hijos.get(2).lugar = temporal_nuevo();
+                cuadruplos.add(new Cuadruplo("=", "RET", "", root.hijos.get(2).lugar));
+                cuadruplos.add(new Cuadruplo("=", root.hijos.get(2).lugar, "", root.hijos.get(0).valor));
+            }
+            if (root.hijos.size() == 4) {
+                agregar_paramIntermedio(root.hijos.get(3));
+                cuadruplos.add(new Cuadruplo("call", root.hijos.get(2).valor, ""+contparam, ""));
+                root.hijos.get(2).lugar = temporal_nuevo();
+                cuadruplos.add(new Cuadruplo("=", "RET", "", root.hijos.get(2).lugar));
+                cuadruplos.add(new Cuadruplo("=", root.hijos.get(2).lugar, "", root.hijos.get(0).valor));
+            }
+        } else if (root.nombre.equals("Function")) {
             func = true;
             cuadruplos.add(new Cuadruplo("F_ETIQ", root.hijos.get(0).valor, "", ""));
-        }else if (root.nombre.equals("Sub")) {
-            sub=true;
+        } else if (root.nombre.equals("Sub")) {
+            sub = true;
             cuadruplos.add(new Cuadruplo("S_ETIQ", root.hijos.get(0).valor, "", ""));
-        }else if (root.nombre.equals("Dim-read")) {
+        } else if (root.nombre.equals("Dim-read")) {
             cuadruplos.add(new Cuadruplo("read", root.hijos.get(0).valor, get_tipo(root.hijos.get(0).valor), ""));
-        }else if (root.nombre.equals("If")) {
+        } else if (root.nombre.equals("If")) {
             salto = true;
             if (root.hijos.size() > 1) {
-                System.out.println("");
                 if (padre.hijos.size() == 1) {
                     root.hijos.get(0).verdadera = etiqueta_nueva();
                     root.hijos.get(0).falsa = root.siguiente;
@@ -1448,7 +1458,7 @@ public class Main extends javax.swing.JFrame {
                     cuadruplos.add(new Cuadruplo("ETIQ", root.hijos.get(0).verdadera, "", ""));
                     root.hijos.get(1).siguiente = root.siguiente;
                     Cuadruplos(root.hijos.get(1));
-                } else if (padre.hijos.size() == 2 && padre.hijos.get(1).nombre.equals("CODE")) {
+                } else if (padre.hijos.size() == 2 && padre.hijos.get(1).nombre.equals("Code")) {
                     //solo if
                     root.hijos.get(0).verdadera = etiqueta_nueva();
                     root.hijos.get(0).falsa = root.siguiente;
@@ -1471,8 +1481,8 @@ public class Main extends javax.swing.JFrame {
                     //cuadruplos(f.hijos.get(1));
                 }
             }
-        }        
-        
+        }
+
         for (int i = 0; i < root.hijos.size(); i++) {
             if (root.nombre.equals("CODE")) {
                 for (int j = 0; j < root.hijos.size(); j++) {
@@ -1505,23 +1515,24 @@ public class Main extends javax.swing.JFrame {
             cuadruplos.add(new Cuadruplo("S_ETIQ", "fin" + root.hijos.get(0).valor, "", ""));
         }
     }
-    public static void  codigoCondicion(Node actual){
-        if (actual.nombre.equals("Condicion") && actual.hijos.size()>1) {
-                codigoOpcionales(actual.hijos.get(0));
-                codigoOpcionales(actual.hijos.get(2));
-                String val = "if "  +actual.hijos.get(1).valor;
-                cuadruplos.add(new Cuadruplo(val, actual.hijos.get(0).lugar,actual.hijos.get(2).lugar, actual.verdadera));
-                cuadruplos.add(new Cuadruplo("GOTO", actual.falsa, "", ""));
-        }else if(actual.nombre.equals("Condicion") && actual.hijos.size()==1){
-                codigoOpcionales(actual.hijos.get(0).hijos.get(0));
-                codigoOpcionales(actual.hijos.get(0).hijos.get(2));
-                String val = "if "  +actual.hijos.get(0).hijos.get(1).valor;
-                cuadruplos.add(new Cuadruplo(val, actual.hijos.get(0).hijos.get(0).lugar,actual.hijos.get(0).hijos.get(2).lugar, actual.hijos.get(0).verdadera));
-                cuadruplos.add(new Cuadruplo("GOTO", actual.hijos.get(0).falsa, "", "")); 
+
+    public static void codigoCondicion(Node actual) {
+        if (actual.nombre.equals("Condicion") && actual.hijos.size() > 1) {
+            codigoOpcionales(actual.hijos.get(0));
+            codigoOpcionales(actual.hijos.get(2));
+            String val = "if " + actual.hijos.get(1).valor;
+            cuadruplos.add(new Cuadruplo(val, actual.hijos.get(0).lugar, actual.hijos.get(2).lugar, actual.verdadera));
+            cuadruplos.add(new Cuadruplo("GOTO", actual.falsa, "", ""));
+        } else if (actual.nombre.equals("Condicion") && actual.hijos.size() == 1) {
+            codigoOpcionales(actual.hijos.get(0).hijos.get(0));
+            codigoOpcionales(actual.hijos.get(0).hijos.get(2));
+            String val = "if " + actual.hijos.get(0).hijos.get(1).valor;
+            cuadruplos.add(new Cuadruplo(val, actual.hijos.get(0).hijos.get(0).lugar, actual.hijos.get(0).hijos.get(2).lugar, actual.hijos.get(0).verdadera));
+            cuadruplos.add(new Cuadruplo("GOTO", actual.hijos.get(0).falsa, "", ""));
         }
     }
-    
-        public static void codigoOpcionales(Node root) {
+
+    public static void codigoOpcionales(Node root) {
         for (int i = 0; i < root.hijos.size(); i++) {
             codigoOpcionales(root.hijos.get(i));
         }
@@ -1538,7 +1549,7 @@ public class Main extends javax.swing.JFrame {
                 && !funcion || root.nombre.equals("String") || root.nombre.equals("Boolean")) {
             root.lugar = root.valor;
         }
-     }
+    }
 
     public static String temporal_nuevo() {
         String r = "t" + temporales;
@@ -1550,6 +1561,34 @@ public class Main extends javax.swing.JFrame {
         String r = "etiq" + etiquetas;
         etiquetas = etiquetas + 1;
         return r;
+    }
+    
+    public static void agregar_paramIntermedio(Node e) {
+        if (e.nombre.equals("Argu")) {
+            String tam="";
+            contparam++;
+            if (e.hijos.get(0).nombre.equals("Integer")
+                || e.hijos.get(0).nombre.equals("String")    
+                ) {
+                tam="4";
+            }else if(e.hijos.get(0).nombre.equals("Boolean")){
+                tam="2";
+            }else if(e.hijos.get(0).nombre.equals("Id")){
+                String temp=get_tipo(e.hijos.get(0).valor);
+                if (temp.equals("Integer") || temp.equals("String")) {
+                    tam="4";
+                }else if (temp.equals("Boolean")) {
+                    tam="2";
+                }
+            }
+             cuadruplos.add(new Cuadruplo("param", e.hijos.get(0).valor, tam, ""));
+        }
+
+        for (int i = 0; i < e.hijos.size(); i++) {
+            if (!e.hijos.get(i).hijos.isEmpty()) {
+                agregar_paramIntermedio(e.hijos.get(i));
+            }
+        }
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1630,6 +1669,6 @@ public class Main extends javax.swing.JFrame {
     public static ArrayList<String> Errores_ambito = new ArrayList<String>();
     /////////////////////////////////codigo intermedio//////////////////////////
     public static ArrayList<Cuadruplo> cuadruplos = new ArrayList();
-    public static int temporales = 0, cantparam = 0, etiquetas = 0;
+    public static int temporales = 0, cantparam = 0, etiquetas = 0,contparam=0;
     ////////////////////////////////codigo final///////////////////////////////////
 }

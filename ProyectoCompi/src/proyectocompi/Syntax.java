@@ -2745,7 +2745,7 @@ class CUP$Syntax$actions {
 		int i2right = ((java_cup.runtime.Symbol)CUP$Syntax$stack.elementAt(CUP$Syntax$top-3)).right;
 		Object i2 = (Object)((java_cup.runtime.Symbol) CUP$Syntax$stack.elementAt(CUP$Syntax$top-3)).value;
 		
-    Node AsigVar = new Node("Asignar-var");
+    Node AsigVar = new Node("Asignar-varF");
                             AsigVar.addNode(new Node("Id", ((String) i1),i1right,i1left));
                             AsigVar.addNode(new Node("Igual", ((String) s)));
                             AsigVar.addNode(new Node("Id", ((String) i2),i2right,i2left));
@@ -2772,7 +2772,7 @@ class CUP$Syntax$actions {
 		int idright = ((java_cup.runtime.Symbol)CUP$Syntax$stack.elementAt(CUP$Syntax$top-2)).right;
 		Object id = (Object)((java_cup.runtime.Symbol) CUP$Syntax$stack.elementAt(CUP$Syntax$top-2)).value;
 		
-    Node AsigVar = new Node("Asignar-var");
+    Node AsigVar = new Node("Asignar-varF");
                             AsigVar.addNode(new Node("Id", ((String) i1),i1right,i1left));
                             AsigVar.addNode(new Node("Igual", ((String) s)));
                             AsigVar.addNode(new Node("Id", ((String) i2),i2right,i2left));

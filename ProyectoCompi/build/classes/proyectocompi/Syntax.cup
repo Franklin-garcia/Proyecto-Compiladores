@@ -1170,7 +1170,7 @@ ASIG_VAR ::=
     |
     Id:i1 Igual:s Id:i2 Parizq Parder Newline 
     {:
-    Node AsigVar = new Node("Asignar-var");
+    Node AsigVar = new Node("Asignar-varF");
                             AsigVar.addNode(new Node("Id", ((String) i1),i1right,i1left));
                             AsigVar.addNode(new Node("Igual", ((String) s)));
                             AsigVar.addNode(new Node("Id", ((String) i2),i2right,i2left));
@@ -1179,7 +1179,7 @@ ASIG_VAR ::=
     |
     Id:i1 Igual:s Id:i2 Parizq IDS:id Parder Newline
     {:
-    Node AsigVar = new Node("Asignar-var");
+    Node AsigVar = new Node("Asignar-varF");
                             AsigVar.addNode(new Node("Id", ((String) i1),i1right,i1left));
                             AsigVar.addNode(new Node("Igual", ((String) s)));
                             AsigVar.addNode(new Node("Id", ((String) i2),i2right,i2left));
