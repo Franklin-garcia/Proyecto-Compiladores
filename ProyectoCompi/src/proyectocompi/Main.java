@@ -1426,7 +1426,7 @@ public class Main extends javax.swing.JFrame {
                 }
             }
         } else if (root.nombre.equals("Asignar-varF")) {
-
+            contparam=0;
             if (root.hijos.size() == 3) {
                 cuadruplos.add(new Cuadruplo("call", root.hijos.get(2).valor, "0", ""));
                 root.hijos.get(2).lugar = temporal_nuevo();
