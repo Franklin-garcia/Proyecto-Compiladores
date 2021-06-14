@@ -427,11 +427,11 @@ public class Main extends javax.swing.JFrame {
         } catch (Exception e) {
         }
 
-        System.out.println("Errorees tipos");
+        System.out.println("Errorees tipos " + Errores_compTipos.size());
         for (int i = 0; i < Errores_compTipos.size(); i++) {
             System.out.println(Errores_compTipos.get(i));
         }
-        System.out.println("Errores ambito");
+        System.out.println("Errores ambito " + Errores_ambito.size());
         for (int i = 0; i < Errores_ambito.size(); i++) {
             System.out.println(Errores_ambito.get(i));
         }
@@ -621,6 +621,20 @@ public class Main extends javax.swing.JFrame {
                     }
                 } else {
                     Errores_ambito.add("Error ambito en Asignacion con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                }
+            }
+            //Operacion aritmetica
+            if (actual.hijos.get(2).nombre.equals("Operacion")) { 
+                int amb1 = validar_variable(actual.hijos.get(0).valor);
+                if (amb1 == 1) {
+                    String t1 = get_tipo(actual.hijos.get(0).valor);
+                    if (t1.equals("Integer")) {
+                        validar_oa(actual.hijos.get(2));
+                    } else {
+                        Errores_compTipos.add("Error de tipo en Concatenacion con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                    }
+                } else {
+                    Errores_ambito.add("Error ambito en Concatenacion con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
                 }
             }
         }
@@ -1057,6 +1071,10 @@ public class Main extends javax.swing.JFrame {
         }
     }
 
+    public static void validarOperacionA(Node e){
+        
+    }
+    
     public static void agregar(Entry e, int linea, int columna) {
         boolean verifica = false;
         for (int i = 0; i < tabla_simbolos.size(); i++) {
@@ -1428,13 +1446,16 @@ public class Main extends javax.swing.JFrame {
 
                 if (root.hijos.get(2).nombre.equals("Operacion")) {
                     contO = 0;
-                    acuadruplos=new ArrayList();
+                    int c=0;
+                    acuadruplos = new ArrayList();
                     ArrayList<Orden> n = new ArrayList();
                     operacionAC(root.hijos.get(2));
                     contO=contO+temporales;
-                    temporales=temporales+contO;
+                    c=contO;
+                    contO=contO-1;
+                    temporales=temporales+c;
                     operacionAA(root.hijos.get(2));
-                    
+                    temporales=c;
                     for (int i = 0; i < acuadruplos.size(); i++) {
                         String pal = acuadruplos.get(i).res;
                         pal = pal.substring(1, pal.length());
@@ -1460,7 +1481,7 @@ public class Main extends javax.swing.JFrame {
                     for (int i = 0; i < p1.size(); i++) {
                         cuadruplos.add(p1.get(i));
                     }
-                    cuadruplos.add(new Cuadruplo("=","t"+temporales,"",root.hijos.get(0).valor));
+                    cuadruplos.add(new Cuadruplo("=", "t" + (c-1), "", root.hijos.get(0).valor));
                 }
             }
         } else if (root.nombre.equals("Asignar-varF")) {
