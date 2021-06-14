@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java_cup.runtime.Symbol;
@@ -1424,9 +1425,42 @@ public class Main extends javax.swing.JFrame {
                         cuadruplos.add(new Cuadruplo("=", asignar, "", root.hijos.get(0).valor));
                     }
                 }
+
+                if (root.hijos.get(2).nombre.equals("Operacion")) {
+                    contO = 0;
+                    operacionAC(root.hijos.get(2));
+                    //contO=contO+temporales;
+                    operacionAA(root.hijos.get(2));
+
+                }
+
+                ArrayList<Orden> n = new ArrayList();
+                for (int i = 0; i < acuadruplos.size(); i++) {
+                    String pal = acuadruplos.get(i).res;
+                    pal = pal.substring(1, pal.length());
+                    n.add(new Orden(i, Integer.parseInt(pal)));
+                }
+
+                for (int i = 0; i < n.size() - 1; i++) {
+                    for (int j = 0; j < n.size() - i - 1; j++) {
+                        if (n.get(j + 1).indice < n.get(j).indice) {
+                            int aux = n.get(j + 1).indice;
+                            int aux2 = n.get(j + 1).posicion;
+                            n.get(j + 1).indice = n.get(j).indice;
+                            n.get(j + 1).posicion = n.get(j).posicion;
+                            n.get(j).indice = aux;
+                            n.get(j).posicion = aux2;
+                        }
+                    }
+                }
+                ArrayList<Cuadruplo> p1 = new ArrayList();
+                for (int i = 0; i < n.size(); i++) {
+                    p1.add(acuadruplos.get(n.get(i).posicion));
+                }
+                
             }
         } else if (root.nombre.equals("Asignar-varF")) {
-            contparam=0;
+            contparam = 0;
             if (root.hijos.size() == 3) {
                 cuadruplos.add(new Cuadruplo("call", root.hijos.get(2).valor, "0", ""));
                 root.hijos.get(2).lugar = temporal_nuevo();
@@ -1435,7 +1469,7 @@ public class Main extends javax.swing.JFrame {
             }
             if (root.hijos.size() == 4) {
                 agregar_paramIntermedio(root.hijos.get(3));
-                cuadruplos.add(new Cuadruplo("call", root.hijos.get(2).valor, ""+contparam, ""));
+                cuadruplos.add(new Cuadruplo("call", root.hijos.get(2).valor, "" + contparam, ""));
                 root.hijos.get(2).lugar = temporal_nuevo();
                 cuadruplos.add(new Cuadruplo("=", "RET", "", root.hijos.get(2).lugar));
                 cuadruplos.add(new Cuadruplo("=", root.hijos.get(2).lugar, "", root.hijos.get(0).valor));
@@ -1562,26 +1596,140 @@ public class Main extends javax.swing.JFrame {
         etiquetas = etiquetas + 1;
         return r;
     }
-    
+
+    public static void operacionAC(Node e) {//contador de la operacion aritmetica
+        if (e.hijos.size() > 1 && (e.nombre.equals("Operacion") || e.nombre.equals("MultDiv"))) {
+            contO++;
+        }
+        for (int i = 0; i < e.hijos.size(); i++) {
+            if (!e.hijos.get(i).hijos.isEmpty()) {
+                operacionAC(e.hijos.get(i));
+            }
+        }
+    }
+
+    public static void operacionAA(Node e) {//contador de la operacion aritmetica
+        if (e.hijos.size() > 1 && (e.nombre.equals("Operacion") || e.nombre.equals("MultDiv"))) {
+            if (e.lugar.equals("")) {
+                e.lugar = "t" + contO;
+                contO--;
+            }
+            if ((e.hijos.get(0).hijos.size() == 1 || e.hijos.get(0).hijos.size() == 0)
+                    && (e.hijos.get(2).hijos.size() == 1 || e.hijos.get(2).hijos.size() == 0)) {
+
+                if (e.hijos.get(0).hijos.size() == 0 && e.hijos.get(2).hijos.size() == 0) {
+                    String t1, t2;
+                    t1 = e.hijos.get(0).valor;
+                    t2 = e.hijos.get(2).valor;
+                    acuadruplos.add(new Cuadruplo(e.hijos.get(1).valor, t1, t2, e.lugar));
+                } else if (e.hijos.get(0).hijos.size() == 1 && e.hijos.get(2).hijos.size() == 1) {
+                    String t1, t2;
+                    t1 = e.hijos.get(0).hijos.get(0).valor;
+                    if (t1.equals("<non-terminal>")) {
+                        t1 = e.hijos.get(0).hijos.get(0).hijos.get(0).valor;
+                    }
+                    t2 = e.hijos.get(2).hijos.get(0).valor;
+                    if (t2.equals("<non-terminal>")) {
+                        t2 = e.hijos.get(2).hijos.get(0).hijos.get(0).valor;
+                    }
+                    acuadruplos.add(new Cuadruplo(e.hijos.get(1).valor, t1, t2, e.lugar));
+                } else if (e.hijos.get(0).hijos.size() == 1 && e.hijos.get(2).hijos.size() == 0) {
+                    String t1, t2;
+                    t1 = e.hijos.get(0).hijos.get(0).valor;
+                    if (t1.equals("<non-terminal>")) {
+                        t1 = e.hijos.get(0).hijos.get(0).hijos.get(0).valor;
+                    }
+                    t2 = e.hijos.get(2).valor;
+                    acuadruplos.add(new Cuadruplo(e.hijos.get(1).valor, t1, t2, e.lugar));
+                } else if (e.hijos.get(0).hijos.size() == 0 && e.hijos.get(2).hijos.size() == 1) {
+                    String t1, t2;
+                    t1 = e.hijos.get(0).valor;
+                    t2 = e.hijos.get(2).hijos.get(0).valor;
+                    if (t2.equals("<non-terminal>")) {
+                        t2 = e.hijos.get(2).hijos.get(0).hijos.get(0).valor;
+                    }
+                    acuadruplos.add(new Cuadruplo(e.hijos.get(1).valor, t1, t2, e.lugar));
+                }
+
+            } else if (e.hijos.get(0).hijos.size() > 1
+                    && (e.hijos.get(2).hijos.size() == 1 || e.hijos.get(2).hijos.size() == 0)) {
+                if (e.hijos.get(2).hijos.size() == 1) {
+                    String t1 = "", t2 = "";
+                    e.hijos.get(0).lugar = "t" + contO;
+                    contO--;
+                    t1 = e.hijos.get(0).lugar;
+                    t2 = e.hijos.get(2).hijos.get(0).valor;
+                    if (t2.equals("<non-terminal>")) {
+                        t2 = e.hijos.get(2).hijos.get(0).hijos.get(0).valor;
+                    }
+                    acuadruplos.add(new Cuadruplo(e.hijos.get(1).valor, t1, t2, e.lugar));
+                } else if (e.hijos.get(2).hijos.size() == 0) {
+                    String t1 = "", t2 = "";
+                    e.hijos.get(0).lugar = "t" + contO;
+                    contO--;
+                    t1 = e.hijos.get(0).lugar;
+                    t2 = e.hijos.get(2).valor;
+                    acuadruplos.add(new Cuadruplo(e.hijos.get(1).valor, t1, t2, e.lugar));
+                }
+            } else if ((e.hijos.get(0).hijos.size() == 1 || e.hijos.get(0).hijos.size() == 0)
+                    && e.hijos.get(2).hijos.size() > 1) {
+                if (e.hijos.get(0).hijos.size() == 1) {
+                    String t1, t2;
+                    e.hijos.get(2).lugar = "t" + contO;
+                    contO--;
+                    t1 = e.hijos.get(0).hijos.get(0).valor;
+                    if (t1.equals("<non-terminal>")) {
+                        t1 = e.hijos.get(0).hijos.get(0).hijos.get(0).valor;
+                    }
+                    t2 = e.hijos.get(2).lugar;
+                    acuadruplos.add(new Cuadruplo(e.hijos.get(1).valor, t1, t2, e.lugar));
+                } else if (e.hijos.get(0).hijos.size() == 0) {
+                    String t1, t2;
+                    e.hijos.get(2).lugar = "t" + contO;
+                    contO--;
+                    t1 = e.hijos.get(0).valor;
+                    t2 = e.hijos.get(2).lugar;
+                    acuadruplos.add(new Cuadruplo(e.hijos.get(1).valor, t1, t2, e.lugar));
+                }
+            } else if (e.hijos.get(0).hijos.size() > 1 && e.hijos.get(2).hijos.size() > 1) {
+                String t1 = "", t2 = "";
+                e.hijos.get(2).lugar = "t" + contO;
+                contO--;
+                e.hijos.get(0).lugar = "t" + contO;
+                contO--;
+                t1 = e.hijos.get(0).lugar;
+                t2 = e.hijos.get(2).lugar;
+                acuadruplos.add(new Cuadruplo(e.hijos.get(1).valor, t1, t2, e.lugar));
+            }
+
+        }
+        System.out.println(" " + e.lugar);;
+
+        for (int i = 0; i < e.hijos.size(); i++) {
+            if (!e.hijos.get(i).hijos.isEmpty()) {
+                operacionAA(e.hijos.get(i));
+            }
+        }
+    }
+
     public static void agregar_paramIntermedio(Node e) {
         if (e.nombre.equals("Argu")) {
-            String tam="";
+            String tam = "";
             contparam++;
             if (e.hijos.get(0).nombre.equals("Integer")
-                || e.hijos.get(0).nombre.equals("String")    
-                ) {
-                tam="4";
-            }else if(e.hijos.get(0).nombre.equals("Boolean")){
-                tam="2";
-            }else if(e.hijos.get(0).nombre.equals("Id")){
-                String temp=get_tipo(e.hijos.get(0).valor);
+                    || e.hijos.get(0).nombre.equals("String")) {
+                tam = "4";
+            } else if (e.hijos.get(0).nombre.equals("Boolean")) {
+                tam = "2";
+            } else if (e.hijos.get(0).nombre.equals("Id")) {
+                String temp = get_tipo(e.hijos.get(0).valor);
                 if (temp.equals("Integer") || temp.equals("String")) {
-                    tam="4";
-                }else if (temp.equals("Boolean")) {
-                    tam="2";
+                    tam = "4";
+                } else if (temp.equals("Boolean")) {
+                    tam = "2";
                 }
             }
-             cuadruplos.add(new Cuadruplo("param", e.hijos.get(0).valor, tam, ""));
+            cuadruplos.add(new Cuadruplo("param", e.hijos.get(0).valor, tam, ""));
         }
 
         for (int i = 0; i < e.hijos.size(); i++) {
@@ -1669,6 +1817,9 @@ public class Main extends javax.swing.JFrame {
     public static ArrayList<String> Errores_ambito = new ArrayList<String>();
     /////////////////////////////////codigo intermedio//////////////////////////
     public static ArrayList<Cuadruplo> cuadruplos = new ArrayList();
-    public static int temporales = 0, cantparam = 0, etiquetas = 0,contparam=0;
+    public static int temporales = 0, cantparam = 0, etiquetas = 0, contparam = 0;
+    public static Node auxiliar;
+    public static int contO = 0;
+    public static ArrayList<Cuadruplo> acuadruplos = new ArrayList();
     ////////////////////////////////codigo final///////////////////////////////////
 }
