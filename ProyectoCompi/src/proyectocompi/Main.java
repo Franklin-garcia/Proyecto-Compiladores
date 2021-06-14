@@ -1428,36 +1428,40 @@ public class Main extends javax.swing.JFrame {
 
                 if (root.hijos.get(2).nombre.equals("Operacion")) {
                     contO = 0;
+                    acuadruplos=new ArrayList();
+                    ArrayList<Orden> n = new ArrayList();
                     operacionAC(root.hijos.get(2));
-                    //contO=contO+temporales;
+                    contO=contO+temporales;
+                    temporales=temporales+contO;
                     operacionAA(root.hijos.get(2));
+                    
+                    for (int i = 0; i < acuadruplos.size(); i++) {
+                        String pal = acuadruplos.get(i).res;
+                        pal = pal.substring(1, pal.length());
+                        n.add(new Orden(i, Integer.parseInt(pal)));
+                    }
 
-                }
-
-                ArrayList<Orden> n = new ArrayList();
-                for (int i = 0; i < acuadruplos.size(); i++) {
-                    String pal = acuadruplos.get(i).res;
-                    pal = pal.substring(1, pal.length());
-                    n.add(new Orden(i, Integer.parseInt(pal)));
-                }
-
-                for (int i = 0; i < n.size() - 1; i++) {
-                    for (int j = 0; j < n.size() - i - 1; j++) {
-                        if (n.get(j + 1).indice < n.get(j).indice) {
-                            int aux = n.get(j + 1).indice;
-                            int aux2 = n.get(j + 1).posicion;
-                            n.get(j + 1).indice = n.get(j).indice;
-                            n.get(j + 1).posicion = n.get(j).posicion;
-                            n.get(j).indice = aux;
-                            n.get(j).posicion = aux2;
+                    for (int i = 0; i < n.size() - 1; i++) {
+                        for (int j = 0; j < n.size() - i - 1; j++) {
+                            if (n.get(j + 1).indice < n.get(j).indice) {
+                                int aux = n.get(j + 1).indice;
+                                int aux2 = n.get(j + 1).posicion;
+                                n.get(j + 1).indice = n.get(j).indice;
+                                n.get(j + 1).posicion = n.get(j).posicion;
+                                n.get(j).indice = aux;
+                                n.get(j).posicion = aux2;
+                            }
                         }
                     }
+                    ArrayList<Cuadruplo> p1 = new ArrayList();
+                    for (int i = 0; i < n.size(); i++) {
+                        p1.add(acuadruplos.get(n.get(i).posicion));
+                    }
+                    for (int i = 0; i < p1.size(); i++) {
+                        cuadruplos.add(p1.get(i));
+                    }
+                    cuadruplos.add(new Cuadruplo("=","t"+temporales,"",root.hijos.get(0).valor));
                 }
-                ArrayList<Cuadruplo> p1 = new ArrayList();
-                for (int i = 0; i < n.size(); i++) {
-                    p1.add(acuadruplos.get(n.get(i).posicion));
-                }
-                
             }
         } else if (root.nombre.equals("Asignar-varF")) {
             contparam = 0;
@@ -1703,8 +1707,6 @@ public class Main extends javax.swing.JFrame {
             }
 
         }
-        System.out.println(" " + e.lugar);;
-
         for (int i = 0; i < e.hijos.size(); i++) {
             if (!e.hijos.get(i).hijos.isEmpty()) {
                 operacionAA(e.hijos.get(i));
