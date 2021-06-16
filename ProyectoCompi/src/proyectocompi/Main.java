@@ -624,7 +624,7 @@ public class Main extends javax.swing.JFrame {
                 }
             }
             //Operacion aritmetica
-            if (actual.hijos.get(2).nombre.equals("Operacion")) { 
+            if (actual.hijos.get(2).nombre.equals("Operacion")) {
                 int amb1 = validar_variable(actual.hijos.get(0).valor);
                 if (amb1 == 1) {
                     String t1 = get_tipo(actual.hijos.get(0).valor);
@@ -1071,10 +1071,10 @@ public class Main extends javax.swing.JFrame {
         }
     }
 
-    public static void validarOperacionA(Node e){
-        
+    public static void validarOperacionA(Node e) {
+
     }
-    
+
     public static void agregar(Entry e, int linea, int columna) {
         boolean verifica = false;
         for (int i = 0; i < tabla_simbolos.size(); i++) {
@@ -1446,16 +1446,16 @@ public class Main extends javax.swing.JFrame {
 
                 if (root.hijos.get(2).nombre.equals("Operacion")) {
                     contO = 0;
-                    int c=0;
+                    int c = 0;
                     acuadruplos = new ArrayList();
                     ArrayList<Orden> n = new ArrayList();
                     operacionAC(root.hijos.get(2));
-                    contO=contO+temporales;
-                    c=contO;
-                    contO=contO-1;
-                    temporales=temporales+c;
+                    contO = contO + temporales;
+                    c = contO;
+                    contO = contO - 1;
+                    temporales = temporales + c;
                     operacionAA(root.hijos.get(2));
-                    temporales=c;
+                    temporales = c;
                     for (int i = 0; i < acuadruplos.size(); i++) {
                         String pal = acuadruplos.get(i).res;
                         pal = pal.substring(1, pal.length());
@@ -1481,7 +1481,7 @@ public class Main extends javax.swing.JFrame {
                     for (int i = 0; i < p1.size(); i++) {
                         cuadruplos.add(p1.get(i));
                     }
-                    cuadruplos.add(new Cuadruplo("=", "t" + (c-1), "", root.hijos.get(0).valor));
+                    cuadruplos.add(new Cuadruplo("=", "t" + (c - 1), "", root.hijos.get(0).valor));
                 }
             }
         } else if (root.nombre.equals("Asignar-varF")) {
@@ -1499,6 +1499,34 @@ public class Main extends javax.swing.JFrame {
                 cuadruplos.add(new Cuadruplo("=", "RET", "", root.hijos.get(2).lugar));
                 cuadruplos.add(new Cuadruplo("=", root.hijos.get(2).lugar, "", root.hijos.get(0).valor));
             }
+        } else if (root.nombre.equals("Asignar-varS1")) {
+            int of = 0;
+            String t = get_tipo(root.hijos.get(0).valor);
+            for (int i = 0; i < tabla_simbolos.size(); i++) {
+                if (tabla_simbolos.get(i).id.equals(t)) {
+                    for (int j = i; j < tabla_simbolos.size(); j++) {
+                        if (tabla_simbolos.get(j).id.equals(root.hijos.get(1).valor)) {
+                            of = tabla_simbolos.get(j).offset;
+                            break;
+                        }
+                    }
+                }
+            }
+            cuadruplos.add(new Cuadruplo("[]=", root.hijos.get(3).valor, "" + of, root.hijos.get(0).valor));
+        } else if (root.nombre.equals("Asignar-varS2")) {
+            int of = 0;
+            String t = get_tipo(root.hijos.get(2).valor);
+            for (int i = 0; i < tabla_simbolos.size(); i++) {
+                if (tabla_simbolos.get(i).id.equals(t)) {
+                    for (int j = i; j < tabla_simbolos.size(); j++) {
+                        if (tabla_simbolos.get(j).id.equals(root.hijos.get(3).valor)) {
+                            of = tabla_simbolos.get(j).offset;
+                            break;
+                        }
+                    }
+                }
+            }
+            cuadruplos.add(new Cuadruplo("=[]", root.hijos.get(2).valor, "" + of, root.hijos.get(0).valor));
         } else if (root.nombre.equals("Function")) {
             func = true;
             cuadruplos.add(new Cuadruplo("F_ETIQ", root.hijos.get(0).valor, "", ""));
