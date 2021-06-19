@@ -491,6 +491,63 @@ public class Main extends javax.swing.JFrame {
         }
         txt += "\n";
         txt += "    .text\n    .globl main\n";
+        for (int i = 0; i < cuadruplos.size(); i++) {
+            if (cuadruplos.get(i).op.equals("F_ETIQ")) {
+                func_actual = cuadruplos.get(i).op1;
+                txt += cuadruplos.get(i).op1 + ":\n    sw $fp, -4($sp)\n    sw $ra, -8($sp)\n";
+                stack = 8;
+                parametros = new ArrayList<Entry>();
+                ArrayList<Entry> variables = new ArrayList<Entry>();
+                for (int j = 0; j < tabla_simbolos.size(); j++) {
+                    if (tabla_simbolos.get(j).offset == -1 && tabla_simbolos.get(j).ambito.equals(cuadruplos.get(i).op1)) {
+                        parametros.add(tabla_simbolos.get(j));
+                    } else if (tabla_simbolos.get(j).ambito.contains(cuadruplos.get(i).op1)) {
+                        if (tabla_simbolos.get(j).parametros == -1) {
+                            parametros.add(tabla_simbolos.get(j));
+                        }
+                        variables.add(tabla_simbolos.get(j));
+                    }
+                }
+                int cant_param = parametros.size();
+                for (int j = 0; j < parametros.size(); j++) {
+                    if (j <= 3) {
+                        int pos = stack + getSize(parametros.get(j).tipo);
+                        if (getSize(parametros.get(j).tipo) == 4) {
+                            txt += "    sw $s" + j + ", -" + pos + "($sp)\n";
+                        } else {
+                            pos += 3;
+                            txt += "    sw $s" + j + ", -" + pos + "($sp)\n";
+                        }
+                        stack = pos;
+                    } else {
+                        //mas de 4 parametros
+                    }
+                }
+                txt += "    move $fp, $sp\n";
+                for (int j = 0; j < parametros.size(); j++) {
+                    if (j <= 3) {
+                        txt += "    move $s" + j + ", $a" + j + "\n";
+                        for (int k = 0; k < tabla_simbolos.size(); k++) {
+                            if (tabla_simbolos.get(k).id.equals(parametros.get(j).id)) {
+                                tabla_simbolos.get(k).descriptor = "$s" + j;
+                            }
+                        }
+                        String s = "$s" + j;
+                        for (int k = 0; k < registros.size(); k++) {
+                            if (registros.get(k).equals(s)) {
+                                registros.get(k).valor = parametros.get(j).id;
+                            }
+                        }
+                    }
+                }
+                int stack_size = 0;
+                for (int j = 0; j < variables.size(); j++) {
+                    stack_size += getSize(variables.get(j).tipo);
+                }
+                int sp = stack + stack_size;
+                txt += "    sub $sp, $sp, " + sp + "\n";
+            }
+        }
 
         ////////// IMPRESION CODIGO FINAL //////////
         System.out.println("-- CODIGO FINAL --");
@@ -510,6 +567,37 @@ public class Main extends javax.swing.JFrame {
             pos = mensajes.size() - 1;
         }
         return str;
+    }
+
+    public static int getSize(String t) {
+        if (t.equals("int")) {
+            return 4;
+        } else if (t.equals("bool")) {
+            return 4;
+        } else if (t.equals("char")) {
+            return 1;
+        } else if (t.contains("array_")) {
+            if (t.subSequence(t.indexOf("_") + 1, t.indexOf("{")).equals("char")) {
+                String sz = t.substring(t.indexOf("{") + 1, t.indexOf("}"));
+                return Integer.parseInt(sz);
+            } else {
+                String sz = t.substring(t.indexOf("{") + 1, t.indexOf("}"));
+                return Integer.parseInt(sz) * 4;
+            }
+        } else if (t.contains("matrix_")) {
+            if (t.subSequence(t.indexOf("_") + 1, t.indexOf("{")).equals("char")) {
+                String sz = t.substring(t.indexOf("{") + 1, t.indexOf("}"));
+                String p = sz.substring(0, sz.indexOf(","));
+                String s = sz.substring(sz.indexOf(",") + 1);
+                return Integer.parseInt(p) * Integer.parseInt(s);
+            } else {
+                String sz = t.substring(t.indexOf("{") + 1, t.indexOf("}"));
+                String p = sz.substring(0, sz.indexOf(","));
+                String s = sz.substring(sz.indexOf(",") + 1);
+                return Integer.parseInt(p) * Integer.parseInt(s) * 4;
+            }
+        }
+        return 0;
     }
 
     public static void llenar(Node root, DefaultMutableTreeNode current) {
@@ -1923,7 +2011,8 @@ public class Main extends javax.swing.JFrame {
     public static Node root, padre;
     DefaultMutableTreeNode arbol;
     ///////////////////tipos///////////////////////////////////////////
-    public static ArrayList<Entry> tabla_simbolos = new ArrayList<Entry>();
+    public static ArrayList<Entry> tabla_simbolos = new ArrayList<Entry>(), parametros = new ArrayList<Entry>();
+    ;
     public static ArrayList<String> Errores_compTipos = new ArrayList<String>();
     public static Syntax s;
     public static ArrayList<String> Params = new ArrayList<String>();//auxiliar de comprobacion
@@ -1945,4 +2034,6 @@ public class Main extends javax.swing.JFrame {
     ////////////////////////////////codigo final///////////////////////////////////
     public static ArrayList<RegisterDesc> registros = new ArrayList<RegisterDesc>();
     public static ArrayList<String> mensajes = new ArrayList<String>();
+    public static String func_actual;
+    public static int stack = 0, par_mem = 8;
 }
