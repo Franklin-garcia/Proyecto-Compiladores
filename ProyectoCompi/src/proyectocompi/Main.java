@@ -486,20 +486,31 @@ public class Main extends javax.swing.JFrame {
         registros.add(new RegisterDesc("$fp"));
         registros.add(new RegisterDesc("$ra"));
         String txt = "    .data\n";
-        //for (int i = 0; i < mensajes.size(); i++) {
-        //    txt += "msg" + i + ":    .asciiz " + mensajes.get(i) + "\n";
-        //}
+        for (int i = 0; i < mensajes.size(); i++) {
+            txt += "msg" + i + ":    .asciiz " + mensajes.get(i).toString() + "\n";
+        }
         txt += "\n";
         txt += "    .text\n    .globl main\n";
 
         ////////// IMPRESION CODIGO FINAL //////////
         System.out.println("-- CODIGO FINAL --");
         System.out.println(txt);
-        System.out.println("-- ESTADO DE LOS REGISTROS --");
-        for (int i = 0; i < registros.size(); i++) {
-            System.out.println(registros.get(i).registro + " " + registros.get(i).valor);
-        }
+        //System.out.println("-- ESTADO DE LOS REGISTROS --");
+        //for (int i = 0; i < registros.size(); i++) {
+        //    System.out.println(registros.get(i).registro + " " + registros.get(i).valor);
+        //}
     }//GEN-LAST:event_jButton2MouseClicked
+
+    public static String mensaje(String str) {
+        int pos = -1;
+        if (mensajes.contains(str)) {
+            pos = mensajes.indexOf(str);
+        } else {
+            mensajes.add(str);
+            pos = mensajes.size() - 1;
+        }
+        return str;
+    }
 
     public static void llenar(Node root, DefaultMutableTreeNode current) {
         for (int i = 0; i < root.hijos.size(); i++) {
@@ -1477,8 +1488,14 @@ public class Main extends javax.swing.JFrame {
             if (root.hijos.get(0).nombre.equals("Integer")) {
                 cuadruplos.add(new Cuadruplo("print", root.hijos.get(0).valor, "Integer", ""));
             } else if (root.hijos.get(0).nombre.equals("Id")) {
-                codigoOpcionales(root.hijos.get(0));
-                cuadruplos.add(new Cuadruplo("print", root.hijos.get(0).valor, get_tipo(root.hijos.get(0).valor), ""));
+                if (get_tipo(root.hijos.get(0).valor).equals("String")) {
+                    String m = mensaje(root.hijos.get(0).valor);
+                    codigoOpcionales(root.hijos.get(0));
+                    cuadruplos.add(new Cuadruplo("print", m, "String", ""));
+                } else {
+                    codigoOpcionales(root.hijos.get(0));
+                    cuadruplos.add(new Cuadruplo("print", root.hijos.get(0).valor, get_tipo(root.hijos.get(0).valor), ""));
+                }
             }
         } else if (root.nombre.equals("Asignar-var")) {
             ///Asignacion normal con id,Boolean, String, Integer
@@ -1927,4 +1944,5 @@ public class Main extends javax.swing.JFrame {
     public static ArrayList<Cuadruplo> acuadruplos = new ArrayList();
     ////////////////////////////////codigo final///////////////////////////////////
     public static ArrayList<RegisterDesc> registros = new ArrayList<RegisterDesc>();
+    public static ArrayList<String> mensajes = new ArrayList<String>();
 }
