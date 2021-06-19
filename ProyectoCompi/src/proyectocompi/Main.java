@@ -117,6 +117,7 @@ public class Main extends javax.swing.JFrame {
         label_columna = new javax.swing.JLabel();
         bt_syntax1 = new javax.swing.JButton();
         bt_syntax2 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         jLabel2.setText("AST");
 
@@ -237,10 +238,18 @@ public class Main extends javax.swing.JFrame {
         });
 
         bt_syntax2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        bt_syntax2.setText("Compilar");
+        bt_syntax2.setText("Analizar");
         bt_syntax2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bt_syntax2ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jButton2.setText("Codigo Final");
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton2MouseClicked(evt);
             }
         });
 
@@ -259,24 +268,32 @@ public class Main extends javax.swing.JFrame {
                 .addComponent(label_columna)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
                 .addComponent(bt_syntax1)
-                .addGap(31, 31, 31)
+                .addGap(18, 18, 18)
                 .addComponent(bt_syntax2)
-                .addGap(46, 46, 46)
+                .addGap(18, 18, 18)
                 .addComponent(bt_abrir)
+                .addGap(18, 18, 18)
+                .addComponent(jButton2)
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(bt_abrir)
-                    .addComponent(jLabel1)
-                    .addComponent(label_linea)
-                    .addComponent(jLabel5)
-                    .addComponent(label_columna)
-                    .addComponent(bt_syntax1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(bt_syntax2))
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(1, 1, 1))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(bt_abrir)
+                            .addComponent(jLabel1)
+                            .addComponent(label_linea)
+                            .addComponent(jLabel5)
+                            .addComponent(label_columna)
+                            .addComponent(bt_syntax1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(bt_syntax2))))
                 .addContainerGap())
         );
 
@@ -445,6 +462,44 @@ public class Main extends javax.swing.JFrame {
         }
         System.out.println(mensaje);
     }//GEN-LAST:event_bt_syntax2ActionPerformed
+
+    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
+        ////////////////////   GENERACION DE CODIGO FINAL   ////////////////////
+        for (int i = 0; i < 10; i++) {
+            String s = "$t" + i;
+            registros.add(new RegisterDesc(s));
+        }
+        for (int i = 0; i < 8; i++) {
+            String s = "$s" + i;
+            registros.add(new RegisterDesc(s));
+        }
+        for (int i = 0; i < 2; i++) {
+            String s = "$v" + i;
+            registros.add(new RegisterDesc(s));
+        }
+        for (int i = 0; i < 4; i++) {
+            String s = "$a" + i;
+            registros.add(new RegisterDesc(s));
+        }
+        registros.add(new RegisterDesc("$zero"));
+        registros.add(new RegisterDesc("$sp"));
+        registros.add(new RegisterDesc("$fp"));
+        registros.add(new RegisterDesc("$ra"));
+        String txt = "    .data\n";
+        //for (int i = 0; i < mensajes.size(); i++) {
+        //    txt += "msg" + i + ":    .asciiz " + mensajes.get(i) + "\n";
+        //}
+        txt += "\n";
+        txt += "    .text\n    .globl main\n";
+
+        ////////// IMPRESION CODIGO FINAL //////////
+        System.out.println("-- CODIGO FINAL --");
+        System.out.println(txt);
+        System.out.println("-- ESTADO DE LOS REGISTROS --");
+        for (int i = 0; i < registros.size(); i++) {
+            System.out.println(registros.get(i).registro + " " + registros.get(i).valor);
+        }
+    }//GEN-LAST:event_jButton2MouseClicked
 
     public static void llenar(Node root, DefaultMutableTreeNode current) {
         for (int i = 0; i < root.hijos.size(); i++) {
@@ -1789,9 +1844,6 @@ public class Main extends javax.swing.JFrame {
             }
         }
     }
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////   Codigo final
 
     /**
      * @param args the command line arguments
@@ -1835,6 +1887,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton bt_syntax1;
     private javax.swing.JButton bt_syntax2;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -1873,4 +1926,5 @@ public class Main extends javax.swing.JFrame {
     public static int contO = 0;
     public static ArrayList<Cuadruplo> acuadruplos = new ArrayList();
     ////////////////////////////////codigo final///////////////////////////////////
+    public static ArrayList<RegisterDesc> registros = new ArrayList<RegisterDesc>();
 }
