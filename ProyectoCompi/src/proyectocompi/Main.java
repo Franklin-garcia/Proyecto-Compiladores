@@ -486,9 +486,17 @@ public class Main extends javax.swing.JFrame {
         registros.add(new RegisterDesc("$fp"));
         registros.add(new RegisterDesc("$ra"));
         String txt = "    .data\n";
-        for (int i = 0; i < mensajes.size(); i++) {
-            txt += "msg" + i + ":    .asciiz " + mensajes.get(i).toString() + "\n";
+
+        for (int i = 0; i < cuadruplos.size(); i++) {
+            for (int j = 0; j < mensajes.size(); j++) {
+                if (cuadruplos.get(i).res.equals(mensajes.get(j).id)) {
+                    txt += mensajes.get(j).id + ":    .asciiz " + mensajes.get(j).msg + "\n";
+                }
+            }
         }
+        /* for (int i = 0; i < mensajes.size(); i++) {
+            txt += "msg" + i + ":    .asciiz " + mensajes.get(i).toString() + "\n";
+        }*/
         txt += "\n";
         txt += "    .text\n    .globl main\n";
         for (int i = 0; i < cuadruplos.size(); i++) {
@@ -546,7 +554,53 @@ public class Main extends javax.swing.JFrame {
                 }
                 int sp = stack + stack_size;
                 txt += "    sub $sp, $sp, " + sp + "\n";
+            } else if (cuadruplos.get(i).op.equals("W_ETIQ")) {
+                //revisar si estan montados en registros
+                txt += genWhile(cuadruplos.get(i), cuadruplos.get(i + 1));
+            } else if (cuadruplos.get(i).op.equals("if ==")) {
+                //revisar si estan montados en registros
+                txt += genIf(cuadruplos.get(i));
+            } else if (cuadruplos.get(i).op.equals("if >=")) {
+                //revisar si estan montados en registros
+                txt += genIf(cuadruplos.get(i));
+            } else if (cuadruplos.get(i).op.equals("if <=")) {
+                //revisar si estan montados en registros
+                txt += genIf(cuadruplos.get(i));
+            } else if (cuadruplos.get(i).op.equals("if !=")) {
+                //revisar si estan montados en registros
+                txt += genIf(cuadruplos.get(i));
+            } else if (cuadruplos.get(i).op.equals("if >")) {
+                //revisar si estan montados en registros
+                txt += genIf(cuadruplos.get(i));
+            } else if (cuadruplos.get(i).op.equals("if <")) {
+                //revisar si estan montados en registros
+                txt += genIf(cuadruplos.get(i));
+            } else if (cuadruplos.get(i).op.equals("S_ETIQ")) {
+                if (cuadruplos.get(i).op1.equals("Main")) {
+                    txt += "main:\n    move $fp, $sp\n";
+                    stack = 0;
+                } else {
+                    txt += "ExitProgram:\n    li $v0, 10\nsyscall\n";
+                }
+            } else if (cuadruplos.get(i).op.equals("print")) {
+                txt += printCodigoFinal(cuadruplos.get(i));
+
+            } else if (cuadruplos.get(i).op.equals("=")) {
+                txt += asigSencilla(cuadruplos.get(i));
+            } else if (cuadruplos.get(i).op.equals("+")) {
+                txt += op(cuadruplos.get(i));
+            } else if (cuadruplos.get(i).op.equals("-")) {
+                txt += op(cuadruplos.get(i));
+            } else if (cuadruplos.get(i).op.equals("*")) {
+                txt += op(cuadruplos.get(i));
+            } else if (cuadruplos.get(i).op.equals("/")) {
+                txt += op(cuadruplos.get(i));
+            } else if (cuadruplos.get(i).op.equals("GOTO")) {
+                txt += "    b " + cuadruplos.get(i).op1 + "\n";
+            } else if (cuadruplos.get(i).op.equals("ETIQ")) {
+                txt += cuadruplos.get(i).op1 + ":\n";
             }
+
         }
 
         ////////// IMPRESION CODIGO FINAL //////////
@@ -558,17 +612,565 @@ public class Main extends javax.swing.JFrame {
         //}
     }//GEN-LAST:event_jButton2MouseClicked
 
-    public static String mensaje(String str) {
-        int pos = -1;
-        if (mensajes.contains(str)) {
-            pos = mensajes.indexOf(str);
-        } else {
-            mensajes.add(str);
-            pos = mensajes.size() - 1;
+    public static String printCodigoFinal(Cuadruplo c) {
+        String txt = "";
+        if (c.op2.equals("String")) {
+            for (int j = 0; j < tabla_simbolos.size(); j++) {
+                if (c.op1.equals(tabla_simbolos.get(j).id)) {
+                    txt += "    li $v0, 4\n"
+                            + "    move $a0, " + c.op1 + "\n"
+                            + "syscall\n";
+                }
+            }
+        } else if (c.op2.equals("Integer")) {
+            for (int j = 0; j < tabla_simbolos.size(); j++) {
+                if (c.op1.equals(tabla_simbolos.get(j).id)) {
+                    int pos = tabla_simbolos.get(j).offset;
+                    txt += "    move $t0," + "-" + pos + "($fp)\n"
+                            + "    li $v0, 1\n"
+                            + "    move $a0, $t0\n"
+                            + "syscall\n";
+                }
+            }
+        } else if (c.op2.equals("")) {
+            txt += "    li $v0, \n    la $a0, text\n    syscall\n";
         }
-        return str;
+        return txt;
     }
 
+    public static String asigSencilla(Cuadruplo c) {
+        String txt = "";
+        if (c.op1.equals("RET")) {
+            String sgte = nextTemp(c.res);
+            txt += "    move " + sgte + ", $v0\n";
+        } else {
+            boolean esta = false, liberar1 = false;
+            String r = "";
+            for (int j = 0; j < tabla_simbolos.size(); j++) {
+                if (tabla_simbolos.get(j).id.equals(c.op1)) {
+                    esta = true;
+                    if (tabla_simbolos.get(j).descriptor.equals("")) {
+                        //load
+                        int sz = getSize(tabla_simbolos.get(j).tipo);
+                        int pos = stack + tabla_simbolos.get(j).offset + sz;
+                        String sgtreg = nextTemp(c.op1);
+                        if (sz == 4) {
+                            txt += "    lw " + sgtreg + ", " + "-" + pos + "($fp)\n";
+                        } else {
+                            txt += "    lb " + sgtreg + ", " + "-" + pos + "($fp)\n";
+                        }
+                        tabla_simbolos.get(j).descriptor = sgtreg;
+                        liberar1 = true;
+                        r = sgtreg;
+                    } else {
+                        r = tabla_simbolos.get(j).descriptor;
+                    }
+                    break;
+                }
+            }
+            if (!esta) {
+                for (int j = 0; j < registros.size(); j++) {
+                    if (registros.get(j).valor.equals(c.op1)) {
+                        r = registros.get(j).registro;
+                        liberar1 = true;
+                        esta = true;
+                    }
+                }
+            }
+            if (!esta) {
+                r = nextTemp(c.op1);
+                if (!c.op1.contains("'")) {
+                    if (c.op1.equals("true")) {
+                        txt += "    li " + r + ", 1\n";
+                    } else if (c.op1.equals("false")) {
+                        txt += "    li " + r + ", 0\n";
+                    } else {
+                        //numero
+                        txt += "    li " + r + ", " + c.res + "\n";
+                    }
+                } else {
+                    //char
+                    txt += "    addi " + r + ", $zero, " + c.op1 + "\n";
+                }
+
+                liberar1 = true;
+            }
+            for (int j = 0; j < tabla_simbolos.size(); j++) {
+                if (tabla_simbolos.get(j).id.equals(c.res)) {
+                    if (tabla_simbolos.get(j).descriptor.equals("")) {
+                        //store
+                        int sz = getSize(tabla_simbolos.get(j).tipo);
+                        int pos = stack + tabla_simbolos.get(j).offset + sz;
+                        if (sz == 4) {
+                            txt += "    sw " + r + ", " + "-" + pos + "($fp)\n";
+                        } else {
+                            txt += "    sb " + r + ", " + "-" + pos + "($fp)\n";
+                        }
+                        if (liberar1) {
+                            free(r);
+                        }
+                    } else {
+                        txt += "    move " + tabla_simbolos.get(j).descriptor + ", " + r + "\n";
+                    }
+                    break;
+                }
+            }
+        }
+        return txt;
+    }
+
+    public static String genIf(Cuadruplo c) {
+        String txt = "";
+        //revisar si estan montados, sino montarlos
+        boolean esta = false, liberar1 = false, liberar2 = false;
+        String r = "";
+        for (int j = 0; j < tabla_simbolos.size(); j++) {
+            if (tabla_simbolos.get(j).id.equals(c.op1)) {
+                esta = true;
+                if (tabla_simbolos.get(j).descriptor.equals("")) {
+                    //load
+                    int sz = getSize(tabla_simbolos.get(j).tipo);
+                    int pos = stack + tabla_simbolos.get(j).offset + sz;
+                    String sgtreg = nextTemp(c.op1);
+                    if (sz == 4) {
+                        txt += "    lw " + sgtreg + ", " + "-" + pos + "($fp)\n";
+                    } else {
+                        txt += "    lb " + sgtreg + ", " + "-" + pos + "($fp)\n";
+                    }
+                    tabla_simbolos.get(j).descriptor = sgtreg;
+                    liberar1 = true;
+                    r = sgtreg;
+                } else {
+                    r = tabla_simbolos.get(j).descriptor;
+                }
+                break;
+            }
+        }
+        if (!esta) {
+            for (int j = 0; j < registros.size(); j++) {
+                if (registros.get(j).valor.equals(c.op1)) {
+                    r = registros.get(j).registro;
+                    liberar1 = true;
+                    esta = true;
+                }
+            }
+        }
+        if (!esta) {
+            //No es ni temporal ni variable
+            r = nextTemp(c.op1);
+            if (!c.op1.contains("'")) {
+                if (c.op1.equals("true")) {
+                    txt += "    li " + r + ", 1\n";
+                } else if (c.op1.equals("false")) {
+                    txt += "    li " + r + ", 0\n";
+                } else {
+                    //numero
+                    txt += "    li " + r + ", " + c.op1 + "\n";
+                }
+            } else {
+                //char
+                txt += "    addi " + r + ", $zero, " + c.op1 + "\n";
+            }
+
+            liberar1 = true;
+        }
+        String r2 = "";
+        esta = false;
+        for (int j = 0; j < tabla_simbolos.size(); j++) {
+            if (tabla_simbolos.get(j).id.equals(c.op2)) {
+                esta = true;
+                if (tabla_simbolos.get(j).descriptor.equals("")) {
+                    //load
+                    int sz = getSize(tabla_simbolos.get(j).tipo);
+                    int pos = stack + tabla_simbolos.get(j).offset + sz;
+                    String sgtreg = nextTemp(c.op2);
+                    if (sz == 4) {
+                        txt += "    lw " + sgtreg + ", " + "-" + pos + "($fp)\n";
+                    } else {
+                        txt += "    lb " + sgtreg + ", " + "-" + pos + "($fp)\n";
+                    }
+                    //tabla_simbolos.get(j).descriptor = sgtreg;
+                    liberar2 = true;
+                    r2 = sgtreg;
+                } else {
+                    r2 = tabla_simbolos.get(j).descriptor;
+                }
+                break;
+            }
+        }
+        if (!esta) {
+            for (int j = 0; j < registros.size(); j++) {
+                if (registros.get(j).valor.equals(c.op2)) {
+                    r2 = registros.get(j).registro;
+                    liberar2 = true;
+                    esta = true;
+                }
+            }
+        }
+        if (!esta) {
+            //No es ni temporal ni variable
+            r2 = nextTemp(c.op2);
+            if (!c.op2.contains("'")) {
+                if (c.op2.equals("true")) {
+                    txt += "    li " + r2 + ", 1\n";
+                } else if (c.op2.equals("false")) {
+                    txt += "    li " + r2 + ", 0\n";
+                } else {
+                    //numero
+                    txt += "    li " + r2 + ", " + c.op2 + "\n";
+                }
+            } else {
+                //char
+                txt += "    addi " + r2 + ", $zero, " + c.op2 + "\n";
+            }
+        }
+        //ya estan montados hacer la comparacion y liberar
+        if (c.op.equals("if ==")) {
+            txt += "    beq " + r + ", " + r2 + ", " + c.res + "\n";
+        } else if (c.op.equals("if !=")) {
+            txt += "    bne " + r + ", " + r2 + ", " + c.res + "\n";
+        } else if (c.op.equals("if >=")) {
+            txt += "    bge " + r + ", " + r2 + ", " + c.res + "\n";
+        } else if (c.op.equals("if <=")) {
+            txt += "    ble " + r + ", " + r2 + ", " + c.res + "\n";
+        } else if (c.op.equals("if >")) {
+            txt += "    bgt " + r + ", " + r2 + ", " + c.res + "\n";
+        } else {
+            //if <
+            txt += "    blt " + r + ", " + r2 + ", " + c.res + "\n";
+        }
+        if (liberar1) {
+            free(r);
+        }
+        if (liberar2) {
+            free(r2);
+        }
+        return txt;
+    }
+
+    // Crea la siguiente var temporal
+    public static String nextTemp(String v) {
+        String r = "";
+        for (int i = 0; i < 10; i++) {
+            if (registros.get(i).valor.equals("")) {
+                registros.get(i).valor = v;
+                r = registros.get(i).registro;
+                break;
+            }
+        }
+        return r;
+    }
+
+    // Liberar Memoria    
+    public static void free(String r) {
+        for (int i = 0; i < registros.size(); i++) {
+            if (registros.get(i).registro.equals(r)) {
+                registros.get(i).valor = "";
+            }
+        }
+        for (int i = 0; i < tabla_simbolos.size(); i++) {
+            if (tabla_simbolos.get(i).descriptor.equals(r)) {
+                tabla_simbolos.get(i).descriptor = "";
+            }
+        }
+    }
+
+    public static String mensaje(String id, String msg) {
+        for (int i = 0; i < mensajes.size(); i++) {
+            if (mensajes.get(i).id.equals(id)) {
+                return "BREAK";
+            }
+        }
+        mensajes mensaje = new mensajes(msg, id);
+        mensajes.add(mensaje);
+
+        return mensaje.msg;
+    }
+
+    public static String op(Cuadruplo c) {
+        String txt = "";
+        boolean esta = false, liberar1 = false, liberar2 = false;
+        String r = "";
+        for (int j = 0; j < tabla_simbolos.size(); j++) {
+            if (tabla_simbolos.get(j).id.equals(c.op1)) {
+                esta = true;
+                if (tabla_simbolos.get(j).descriptor.equals("")) {
+                    //load
+                    int sz = getSize(tabla_simbolos.get(j).tipo);
+                    int pos = stack + tabla_simbolos.get(j).offset + sz;
+                    String sgtreg = nextTemp(c.op1);
+                    if (sz == 4) {
+                        txt += "    lw " + sgtreg + ", " + "-" + pos + "($fp)\n";
+                    } else {
+                        txt += "    lb " + sgtreg + ", " + "-" + pos + "($fp)\n";
+                    }
+                    tabla_simbolos.get(j).descriptor = sgtreg;
+                    liberar1 = true;
+                    r = sgtreg;
+                } else {
+                    r = tabla_simbolos.get(j).descriptor;
+                }
+                break;
+            }
+        }
+        if (!esta) {
+            for (int j = 0; j < registros.size(); j++) {
+                if (registros.get(j).valor.equals(c.op1)) {
+                    r = registros.get(j).registro;
+                    liberar1 = true;
+                    esta = true;
+                }
+            }
+        }
+        if (!esta) {
+            //No es ni temporal ni variable
+            r = nextTemp(c.op1);
+            //txt += "    li " + r + ", " + c.op1 + "\n";
+            liberar1 = true;
+            if (!esta) {
+                //Es un valor
+                if (c.op1.equals("true")) {
+                    txt += "    li " + r + ", 1\n";
+                } else if (c.op1.equals("false")) {
+                    txt += "    li " + r + ", 0\n";
+                } else if (c.op1.contains("'")) {
+                    txt += "    addi " + r + ", $zero, " + c.op1 + "\n";
+                } else {
+                    //Es un numero
+                    txt += "    li " + r + ", " + c.op1 + "\n";
+                }
+            }
+        }
+        String r2 = "";
+        esta = false;
+        for (int j = 0; j < tabla_simbolos.size(); j++) {
+            if (tabla_simbolos.get(j).id.equals(c.op2)) {
+                esta = true;
+                if (tabla_simbolos.get(j).descriptor.equals("")) {
+                    //load
+                    int sz = getSize(tabla_simbolos.get(j).tipo);
+                    int pos = stack + tabla_simbolos.get(j).offset + sz;
+                    String sgtreg = nextTemp(c.op2);
+                    if (sz == 4) {
+                        txt += "    lw " + sgtreg + ", " + "-" + pos + "($fp)\n";
+                    } else {
+                        txt += "    lb " + sgtreg + ", " + "-" + pos + "($fp)\n";
+                    }
+                    //tabla_simbolos.get(j).descriptor = sgtreg;
+                    liberar2 = true;
+                    r2 = sgtreg;
+                } else {
+                    r2 = tabla_simbolos.get(j).descriptor;
+                }
+                break;
+            }
+        }
+        if (!esta) {
+            for (int j = 0; j < registros.size(); j++) {
+                if (registros.get(j).valor.equals(c.op2)) {
+                    r2 = registros.get(j).registro;
+                    liberar2 = true;
+                    esta = true;
+                }
+            }
+        }
+        if (!esta) {
+            //No es ni temporal ni variable
+            r2 = nextTemp(c.op2);
+            //txt += "    li " + r2 + ", " + c.op2 + "\n";
+            liberar2 = true;
+            if (!esta) {
+                //Es un valor
+                if (c.op2.equals("true")) {
+                    txt += "    li " + r2 + ", 1\n";
+                } else if (c.op2.equals("false")) {
+                    txt += "    li " + r2 + ", 0\n";
+                } else if (c.op2.contains("'")) {
+                    txt += "    addi " + r2 + ", $zero, " + c.op2 + "\n";
+                } else {
+                    //Es un numero
+                    txt += "    li " + r2 + ", " + c.op2 + "\n";
+                }
+            }
+        }
+        //ya estan en registros los opeandos, falta operar y asignar
+        //se guarda en un temporal nuevo
+        String t = nextTemp(c.res);
+        if (c.op.equals("+")) {
+            txt += "    add " + t + ", " + r + ", " + r2 + "\n";
+            if (liberar1) {
+                free(r);
+            }
+            if (liberar2) {
+                free(r2);
+            }
+        } else if (c.op.equals("-")) {
+            txt += "    sub " + t + ", " + r + ", " + r2 + "\n";
+            if (liberar1) {
+                free(r);
+            }
+            if (liberar2) {
+                free(r2);
+            }
+        } else if (c.op.equals("*")) {
+            txt += "    mul " + t + ", " + r + ", " + r2 + "\n";
+            if (liberar1) {
+                free(r);
+            }
+            if (liberar2) {
+                free(r2);
+            }
+        } else if (c.op.equals("/")) {
+            txt += "    div " + t + ", " + r + ", " + r2 + "\n";
+            if (liberar1) {
+                free(r);
+            }
+            if (liberar2) {
+                free(r2);
+            }
+        }
+        return txt;
+    }
+
+    public static String genWhile(Cuadruplo c, Cuadruplo siguiente) {
+        String txt = "";
+        txt = c.op1 + ":\n";
+        Cuadruplo NextCuadruplo = new Cuadruplo();
+        //BRINCAR AL IF CORRESPONDIENTE DEL WHILE
+        for (int i = 0; i < cuadruplos.size(); i++) {
+            if (cuadruplos.get(i).res.equals(siguiente.res)) {
+                cuadruplos.remove(i);
+            }
+        }
+        //revisar si estan montados, sino montarlos
+        boolean esta = false, liberar1 = false, liberar2 = false;
+        String r = "";
+        for (int j = 0; j < tabla_simbolos.size(); j++) {
+            if (tabla_simbolos.get(j).id.equals(c.op1)) {
+                esta = true;
+                if (tabla_simbolos.get(j).descriptor.equals("")) {
+                    //load
+                    int sz = getSize(tabla_simbolos.get(j).tipo);
+                    int pos = stack + tabla_simbolos.get(j).offset + sz;
+                    String sgtreg = nextTemp(NextCuadruplo.op1);
+                    if (sz == 4) {
+                        txt += "    lw " + sgtreg + ", " + "-" + pos + "($fp)\n";
+                    } else {
+                        txt += "    lb " + sgtreg + ", " + "-" + pos + "($fp)\n";
+                    }
+                    tabla_simbolos.get(j).descriptor = sgtreg;
+                    liberar1 = true;
+                    r = sgtreg;
+                } else {
+                    r = tabla_simbolos.get(j).descriptor;
+                }
+                break;
+            }
+        }
+        if (!esta) {
+            for (int j = 0; j < registros.size(); j++) {
+                if (registros.get(j).valor.equals(NextCuadruplo.op1)) {
+                    r = registros.get(j).registro;
+                    liberar1 = true;
+                    esta = true;
+                }
+            }
+        }
+        if (!esta) {
+            //No es ni temporal ni variable
+            r = nextTemp(c.op1);
+            if (!siguiente.op1.contains("'")) {
+                if (siguiente.op1.equals("true")) {
+                    txt += "    li " + r + ", 1\n";
+                } else if (siguiente.op1.equals("false")) {
+                    txt += "    li " + r + ", 0\n";
+                } else {
+                    //numero
+                    txt += "    li " + r + ", " + siguiente.op1 + "\n";
+                }
+            } else {
+                //char
+                txt += "    addi " + r + ", $zero, " + siguiente.op1 + "\n";
+            }
+
+            liberar1 = true;
+        }
+        String r2 = "";
+        esta = false;
+        for (int j = 0; j < tabla_simbolos.size(); j++) {
+            if (tabla_simbolos.get(j).id.equals(NextCuadruplo.op2)) {
+                esta = true;
+                if (tabla_simbolos.get(j).descriptor.equals("")) {
+                    //load
+                    int sz = getSize(tabla_simbolos.get(j).tipo);
+                    int pos = stack + tabla_simbolos.get(j).offset + sz;
+                    String sgtreg = nextTemp(siguiente.op2);
+                    if (sz == 4) {
+                        txt += "    lw " + sgtreg + ", " + "-" + pos + "($fp)\n";
+                    } else {
+                        txt += "    lb " + sgtreg + ", " + "-" + pos + "($fp)\n";
+                    }
+                    //tabla_simbolos.get(j).descriptor = sgtreg;
+                    liberar2 = true;
+                    r2 = sgtreg;
+                } else {
+                    r2 = tabla_simbolos.get(j).descriptor;
+                }
+                break;
+            }
+        }
+        if (!esta) {
+            for (int j = 0; j < registros.size(); j++) {
+                if (registros.get(j).valor.equals(NextCuadruplo.op2)) {
+                    r2 = registros.get(j).registro;
+                    liberar2 = true;
+                    esta = true;
+                }
+            }
+        }
+        if (!esta) {
+            //No es ni temporal ni variable
+            r2 = nextTemp(NextCuadruplo.op2);
+            if (!NextCuadruplo.op2.contains("'")) {
+                if (siguiente.op2.equals("true")) {
+                    txt += "    li " + r2 + ", 1\n";
+                } else if (siguiente.op2.equals("false")) {
+                    txt += "    li " + r2 + ", 0\n";
+                } else {
+                    //numero
+                    txt += "    li " + r2 + ", " + siguiente.op2 + "\n";
+                }
+            } else {
+                //char
+                txt += "    addi " + r2 + ", $zero, " + siguiente.op2 + "\n";
+            }
+        }
+        //ya estan montados hacer la comparacion y liberar
+        if (siguiente.op.equals("if ==")) {
+            txt += "    beq " + r + ", " + r2 + ", " + siguiente.res + "\n";
+        } else if (siguiente.op.equals("if !=")) {
+            txt += "    bne " + r + ", " + r2 + ", " + siguiente.res + "\n";
+        } else if (siguiente.op.equals("if >=")) {
+            txt += "    bge " + r + ", " + r2 + ", " + siguiente.res + "\n";
+        } else if (siguiente.op.equals("if <=")) {
+            txt += "    ble " + r + ", " + r2 + ", " + siguiente.res + "\n";
+        } else if (siguiente.op.equals("if >")) {
+            txt += "    bgt " + r + ", " + r2 + ", " + siguiente.res + "\n";
+        } else {
+            //if <
+            txt += "    blt " + r + ", " + r2 + ", " + siguiente.res + "\n";
+            System.out.println(NextCuadruplo.toString());
+        }
+        if (liberar1) {
+            free(r);
+        }
+        if (liberar2) {
+            free(r2);
+        }
+        return txt;
+    }
+
+    ////////////////////////////////////////////////// FIN CODE FINAL////////////////////////////////////////////////////
     public static int getSize(String t) {
         if (t.equals("int")) {
             return 4;
@@ -627,6 +1229,7 @@ public class Main extends javax.swing.JFrame {
         if (actual.nombre.equals("Function")) {
             if (actual.hijos.size() == 4) {
                 String a = actual.hijos.get(0).valor;
+                namef = actual.hijos.get(0).valor;
                 tipos_param(actual, a);
                 String tipo = tiposf;
                 tiposf = "";
@@ -637,6 +1240,7 @@ public class Main extends javax.swing.JFrame {
                 agregar_param(actual, a);
             }
             if (actual.hijos.size() == 3) {
+                namef = actual.hijos.get(0).valor;
                 String tipo1 = "void->" + actual.hijos.get(1).valor;
                 tabla_simbolos.add(new Entry(actual.hijos.get(0).valor, tipo1, "module", -1, activo));
                 offset = 0;
@@ -702,8 +1306,61 @@ public class Main extends javax.swing.JFrame {
             agregar(new Entry(actual.hijos.get(0).valor, actual.hijos.get(1).valor, ambito, offset, activo), actual.hijos.get(0).linea, actual.hijos.get(0).columna);
         }
 ////////////////////////////////////////Asignar///////////////////////////////////////////////////////////////////////////////        
+        if (actual.nombre.equals("Asignar-var") && actual.hijos.get(0).valor.equals(namef)) {
+            if (actual.hijos.get(2).hijos.size() == 1) {
+                Node temp = actual.hijos.get(2).hijos.get(0);
+                if (temp.nombre.equals("Valor")) {
+                    if (temp.hijos.get(0).nombre.equals("Id")) {
+                        int amb2 = validar_variable(temp.hijos.get(0).valor);
+                        if (amb2 == 1) {
+                            String t1 = get_tipo(actual.hijos.get(0).valor),
+                                    t2 = get_tipo(temp.hijos.get(0).valor);
+                            t1 = t1.substring(t1.lastIndexOf(">"), t1.length());
+                            t1 = t1.substring(1, t1.length());
+                            if (t1.equals(t2)) {
+                            } else {
+                                Errores_compTipos.add("Error de tipo en Return con la variable " + temp.hijos.get(0).valor + ". Linea: " + (temp.hijos.get(0).linea) + " Columna: " + temp.hijos.get(0).columna);
 
-        if (actual.nombre.equals("Asignar-var")) {
+                            }
+                        } else {
+                            if (amb2 != 1) {
+                                Errores_ambito.add("Error ambito en Return con la variable " + temp.hijos.get(0).valor + ". Linea: " + (temp.hijos.get(0).linea) + " Columna: " + temp.hijos.get(0).columna);
+                            }
+                        }
+                    }else if (temp.hijos.get(0).nombre.equals("Integer")) {
+                        String t1 = get_tipo(actual.hijos.get(0).valor);
+                            t1 = t1.substring(t1.lastIndexOf(">"), t1.length());
+                            t1 = t1.substring(1, t1.length());
+                            if (t1.equals("Integer")) {
+                            } else {
+                                Errores_compTipos.add("Error de tipo en Return con la variable " + temp.hijos.get(0).valor + ". Linea: " + (temp.hijos.get(0).linea) + " Columna: " + temp.hijos.get(0).columna);
+                            }
+                    }
+                }
+            }
+            //boolean
+            if (actual.hijos.get(2).nombre.equals("Boolean")) {
+                    String t1 = get_tipo(actual.hijos.get(0).valor);
+                    t1 = t1.substring(t1.lastIndexOf(">"), t1.length());
+                             t1 = t1.substring(1, t1.length());
+                    if (t1.equals("Boolean")) {
+                    } else {
+                        Errores_compTipos.add("Error de tipo en Return con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                    }
+                 
+            }
+            //String
+            if (actual.hijos.get(2).nombre.equals("String")) {
+                    String t1 = get_tipo(actual.hijos.get(0).valor);
+                    t1 = t1.substring(t1.lastIndexOf(">"), t1.length());
+                             t1 = t1.substring(1, t1.length());
+                    if (t1.equals("String")) {
+                    } else {
+                        Errores_compTipos.add("Error de tipo en Return con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                    }
+            }
+        }
+        if (actual.nombre.equals("Asignar-var") && !actual.hijos.get(0).valor.equals(namef)) {
             if (actual.hijos.get(2).hijos.size() > 1) {
                 Node temp = actual.hijos.get(2);
                 validar_oa(temp);
@@ -785,10 +1442,10 @@ public class Main extends javax.swing.JFrame {
                     if (t1.equals("Integer")) {
                         validar_oa(actual.hijos.get(2));
                     } else {
-                        Errores_compTipos.add("Error de tipo en Concatenacion con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                        Errores_compTipos.add("Error de tipo en Asignacion con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
                     }
                 } else {
-                    Errores_ambito.add("Error ambito en Concatenacion con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                    Errores_ambito.add("Error ambito en Asignacion con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
                 }
             }
         }
@@ -1527,7 +2184,7 @@ public class Main extends javax.swing.JFrame {
         if (root.nombre.equals("Do-While")) {
             salto = true;
             root.comienzo = etiqueta_nueva();
-            cuadruplos.add(new Cuadruplo("ETIQ", root.comienzo, "", ""));
+            cuadruplos.add(new Cuadruplo("W_ETIQ", root.comienzo, "", ""));
             root.hijos.get(0).verdadera = etiqueta_nueva();
             root.hijos.get(0).falsa = root.siguiente;
             System.out.println(root.hijos.get(0).nombre);
@@ -1577,8 +2234,7 @@ public class Main extends javax.swing.JFrame {
                 cuadruplos.add(new Cuadruplo("print", root.hijos.get(0).valor, "Integer", ""));
             } else if (root.hijos.get(0).nombre.equals("Id")) {
                 if (get_tipo(root.hijos.get(0).valor).equals("String")) {
-                    String m = mensaje(root.hijos.get(0).valor);
-                    codigoOpcionales(root.hijos.get(0));
+                    String m = root.hijos.get(0).valor;
                     cuadruplos.add(new Cuadruplo("print", m, "String", ""));
                 } else {
                     codigoOpcionales(root.hijos.get(0));
@@ -1590,7 +2246,18 @@ public class Main extends javax.swing.JFrame {
             if (root.hijos.size() == 3) {
                 if (root.hijos.get(2).hijos.size() == 0) {///para String y Boolean
                     codigoOpcionales(root.hijos.get(2));
-                    cuadruplos.add(new Cuadruplo("=", root.hijos.get(2).lugar, "", root.hijos.get(0).valor));
+                    String m = mensaje(root.hijos.get(2).lugar, root.hijos.get(0).valor);
+                    String asignar = root.hijos.get(2).lugar;
+                    if (!("BREAK".equals(m))) {
+                        cuadruplos.add(new Cuadruplo("=", asignar, "", root.hijos.get(0).valor));
+                    } else {
+                        //ASIGNACION REPETIDA
+                        for (int i = 0; i < cuadruplos.size(); i++) {
+                            if (cuadruplos.get(i).res.equals(asignar)) {
+                                cuadruplos.get(i).op1 = root.hijos.get(2).lugar;
+                            }
+                        }
+                    }
                 }
                 if (root.hijos.get(2).hijos.size() == 1) {//para id y Integer
                     String valor = root.hijos.get(2).hijos.get(0).hijos.get(0).nombre;
@@ -1604,7 +2271,7 @@ public class Main extends javax.swing.JFrame {
                     }
                 }
 
-                if (root.hijos.get(2).nombre.equals("Operacion")) {
+                if (root.hijos.get(2).nombre.equals("Operacion") && root.hijos.get(2).hijos.size() > 1) {
                     contO = 0;
                     int c = 0;
                     acuadruplos = new ArrayList();
@@ -1744,7 +2411,7 @@ public class Main extends javax.swing.JFrame {
                     falta = true;
                 }
                 if (root.hijos.get(i).nombre.equals("Code")) {
-                    cuadruplos.add(new Cuadruplo("ETIQ", root.siguiente, "", ""));
+                    //cuadruplos.add(new Cuadruplo("ETIQ", root.siguiente, "", ""));
                     falta = false;
                 }
             }
@@ -2016,7 +2683,7 @@ public class Main extends javax.swing.JFrame {
     public static ArrayList<String> Errores_compTipos = new ArrayList<String>();
     public static Syntax s;
     public static ArrayList<String> Params = new ArrayList<String>();//auxiliar de comprobacion
-    public static String tiposf = "";
+    public static String tiposf = "", namef = "";
     public static ArrayList<String> Argumentos = new ArrayList<String>();//auxiliar de comprobacion
     public static int auxiliarParams = 0;
     public static String auxiliarStr = "";
@@ -2033,7 +2700,7 @@ public class Main extends javax.swing.JFrame {
     public static ArrayList<Cuadruplo> acuadruplos = new ArrayList();
     ////////////////////////////////codigo final///////////////////////////////////
     public static ArrayList<RegisterDesc> registros = new ArrayList<RegisterDesc>();
-    public static ArrayList<String> mensajes = new ArrayList<String>();
+    public static ArrayList<mensajes> mensajes = new ArrayList<mensajes>();
     public static String func_actual;
     public static int stack = 0, par_mem = 8;
 }

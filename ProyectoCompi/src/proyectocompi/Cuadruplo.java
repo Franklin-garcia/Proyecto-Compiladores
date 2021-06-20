@@ -7,7 +7,7 @@ package proyectocompi;;
 
 /**
  *
- * @author edujg
+ * @author Taufik
  */
 public class Cuadruplo {
     String op, op1, op2, res;
@@ -16,6 +16,12 @@ public class Cuadruplo {
         this.op1 = op1;
         this.op2 = op2;
         this.res = res;
+    }
+    Cuadruplo(){
+        this.op = "";
+        this.op1 = "";
+        this.op2 = "";
+        this.res = "";
     }
     
     @Override
