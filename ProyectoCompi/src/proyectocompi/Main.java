@@ -2241,7 +2241,18 @@ public class Main extends javax.swing.JFrame {
                     cuadruplos.add(new Cuadruplo("print", root.hijos.get(0).valor, get_tipo(root.hijos.get(0).valor), ""));
                 }
             }
-        } else if (root.nombre.equals("Asignar-var")) {
+        } 
+        else if (root.nombre.equals("Asignar-var") && root.hijos.get(0).valor.equals(namef)) {
+             if (root.hijos.get(2).hijos.size()==1) {
+                String r=root.hijos.get(2).hijos.get(0).hijos.get(0).valor;
+                cuadruplos.add(new Cuadruplo("Return", r, "", ""));
+             }
+             if (root.hijos.get(2).nombre.equals("String") || root.hijos.get(2).nombre.equals("Boolean") ) {
+                cuadruplos.add(new Cuadruplo("Return", root.hijos.get(2).valor, "", ""));
+            }
+             
+        }
+        else if (root.nombre.equals("Asignar-var") && !root.hijos.get(0).valor.equals(namef)) {
             ///Asignacion normal con id,Boolean, String, Integer
             if (root.hijos.size() == 3) {
                 if (root.hijos.get(2).hijos.size() == 0) {///para String y Boolean
@@ -2356,6 +2367,7 @@ public class Main extends javax.swing.JFrame {
             cuadruplos.add(new Cuadruplo("=[]", root.hijos.get(2).valor, "" + of, root.hijos.get(0).valor));
         } else if (root.nombre.equals("Function")) {
             func = true;
+            namef=root.hijos.get(0).valor;
             cuadruplos.add(new Cuadruplo("F_ETIQ", root.hijos.get(0).valor, "", ""));
         } else if (root.nombre.equals("Sub")) {
             sub = true;
