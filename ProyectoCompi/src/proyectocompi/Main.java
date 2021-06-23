@@ -1764,7 +1764,7 @@ public class Main extends javax.swing.JFrame {
             verificaE(id, linea, columna);
         }
 
-        if (actual.nombre.equals("Asignar-var")) {
+        if (actual.nombre.equals("Asignar-varF")) {
             /////////////////////////Asignacion de una funcion a una variable
             //Sin argumentos
             if (actual.hijos.get(2).nombre.equals("Id")) {
@@ -2490,8 +2490,8 @@ public class Main extends javax.swing.JFrame {
             codigoOpcionales(actual.hijos.get(0).hijos.get(0));
             codigoOpcionales(actual.hijos.get(0).hijos.get(2));
             String val = "if " + actual.hijos.get(0).hijos.get(1).valor;
-            cuadruplos.add(new Cuadruplo(val, actual.hijos.get(0).hijos.get(0).lugar, actual.hijos.get(0).hijos.get(2).lugar, actual.hijos.get(0).verdadera));
-            cuadruplos.add(new Cuadruplo("GOTO", actual.hijos.get(0).falsa, "", ""));
+            cuadruplos.add(new Cuadruplo(val, actual.hijos.get(0).hijos.get(0).lugar, actual.hijos.get(0).hijos.get(2).lugar, actual.verdadera));
+            cuadruplos.add(new Cuadruplo("GOTO", actual.falsa, "", ""));
         }
     }
 
