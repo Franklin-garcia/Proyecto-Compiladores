@@ -261,7 +261,7 @@ public class Main extends javax.swing.JFrame {
         });
 
         jButton4.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jButton4.setText("Tabla de simbolos");
+        jButton4.setText("Cuadruplos");
         jButton4.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jButton4MouseClicked(evt);
@@ -340,17 +340,20 @@ public class Main extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2))
                     .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addContainerGap(88, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(28, 28, 28)
+                        .addComponent(jButton2)))
                 .addContainerGap(36, Short.MAX_VALUE))
         );
 
@@ -410,6 +413,7 @@ public class Main extends javax.swing.JFrame {
         tabla_simbolos = new ArrayList<Entry>();
         Errores_compTipos = new ArrayList<String>();
         Errores_ambito = new ArrayList<String>();
+        lolmsg = "";
 
         ambito_cont = 1;
         ambito_control = -1;
@@ -449,11 +453,12 @@ public class Main extends javax.swing.JFrame {
                 Symbol sym = s.getS();
                 temporal = temporal + Syntax.Errores;
                 //temporal = temporal + "Error de sintaxis. Linea: " + (sym.right + 1) + " Columna: " + (sym.left + 1) + ", Texto: \"" + sym.value + "\" \n";
-                System.out.println(temporal);
+                lolmsg = temporal;
                 temporal = "";
+
                 Syntax.Errores.clear();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                System.out.println("...");
             }
         }
 //////////////////////////////Parte Semantica////////////////////////////////////////////////////////////////////////
@@ -469,34 +474,11 @@ public class Main extends javax.swing.JFrame {
         segundaPasada(root);
         try {
             ta_syntax_result.setText("Analisis completo");
-            String mensaje = "";
-            for (int i = 0; i < tabla_simbolos.size(); i++) {
-                mensaje += "ID: " + tabla_simbolos.get(i).id
-                        + " TIPO: " + tabla_simbolos.get(i).tipo
-                        + " AMBITO: " + tabla_simbolos.get(i).ambito
-                        + " OFFSET: " + tabla_simbolos.get(i).offset + "\n";
-            }
-            System.out.println(mensaje);
+
         } catch (Exception e) {
         }
 
-        System.out.println("Errorees tipos " + Errores_compTipos.size());
-        for (int i = 0; i < Errores_compTipos.size(); i++) {
-            System.out.println(Errores_compTipos.get(i));
-        }
-        System.out.println("Errores ambito " + Errores_ambito.size());
-        for (int i = 0; i < Errores_ambito.size(); i++) {
-            System.out.println(Errores_ambito.get(i));
-        }
 
-        System.out.println("\n");
-        Cuadruplos(root);
-        String mensaje = "";
-        mensaje += "---------------------\n";
-        for (int i = 0; i < cuadruplos.size(); i++) {
-            mensaje += cuadruplos.get(i) + "\n";
-        }
-        System.out.println(mensaje);
     }//GEN-LAST:event_bt_syntax2ActionPerformed
 
     private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
@@ -740,7 +722,8 @@ public class Main extends javax.swing.JFrame {
 
         ////////// IMPRESION CODIGO FINAL //////////
         System.out.println("-- CODIGO FINAL --");
-        System.out.println(txt);
+        //System.out.println(txt);
+        ta_syntax_result.setText(txt);
         //System.out.println("-- ESTADO DE LOS REGISTROS --");
         //for (int i = 0; i < registros.size(); i++) {
         //    System.out.println(registros.get(i).registro + " " + registros.get(i).valor);
@@ -756,7 +739,18 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton3MouseClicked
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
+        if (lolmsg.equals("")) {
+            String mensaje = "";
+            for (int i = 0; i < tabla_simbolos.size(); i++) {
+                mensaje += "ID: " + tabla_simbolos.get(i).id
+                        + " TIPO: " + tabla_simbolos.get(i).tipo
+                        + " AMBITO: " + tabla_simbolos.get(i).ambito
+                        + " OFFSET: " + tabla_simbolos.get(i).offset + "\n";
+            }
+            ta_syntax_result.setText(mensaje);
+        } else {
+            ta_syntax_result.setText(lolmsg);
+        }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
@@ -764,7 +758,26 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4MouseClicked
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
+        if (Errores_compTipos.size() == 0 && Errores_ambito.size() == 0) {
+            Cuadruplos(root);
+            String mensaje = "";
+            mensaje += "---------------------\n";
+            for (int i = 0; i < cuadruplos.size(); i++) {
+                mensaje += cuadruplos.get(i) + "\n";
+            }
+            ta_syntax_result.setText(mensaje);
+        } else {
+            String mensaje = "";
+            mensaje += "Errorees tipos " + Errores_compTipos.size() + "/n";
+            for (int i = 0; i < Errores_compTipos.size(); i++) {
+                mensaje += "" + Errores_compTipos.get(i) + "/n";
+            }
+            mensaje += "Errores ambito " + Errores_ambito.size() + "/n";
+            for (int i = 0; i < Errores_ambito.size(); i++) {
+                mensaje += "" + Errores_ambito.get(i) + "/n";
+            }
+            ta_syntax_result.setText(mensaje);
+        }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     public static String retorno(Cuadruplo c) {
@@ -2660,8 +2673,8 @@ public class Main extends javax.swing.JFrame {
                         cuadruplos.add(p1.get(i));
                     }
                     cuadruplos.add(new Cuadruplo("=", "t" + (c - 1), "", root.hijos.get(0).valor));
-                } else if(root.hijos.get(2).nombre.equals("Operacion") && root.hijos.get(2).hijos.get(0).nombre.equals("MultDiv")){
-                    Node temp=root.hijos.get(2).hijos.get(0);
+                } else if (root.hijos.get(2).nombre.equals("Operacion") && root.hijos.get(2).hijos.get(0).nombre.equals("MultDiv")) {
+                    Node temp = root.hijos.get(2).hijos.get(0);
                     contO = 0;
                     int c = 0;
                     acuadruplos = new ArrayList();
@@ -3086,7 +3099,7 @@ public class Main extends javax.swing.JFrame {
     public static ArrayList<String> Errores_compTipos = new ArrayList<String>();
     public static Syntax s;
     public static ArrayList<String> Params = new ArrayList<String>();//auxiliar de comprobacion
-    public static String tiposf = "", namef = "";
+    public static String tiposf = "", namef = "", lolmsg = "";
     public static ArrayList<String> Argumentos = new ArrayList<String>();//auxiliar de comprobacion
     public static int auxiliarParams = 0;
     public static String auxiliarStr = "";
