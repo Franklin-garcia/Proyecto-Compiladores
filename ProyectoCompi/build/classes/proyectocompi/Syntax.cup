@@ -869,6 +869,13 @@ DIM_READ::=
 ;
 
 WRITE::=
+    Write Parizq Cadena:n1 Parder Newline 
+    {:
+    Node Body7 = new Node("Write");
+                            Body7.addNode(new Node("String", ((String) n1)));
+                            RESULT=Body7;
+    :}
+    |
     Write Parizq Num:n1 Parder Newline 
     {:
     Node Body7 = new Node("Write");

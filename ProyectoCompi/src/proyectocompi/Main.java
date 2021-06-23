@@ -489,7 +489,9 @@ public class Main extends javax.swing.JFrame {
         registros.add(new RegisterDesc("$fp"));
         registros.add(new RegisterDesc("$ra"));
         String txt = "    .data\n";
-
+        for (int i = 0; i < mensaje.size(); i++) {
+            txt += "msg" + i + ":    .asciiz " + mensaje.get(i) + "\n";
+        }
         for (int i = 0; i < cuadruplos.size(); i++) {
             for (int j = 0; j < mensajes.size(); j++) {
                 if (cuadruplos.get(i).res.equals(mensajes.get(j).id)) {
@@ -587,15 +589,16 @@ public class Main extends javax.swing.JFrame {
             } else if (cuadruplos.get(i).op.equals("P_ETIQ")) {
                 txt += "    li $v0, 10\n    syscall\n";
             } else if (cuadruplos.get(i).op.equals("print")) {
-
-                if (cuadruplos.get(i).op2.equals("Integer")) {
-                    int ex=0;
+                if (cuadruplos.get(i).op2.equals("String")) {
+                    txt += "    li $v0, 4\n    la $a0, msg" + cuadruplos.get(i).op1 + "\n    syscall\n";
+                } else if (cuadruplos.get(i).op2.equals("Integer")) {
+                    int ex = 0;
                     for (int h = 0; h < tabla_simbolos.size(); h++) {
                         if (tabla_simbolos.get(h).id.equals(cuadruplos.get(i).op1)) {
                             ex++;
                         }
                     }
-                    if (ex>0) {
+                    if (ex > 0) {
                         String var = "-";
                         int pos = stack + 4;
                         for (int j = 0; j < tabla_simbolos.size(); j++) {
@@ -616,6 +619,20 @@ public class Main extends javax.swing.JFrame {
                         txt += "    li $v0, 1\n    li $a0, " + cuadruplos.get(i).op1 + "\n    syscall\n";
                     }
                 }
+            } else if (cuadruplos.get(i).op.equals("read")) {
+                String pos = "-";
+                int off = 0;
+                for (int j = 0; j < tabla_simbolos.size(); j++) {
+                    if (tabla_simbolos.get(j).id.equals(cuadruplos.get(i).op1)) {
+                        off = tabla_simbolos.get(j).offset;
+                        break;
+                    }
+                }
+                int sz = 4;
+                int p = stack + sz + off;
+                pos += p + "($fp)";
+                txt += "    li $v0, 5\n    syscall\n    sw $v0, " + pos + "\n";
+
             } else if (cuadruplos.get(i).op.equals("=")) {
                 txt += asigSencilla(cuadruplos.get(i));
             } else if (cuadruplos.get(i).op.equals("+")) {
@@ -650,7 +667,6 @@ public class Main extends javax.swing.JFrame {
     public static String asigSencilla(Cuadruplo c) {
         String txt = "";
         if (c.op1.equals("RET")) {
-            System.out.println("llegue");
             String sgte = nextTemp(c.res);
             txt += "    move " + sgte + ", $v0\n";
         } else {
@@ -1514,14 +1530,20 @@ public class Main extends javax.swing.JFrame {
         }
 ///////////////////////////////Comprobar Write////////////////////////////////////////////////////////////////////////////////
         if (actual.nombre.equals("Write")) {
-            if (validar_variable(actual.hijos.get(0).valor) == 1) {
-                if (get_tipo(actual.hijos.get(0).valor).equals("Integer")
-                        || get_tipo(actual.hijos.get(0).valor).equals("String")) {
+            if (actual.hijos.get(0).nombre.equals("Id")) {
+                if (validar_variable(actual.hijos.get(0).valor) == 1) {
+                    if (get_tipo(actual.hijos.get(0).valor).equals("Integer")
+                            || get_tipo(actual.hijos.get(0).valor).equals("String")) {
+                    } else {
+                        Errores_compTipos.add("Error de tipo en Console.write con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                    }
                 } else {
-                    Errores_compTipos.add("Error de tipo en Console.write con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                    Errores_ambito.add("Error ambito en Console.write con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
                 }
+            } else if (actual.hijos.get(0).nombre.equals("String") || actual.hijos.get(0).nombre.equals("Integer")) {
+
             } else {
-                Errores_ambito.add("Error ambito en Console.write con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
+                Errores_compTipos.add("Error de tipo en Console.write con la variable " + actual.hijos.get(0).valor + ". Linea: " + (actual.hijos.get(0).linea) + " Columna: " + actual.hijos.get(0).columna);
             }
         }
 
@@ -2173,7 +2195,6 @@ public class Main extends javax.swing.JFrame {
         boolean falta = false;
         boolean func = false;
         boolean sub = false;
-        padre = root;
         if (root.nombre.equals("Code") && root.hijos.size() > 1) {
             if (root.hijos.get(1).nombre.equals("Do-While")
                     || root.hijos.get(1).nombre.equals("For")
@@ -2181,6 +2202,14 @@ public class Main extends javax.swing.JFrame {
                 code_block = true;
                 root.siguiente = etiqueta_nueva();
                 root.hijos.get(1).siguiente = root.siguiente;
+            }
+
+            if (root.hijos.size() > 1) {
+                if (root.hijos.get(1).nombre.equals("Else")) {
+                    code_block = true;
+                    //String siguiente = etiqnueva();
+                    root.hijos.get(1).siguiente = root.hijos.get(0).siguiente;
+                }
             }
         } else if (root.nombre.equals("Code") && root.hijos.size() == 1) {
             if (root.hijos.get(0).nombre.equals("Do-While")
@@ -2240,7 +2269,10 @@ public class Main extends javax.swing.JFrame {
             cuadruplos.add(new Cuadruplo("=", temp, "", root.hijos.get(0).valor));
             cuadruplos.add(new Cuadruplo("GOTO", root.comienzo, "", ""));
         } else if (root.nombre.equals("Write")) {
-            if (root.hijos.get(0).nombre.equals("Integer")) {
+            if (root.hijos.get(0).nombre.equals("String")) {
+                String m = msj(root.hijos.get(0).valor);
+                cuadruplos.add(new Cuadruplo("print", m, "String", ""));
+            } else if (root.hijos.get(0).nombre.equals("Integer")) {
                 cuadruplos.add(new Cuadruplo("print", root.hijos.get(0).valor, "Integer", ""));
             } else if (root.hijos.get(0).nombre.equals("Id")) {
                 if (get_tipo(root.hijos.get(0).valor).equals("String")) {
@@ -2392,8 +2424,7 @@ public class Main extends javax.swing.JFrame {
                     cuadruplos.add(new Cuadruplo("ETIQ", root.hijos.get(0).verdadera, "", ""));
                     root.hijos.get(1).siguiente = root.siguiente;
                     Cuadruplos(root.hijos.get(1));
-                } else if (padre.hijos.size() == 2 && padre.hijos.get(1).nombre.equals("Code")) {
-                    //solo if
+                } else if (padre.hijos.size() == 2 && padre.hijos.get(1).nombre.equals("CODE")) {
                     root.hijos.get(0).verdadera = etiqueta_nueva();
                     root.hijos.get(0).falsa = root.siguiente;
                     codigoCondicion(root.hijos.get(0));
@@ -2401,7 +2432,6 @@ public class Main extends javax.swing.JFrame {
                     root.hijos.get(1).siguiente = root.siguiente;
                     Cuadruplos(root.hijos.get(1));
                 } else {
-                    //if con else o else if
                     root.hijos.get(0).verdadera = etiqueta_nueva();
                     root.hijos.get(0).falsa = etiqueta_nueva();
                     codigoCondicion(root.hijos.get(0));
@@ -2411,16 +2441,15 @@ public class Main extends javax.swing.JFrame {
                     Cuadruplos(root.hijos.get(1));
                     cuadruplos.add(new Cuadruplo("GOTO", root.siguiente, "", ""));
                     cuadruplos.add(new Cuadruplo("ETIQ", root.hijos.get(0).falsa, "", ""));
-                    //f.hijos.get(1).siguiente = root.siguiente;
-                    //cuadruplos(f.hijos.get(1));
                 }
             }
         }
 
         for (int i = 0; i < root.hijos.size(); i++) {
-            if (root.nombre.equals("CODE")) {
+            if (root.nombre.equals("Code")) {
                 for (int j = 0; j < root.hijos.size(); j++) {
                     if (root.hijos.get(j).nombre.equals("If")) {
+                        System.out.println("ahahahah");
                         padre = root;
                         break;
                     }
@@ -2637,6 +2666,17 @@ public class Main extends javax.swing.JFrame {
         }
     }
 
+    public static String msj(String str) {
+        int pos = -1;
+        if (mensaje.contains(str)) {
+            pos = mensaje.indexOf(str);
+        } else {
+            mensaje.add(str);
+            pos = mensaje.size() - 1;
+        }
+        return "" + pos;
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -2723,4 +2763,5 @@ public class Main extends javax.swing.JFrame {
     public static ArrayList<mensajes> mensajes = new ArrayList<mensajes>();
     public static String func_actual;
     public static int stack = 0, par_mem = 8;
+    public static ArrayList<String> mensaje = new ArrayList<String>();
 }
