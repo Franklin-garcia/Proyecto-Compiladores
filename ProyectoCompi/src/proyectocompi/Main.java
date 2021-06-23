@@ -117,6 +117,8 @@ public class Main extends javax.swing.JFrame {
         label_columna = new javax.swing.JLabel();
         bt_syntax1 = new javax.swing.JButton();
         bt_syntax2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
         jLabel2.setText("AST");
@@ -245,16 +247,29 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jButton2.setText("Codigo Final");
-        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+        jButton3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jButton3.setText("Tabla de simbolos");
+        jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton2MouseClicked(evt);
+                jButton3MouseClicked(evt);
             }
         });
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        jButton4.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jButton4.setText("Tabla de simbolos");
+        jButton4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton4MouseClicked(evt);
+            }
+        });
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
             }
         });
 
@@ -271,34 +286,47 @@ public class Main extends javax.swing.JFrame {
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(label_columna)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
+                .addGap(31, 31, 31)
                 .addComponent(bt_syntax1)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(bt_syntax2)
                 .addGap(18, 18, 18)
                 .addComponent(bt_abrir)
                 .addGap(18, 18, 18)
-                .addComponent(jButton2)
-                .addContainerGap())
+                .addComponent(jButton3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton4)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(1, 1, 1))
-                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(bt_abrir)
-                        .addComponent(jLabel1)
-                        .addComponent(label_linea)
-                        .addComponent(jLabel5)
-                        .addComponent(label_columna)
-                        .addComponent(bt_syntax1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(bt_syntax2)))
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(bt_abrir)
+                    .addComponent(jLabel1)
+                    .addComponent(label_linea)
+                    .addComponent(jLabel5)
+                    .addComponent(label_columna)
+                    .addComponent(bt_syntax1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(bt_syntax2)
+                    .addComponent(jButton3)
+                    .addComponent(jButton4))
                 .addContainerGap())
         );
+
+        jButton2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jButton2.setText("Codigo Final");
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton2MouseClicked(evt);
+            }
+        });
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -307,9 +335,12 @@ public class Main extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton2))
                     .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -317,8 +348,10 @@ public class Main extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
 
         pack();
@@ -562,6 +595,15 @@ public class Main extends javax.swing.JFrame {
             } else if (cuadruplos.get(i).op.equals("W_ETIQ")) {
                 //revisar si estan montados en registros
                 txt += genWhile(cuadruplos.get(i), cuadruplos.get(i + 1));
+            } else if (cuadruplos.get(i).op.equals("call")) {
+
+                txt += "    jal " + cuadruplos.get(i).op1 + "\n";
+
+                params_actuales = 0;
+                par_mem = 8;
+            } else if (cuadruplos.get(i).op.equals("param")) {
+                //Revisar donde estan los parametros y montarlos en las $a
+                txt += finalParam(cuadruplos.get(i));
             } else if (cuadruplos.get(i).op.equals("if ==")) {
                 //revisar si estan montados en registros
                 txt += genIf(cuadruplos.get(i));
@@ -580,9 +622,54 @@ public class Main extends javax.swing.JFrame {
             } else if (cuadruplos.get(i).op.equals("if <")) {
                 //revisar si estan montados en registros
                 txt += genIf(cuadruplos.get(i));
+            } else if (cuadruplos.get(i).op.equals("Return")) {
+                //cargar en $v0 lo que se retorna
+                txt += retorno(cuadruplos.get(i));
+                txt += "    move $sp, $fp\n    lw $fp, -4($sp)\n    lw $ra, -8($sp)\n";
+                //restablecer params
+                stack = 8;
+                for (int j = 0; j < parametros.size(); j++) {
+                    if (j <= 3) {
+                        int pos = stack + getSize(parametros.get(j).tipo);
+                        if (getSize(parametros.get(j).tipo) == 4) {
+                            txt += "    lw $s" + j + ", -" + pos + "($sp)\n";
+                        } else {
+                            pos = 4;
+                            txt += "    lw $s" + j + ", -" + pos + "($sp)\n";
+                        }
+                        stack = pos;
+                    }
+                }
+                //retornar jr $ra
+                txt += "    jr $ra\n";
+            } else if (cuadruplos.get(i).op.equals("E_ETIQ")) {
+                //txt += retorno(cuads.get(i));
+                txt += "    move $sp, $fp\n    lw $fp, -4($sp)\n    lw $ra, -8($sp)\n";
+                //restablecer params
+                stack = 8;
+                for (int j = 0; j < parametros.size(); j++) {
+                    if (j <= 3) {
+                        int pos = stack + getSize(parametros.get(j).tipo);
+                        if (getSize(parametros.get(j).tipo) == 4) {
+                            txt += "    lw $s" + j + ", -" + pos + "($sp)\n";
+                        } else {
+                            pos += 3;
+                            txt += "    lw $s" + j + ", -" + pos + "($sp)\n";
+                        }
+                        stack = pos;
+                    }
+                }
+                //retornar jr $ra
+                txt += "    jr $ra\n";
+                txt += cuadruplos.get(i).op1 + ":\n";
+                for (int j = 0; j < 10; j++) {
+                    registros.get(j).valor = "";
+                }
+                for (int j = 0; j < tabla_simbolos.size(); j++) {
+                    tabla_simbolos.get(j).descriptor = "";
+                }
             } else if (cuadruplos.get(i).op.equals("S_ETIQ")) {
                 if (cuadruplos.get(i).op1.equals("Main")) {
-                    System.out.println("llego");
                     txt += "main:\n    move $fp, $sp\n";
                     stack = 0;
                 }
@@ -663,6 +750,75 @@ public class Main extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton3MouseClicked
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton4MouseClicked
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    public static String retorno(Cuadruplo c) {
+        String txt = "";
+        boolean esta = false;
+        //Lo que retorno esta en tabla de simbolos
+        int ex = 0;
+        for (int h = 0; h < tabla_simbolos.size(); h++) {
+            if (tabla_simbolos.get(h).id.equals(c.op1)) {
+                ex++;
+            }
+        }
+        if (ex > 0) {
+            for (int t = 0; t < tabla_simbolos.size(); t++) {
+                if (tabla_simbolos.get(t).id.equals(c.op1)) {
+                    if (tabla_simbolos.get(t).descriptor.equals("")) {
+                        int sz = getSize(tabla_simbolos.get(t).tipo);
+                        int pos = stack + sz + tabla_simbolos.get(t).offset;
+                        if (sz == 4) {
+                            txt += "    lw $v0, -" + pos + "($fp)\n";
+                        } else {
+                            txt += "    lb $v0, -" + pos + "($fp)\n";
+                        }
+                    } else {
+                        txt += "    move $v0, " + tabla_simbolos.get(t).descriptor + "\n";
+                    }
+                    esta = true;
+                }
+            }
+        }
+        if (!esta) {
+            //Es un temporal
+            for (int i = 0; i < registros.size(); i++) {
+                if (registros.get(i).valor.equals(c.op1)) {
+                    txt += "    move $v0, " + registros.get(i).registro + "\n";
+                    esta = true;
+                }
+            }
+        }
+        if (!esta) {
+            //Es un valor
+            if (c.op1.equals("true")) {
+                txt += "    li $v0, 1\n";
+            } else if (c.op1.equals("false")) {
+                txt += "    li $v0, 0\n";
+            } else if (c.op1.contains("'")) {
+                txt += "    addi $v0, $zero, " + c.op1 + "\n";
+            } else {
+                //Es un numero
+                txt += "    li $v0, " + c.op1 + "\n";
+            }
+        }
+        return txt;
+    }
 
     public static String asigSencilla(Cuadruplo c) {
         String txt = "";
@@ -1193,6 +1349,150 @@ public class Main extends javax.swing.JFrame {
         if (liberar2) {
             free(r2);
         }
+        return txt;
+    }
+
+    public static String finalParam(Cuadruplo c) {
+        String txt = "";
+        if (params_actuales <= 3) {
+            //montarlos en a$
+            //Buscar donde esta
+            boolean esta = false, liberar1 = false, liberar2 = false;
+            String r = "";
+            for (int j = 0; j < tabla_simbolos.size(); j++) {
+                if (tabla_simbolos.get(j).id.equals(c.op1)) {
+                    esta = true;
+                    if (tabla_simbolos.get(j).descriptor.equals("")) {
+                        //load
+                        int sz = getSize(tabla_simbolos.get(j).tipo);
+                        int pos = stack + tabla_simbolos.get(j).offset + sz;
+                        String sgtreg = "$a" + params_actuales;
+                        if (sz == 4) {
+                            txt += "    lw " + sgtreg + ", " + "-" + pos + "($fp)\n";
+                        } else {
+                            txt += "    lb " + sgtreg + ", " + "-" + pos + "($fp)\n";
+                        }
+                        tabla_simbolos.get(j).descriptor = sgtreg;
+                        liberar1 = true;
+                        r = sgtreg;
+                        break;
+                    } else {
+                        txt += "    move $a" + params_actuales + ", " + tabla_simbolos.get(j).descriptor + "\n";
+                    }
+                    break;
+                }
+            }
+            if (!esta) {
+                for (int j = 0; j < registros.size(); j++) {
+                    if (registros.get(j).valor.equals(c.op1)) {
+                        txt += "    move $a" + params_actuales + ", " + registros.get(j).registro + "\n";
+                        liberar1 = true;
+                        esta = true;
+                    }
+                }
+            }
+            if (!esta) {
+                //No es ni temporal ni variable
+                r = "$a" + params_actuales;
+                if (!c.op1.contains("'")) {
+                    if (c.op1.equals("true")) {
+                        txt += "    li " + r + ", 1\n";
+                    } else if (c.op1.equals("false")) {
+                        txt += "    li " + r + ", 0\n";
+                    } else {
+                        //numero
+                        txt += "    li " + r + ", " + c.op1 + "\n";
+                    }
+                } else {
+                    //char
+                    txt += "    addi " + r + ", $zero, " + c.op1 + "\n";
+                }
+                liberar1 = true;
+            }
+            if (liberar1) {
+                free(r);
+            }
+        } else {
+            //montarlos en memoria, lo que llevan los otros de puntero + mi offset del $sp
+            boolean esta = false, liberar1 = false;
+            String r = "";
+            for (int j = 0; j < tabla_simbolos.size(); j++) {
+                if (tabla_simbolos.get(j).id.equals(c.op1)) {
+                    esta = true;
+                    if (tabla_simbolos.get(j).descriptor.equals("")) {
+                        //load
+                        int sz = getSize(tabla_simbolos.get(j).tipo);
+                        int pos = stack + tabla_simbolos.get(j).offset + sz;
+                        String sgtreg = nextTemp(c.op1);
+                        if (sz == 4) {
+                            txt += "    lw " + sgtreg + ", " + "-" + pos + "($fp)\n";
+                        } else {
+                            txt += "    lb " + sgtreg + ", " + "-" + pos + "($fp)\n";
+                        }
+                        tabla_simbolos.get(j).descriptor = sgtreg;
+                        liberar1 = true;
+                        r = sgtreg;
+                    } else {
+                        r = tabla_simbolos.get(j).descriptor;
+                    }
+                    break;
+                }
+            }
+            if (!esta) {
+                for (int j = 0; j < registros.size(); j++) {
+                    if (registros.get(j).valor.equals(c.op1)) {
+                        r = registros.get(j).registro;
+                        liberar1 = true;
+                        esta = true;
+                    }
+                }
+            }
+            if (!esta) {
+                //No es ni temporal ni variable
+                r = nextTemp(c.op1);
+                if (!c.op1.contains("'")) {
+                    if (c.op1.equals("true")) {
+                        txt += "    li " + r + ", 1\n";
+                    } else if (c.op1.equals("false")) {
+                        txt += "    li " + r + ", 0\n";
+                    } else {
+                        //numero
+                        txt += "    li " + r + ", " + c.op1 + "\n";
+                    }
+                } else {
+                    //char
+                    txt += "    addi " + r + ", $zero, " + c.op1 + "\n";
+                }
+                liberar1 = true;
+            }
+            //ya esta en un registro lo que hay que guardar
+            if (Integer.parseInt(c.op2) == 1) {
+                String pos = "";
+                int place = par_mem + 1;
+                pos += place + "($sp)";
+                pos = "0($sp)";
+                //txt += "    li $t8, " + place + "\n";
+                txt += "    add $t9, $sp, $zero\n";
+                txt += "    addi $sp, $sp, -" + place + "\n";
+                txt += "    sb " + r + ", " + pos + "\n";
+                txt += "    move $sp, $t9\n";
+            } else {
+                String pos = "";
+                int place = par_mem + 4;
+                pos += place + "($sp)";
+                pos = "0($sp)";
+                //txt += "    li $t8, " + place + "\n";
+                txt += "    add $t9, $sp, $zero\n";
+                txt += "    addi $sp, $sp, -" + place + "\n";
+                txt += "    sw " + r + ", " + pos + "\n";
+                txt += "    move $sp, $t9\n";
+            }
+            if (liberar1) {
+                free(r);
+            }
+        }
+        params_actuales += 1;
+        par_mem += Integer.parseInt(c.op2);
         return txt;
     }
 
@@ -2292,7 +2592,7 @@ public class Main extends javax.swing.JFrame {
                 cuadruplos.add(new Cuadruplo("Return", root.hijos.get(2).valor, "", ""));
             }
 
-        } else if (root.nombre.equals("Asignar-var") && !root.hijos.get(0).valor.equals(namef)) {
+        } else if (root.nombre.equals("Asignar-var") /*&& !root.hijos.get(0).valor.equals(namef)*/) {
             ///Asignacion normal con id,Boolean, String, Integer
             if (root.hijos.size() == 3) {
                 if (root.hijos.get(2).hijos.size() == 0) {///para String y Boolean
@@ -2360,6 +2660,46 @@ public class Main extends javax.swing.JFrame {
                         cuadruplos.add(p1.get(i));
                     }
                     cuadruplos.add(new Cuadruplo("=", "t" + (c - 1), "", root.hijos.get(0).valor));
+                } else if(root.hijos.get(2).nombre.equals("Operacion") && root.hijos.get(2).hijos.get(0).nombre.equals("MultDiv")){
+                    Node temp=root.hijos.get(2).hijos.get(0);
+                    contO = 0;
+                    int c = 0;
+                    acuadruplos = new ArrayList();
+                    ArrayList<Orden> n = new ArrayList();
+                    operacionAC(temp);
+                    contO = contO + temporales;
+                    c = contO;
+                    contO = contO - 1;
+                    temporales = temporales + c;
+                    operacionAA(temp);
+                    temporales = c;
+                    for (int i = 0; i < acuadruplos.size(); i++) {
+                        String pal = acuadruplos.get(i).res;
+                        pal = pal.substring(1, pal.length());
+                        n.add(new Orden(i, Integer.parseInt(pal)));
+                    }
+
+                    for (int i = 0; i < n.size() - 1; i++) {
+                        for (int j = 0; j < n.size() - i - 1; j++) {
+                            if (n.get(j + 1).indice < n.get(j).indice) {
+                                int aux = n.get(j + 1).indice;
+                                int aux2 = n.get(j + 1).posicion;
+                                n.get(j + 1).indice = n.get(j).indice;
+                                n.get(j + 1).posicion = n.get(j).posicion;
+                                n.get(j).indice = aux;
+                                n.get(j).posicion = aux2;
+                            }
+                        }
+                    }
+                    ArrayList<Cuadruplo> p1 = new ArrayList();
+                    for (int i = 0; i < n.size(); i++) {
+                        p1.add(acuadruplos.get(n.get(i).posicion));
+                    }
+                    for (int i = 0; i < p1.size(); i++) {
+                        cuadruplos.add(p1.get(i));
+                    }
+                    cuadruplos.add(new Cuadruplo("=", "t" + (c - 1), "", root.hijos.get(0).valor));
+
                 }
             }
         } else if (root.nombre.equals("Asignar-varF")) {
@@ -2409,6 +2749,7 @@ public class Main extends javax.swing.JFrame {
             func = true;
             namef = root.hijos.get(0).valor;
             cuadruplos.add(new Cuadruplo("F_ETIQ", root.hijos.get(0).valor, "", ""));
+
         } else if (root.nombre.equals("Sub")) {
             sub = true;
             cuadruplos.add(new Cuadruplo("S_ETIQ", root.hijos.get(0).valor, "", ""));
@@ -2720,6 +3061,8 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton bt_syntax2;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -2762,6 +3105,7 @@ public class Main extends javax.swing.JFrame {
     public static ArrayList<RegisterDesc> registros = new ArrayList<RegisterDesc>();
     public static ArrayList<mensajes> mensajes = new ArrayList<mensajes>();
     public static String func_actual;
-    public static int stack = 0, par_mem = 8;
+    public static int stack = 0, par_mem = 8, params_actuales = 0;
     public static ArrayList<String> mensaje = new ArrayList<String>();
+
 }
